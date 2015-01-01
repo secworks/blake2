@@ -1,14 +1,14 @@
 //======================================================================
 //
-// blake2_qr.v
+// blake2_compress.v
 // -----------
-// Verilog 2001 implementation of the stream cipher Blake2.
-// This is the combinational QR logic as a separade module to allow
-// us to build versions of the cipher with 1, 2, 4 and even 8
-// parallel qr functions.
+// Verilog 2001 implementation of the compression function in the
+// blake2 hash function core. This is pure combinational logic in a
+// separade module to allow us to build versions  with 1, 2, 4
+// and even 8 parallel compression functions.
 //
 //
-// Copyright (c) 2013 Secworks Sweden AB
+// Copyright (c) 2014, Secworks Sweden AB
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or
@@ -38,17 +38,17 @@
 //
 //======================================================================
 
-module blake2_qr(
-                 input wire [63 : 0]  a,
-                 input wire [63 : 0]  b,
-                 input wire [63 : 0]  c,
-                 input wire [63 : 0]  d,
+module blake2_compress(
+                       input wire [63 : 0]  a,
+                       input wire [63 : 0]  b,
+                       input wire [63 : 0]  c,
+                       input wire [63 : 0]  d,
 
-                 output wire [63 : 0] a_prim,
-                 output wire [63 : 0] b_prim,
-                 output wire [63 : 0] c_prim,
-                 output wire [63 : 0] d_prim
-                );
+                       output wire [63 : 0] a_prim,
+                       output wire [63 : 0] b_prim,
+                       output wire [63 : 0] c_prim,
+                       output wire [63 : 0] d_prim
+                      );
 
   //----------------------------------------------------------------
   // Wires.
@@ -69,9 +69,9 @@ module blake2_qr(
 
 
   //----------------------------------------------------------------
-  // qr
+  // compress
   //
-  // The actual quarterround function.
+  // The actual compression function.
   //----------------------------------------------------------------
   always @*
     begin : qr
@@ -119,9 +119,9 @@ module blake2_qr(
       internal_b_prim = b3;
       internal_c_prim = c1;
       internal_d_prim = d3;
-    end // qr
-endmodule // blake2_qr
+    end // compress
+endmodule // blake2_compress
 
 //======================================================================
-// EOF blake2_qr.v
+// EOF blake2_compress.v
 //======================================================================
