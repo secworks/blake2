@@ -6,7 +6,8 @@
 // This is the internal core with wide interfaces.
 //
 //
-// Copyright (c) 2013 Secworks Sweden AB
+// Author: Joachim Strömbergson
+// Copyright (c) 2014, Secworks Sweden AB
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or
@@ -298,55 +299,55 @@ module blake2_core(
 
 
   //----------------------------------------------------------------
-  // Instantiation of the qr modules.
+  // Instantiation of the compression modules.
   //----------------------------------------------------------------
-  blake2_qr qr0(
-                .a(qr0_a),
-                .b(qr0_b),
-                .c(qr0_c),
-                .d(qr0_d),
+  blake2_compress qr0(
+                      .a(qr0_a),
+                      .b(qr0_b),
+                      .c(qr0_c),
+                      .d(qr0_d),
 
-                .a_prim(qr0_a_prim),
-                .b_prim(qr0_b_prim),
-                .c_prim(qr0_c_prim),
-                .d_prim(qr0_d_prim)
-               );
+                      .a_prim(qr0_a_prim),
+                      .b_prim(qr0_b_prim),
+                      .c_prim(qr0_c_prim),
+                      .d_prim(qr0_d_prim)
+                     );
 
-  blake2_qr qr1(
-                .a(qr1_a),
-                .b(qr1_b),
-                .c(qr1_c),
-                .d(qr1_d),
+  blake2_compress qr1(
+                      .a(qr1_a),
+                      .b(qr1_b),
+                      .c(qr1_c),
+                      .d(qr1_d),
 
-                .a_prim(qr1_a_prim),
-                .b_prim(qr1_b_prim),
-                .c_prim(qr1_c_prim),
-                .d_prim(qr1_d_prim)
-               );
+                      .a_prim(qr1_a_prim),
+                      .b_prim(qr1_b_prim),
+                      .c_prim(qr1_c_prim),
+                      .d_prim(qr1_d_prim)
+                     );
 
-  blake2_qr qr2(
-                .a(qr2_a),
-                .b(qr2_b),
-                .c(qr2_c),
-                .d(qr2_d),
+  blake2_compress qr2(
+                      .a(qr2_a),
+                      .b(qr2_b),
+                      .c(qr2_c),
+                      .d(qr2_d),
 
-                .a_prim(qr2_a_prim),
-                .b_prim(qr2_b_prim),
-                .c_prim(qr2_c_prim),
-                .d_prim(qr2_d_prim)
-               );
+                      .a_prim(qr2_a_prim),
+                      .b_prim(qr2_b_prim),
+                      .c_prim(qr2_c_prim),
+                      .d_prim(qr2_d_prim)
+                     );
 
-  blake2_qr qr3(
-                .a(qr3_a),
-                .b(qr3_b),
-                .c(qr3_c),
-                .d(qr3_d),
+  blake2_compress qr3(
+                      .a(qr3_a),
+                      .b(qr3_b),
+                      .c(qr3_c),
+                      .d(qr3_d),
 
-                .a_prim(qr3_a_prim),
-                .b_prim(qr3_b_prim),
-                .c_prim(qr3_c_prim),
-                .d_prim(qr3_d_prim)
-               );
+                      .a_prim(qr3_a_prim),
+                      .b_prim(qr3_b_prim),
+                      .c_prim(qr3_c_prim),
+                      .d_prim(qr3_d_prim)
+                     );
 
 
   //----------------------------------------------------------------
