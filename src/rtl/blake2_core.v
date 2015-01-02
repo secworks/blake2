@@ -60,7 +60,7 @@ module blake2_core(
   parameter STATE_G0 = 1'b0;
   parameter STATE_G1 = 1'b1;
 
-  parameter NUM_ROUNDS = 4'ha;
+  parameter NUM_ROUNDS = 4'hc;
 
   parameter IV0 = 64'h6a09e667f3bcc908;
   parameter IV1 = 64'hbb67ae8584caa73b;
