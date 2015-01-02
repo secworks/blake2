@@ -85,44 +85,24 @@ module blake2_core(
   //----------------------------------------------------------------
   // Registers including update variables and write enable.
   //----------------------------------------------------------------
-  reg [31 : 0] iv0_reg;
-  reg [31 : 0] iv0_new;
-  reg [31 : 0] iv1_reg;
-  reg [31 : 0] iv1_new;
-
-  reg [31 : 0] state0_reg;
-  reg [31 : 0] state0_new;
-  reg [31 : 0] state1_reg;
-  reg [31 : 0] state1_new;
-  reg [31 : 0] state2_reg;
-  reg [31 : 0] state2_new;
-  reg [31 : 0] state3_reg;
-  reg [31 : 0] state3_new;
-  reg [31 : 0] state4_reg;
-  reg [31 : 0] state4_new;
-  reg [31 : 0] state5_reg;
-  reg [31 : 0] state5_new;
-  reg [31 : 0] state6_reg;
-  reg [31 : 0] state6_new;
-  reg [31 : 0] state7_reg;
-  reg [31 : 0] state7_new;
-  reg [31 : 0] state8_reg;
-  reg [31 : 0] state8_new;
-  reg [31 : 0] state9_reg;
-  reg [31 : 0] state9_new;
-  reg [31 : 0] state10_reg;
-  reg [31 : 0] state10_new;
-  reg [31 : 0] state11_reg;
-  reg [31 : 0] state11_new;
-  reg [31 : 0] state12_reg;
-  reg [31 : 0] state12_new;
-  reg [31 : 0] state13_reg;
-  reg [31 : 0] state13_new;
-  reg [31 : 0] state14_reg;
-  reg [31 : 0] state14_new;
-  reg [31 : 0] state15_reg;
-  reg [31 : 0] state15_new;
-  reg state_we;
+  reg [63 : 0] h0_reg;
+  reg [63 : 0] h0_new;
+  reg [63 : 0] h1_reg;
+  reg [63 : 0] h1_new;
+  reg [63 : 0] h2_reg;
+  reg [63 : 0] h2_new;
+  reg [63 : 0] h3_reg;
+  reg [63 : 0] h3_new;
+  reg [63 : 0] h4_reg;
+  reg [63 : 0] h4_new;
+  reg [63 : 0] h5_reg;
+  reg [63 : 0] h5_new;
+  reg [63 : 0] h6_reg;
+  reg [63 : 0] h6_new;
+  reg [63 : 0] h7_reg;
+  reg [63 : 0] h7_new;
+  reg          update_chain_value;
+  reg          h_we;
 
   reg [63 : 0] v0_reg;
   reg [63 : 0] v0_new;
@@ -324,24 +304,14 @@ module blake2_core(
     begin : reg_update
       if (!reset_n)
         begin
-          iv0_reg            <= 32'h00000000;
-          iv1_reg            <= 32'h00000000;
-          state0_reg         <= 32'h00000000;
-          state1_reg         <= 32'h00000000;
-          state2_reg         <= 32'h00000000;
-          state3_reg         <= 32'h00000000;
-          state4_reg         <= 32'h00000000;
-          state5_reg         <= 32'h00000000;
-          state6_reg         <= 32'h00000000;
-          state7_reg         <= 32'h00000000;
-          state8_reg         <= 32'h00000000;
-          state9_reg         <= 32'h00000000;
-          state10_reg        <= 32'h00000000;
-          state11_reg        <= 32'h00000000;
-          state12_reg        <= 32'h00000000;
-          state13_reg        <= 32'h00000000;
-          state14_reg        <= 32'h00000000;
-          state15_reg        <= 32'h00000000;
+          h0_reg             <= 64'h0000000000000000;
+          h1_reg             <= 64'h0000000000000000;
+          h2_reg             <= 64'h0000000000000000;
+          h3_reg             <= 64'h0000000000000000;
+          h4_reg             <= 64'h0000000000000000;
+          h5_reg             <= 64'h0000000000000000;
+          h6_reg             <= 64'h0000000000000000;
+          h7_reg             <= 64'h0000000000000000;
           v0_reg             <= 64'h0000000000000000;
           v1_reg             <= 64'h0000000000000000;
           v2_reg             <= 64'h0000000000000000;
@@ -363,7 +333,7 @@ module blake2_core(
           rounds_reg         <= 4'h0;
           ready_reg          <= 1;
           data_out_valid_reg <= 0;
-          G_ctr_reg         <= STATE_G0;
+          G_ctr_reg          <= STATE_G0;
           dr_ctr_reg         <= 0;
           block0_ctr_reg     <= 32'h00000000;
           block1_ctr_reg     <= 32'h00000000;
@@ -371,37 +341,21 @@ module blake2_core(
         end
       else
         begin
-          if (sample_params)
-            begin
-              iv0_reg    <= iv0_new;
-              iv1_reg    <= iv1_new;
-              rounds_reg <= rounds_new;
-              keylen_reg <= keylen_new;
-            end
-
           if (data_in_we)
             begin
               data_in_reg <= data_in;
             end
 
-          if (state_we)
+          if (h_we)
             begin
-              state0_reg  <= state0_new;
-              state1_reg  <= state1_new;
-              state2_reg  <= state2_new;
-              state3_reg  <= state3_new;
-              state4_reg  <= state4_new;
-              state5_reg  <= state5_new;
-              state6_reg  <= state6_new;
-              state7_reg  <= state7_new;
-              state8_reg  <= state8_new;
-              state9_reg  <= state9_new;
-              state10_reg <= state10_new;
-              state11_reg <= state11_new;
-              state12_reg <= state12_new;
-              state13_reg <= state13_new;
-              state14_reg <= state14_new;
-              state15_reg <= state15_new;
+              h0_reg  <= h0_new;
+              h1_reg  <= h1_new;
+              h2_reg  <= h2_new;
+              h3_reg  <= h3_new;
+              h4_reg  <= h4_new;
+              h5_reg  <= h5_new;
+              h6_reg  <= h6_new;
+              h7_reg  <= h7_new;
             end
 
           if (v_we)
@@ -682,6 +636,37 @@ module blake2_core(
         end
     end
 
+  //----------------------------------------------------------------
+  // chain_logic
+  //
+  // Logic for updating the chain registers.
+  //----------------------------------------------------------------
+  always @*
+    begin : chain_logic
+      h0_new = 64'h0000000000000000;
+      h1_new = 64'h0000000000000000;
+      h2_new = 64'h0000000000000000;
+      h3_new = 64'h0000000000000000;
+      h4_new = 64'h0000000000000000;
+      h5_new = 64'h0000000000000000;
+      h6_new = 64'h0000000000000000;
+      h7_new = 64'h0000000000000000;
+      h_we   = 0;
+
+      if (update_chain_value)
+        begin
+          h0_new = h0_reg ^ v0_reg ^ v8_reg;
+          h1_new = h1_reg ^ v1_reg ^ v9_reg;
+          h2_new = h2_reg ^ v2_reg ^ v10_reg;
+          h3_new = h3_reg ^ v3_reg ^ v11_reg;
+          h4_new = h4_reg ^ v4_reg ^ v12_reg;
+          h5_new = h5_reg ^ v5_reg ^ v13_reg;
+          h6_new = h6_reg ^ v6_reg ^ v14_reg;
+          h7_new = h7_reg ^ v7_reg ^ v15_reg;
+          h_we   = 1;
+        end
+    end // chain_logic
+
 
   //----------------------------------------------------------------
   // state_logic
@@ -925,6 +910,8 @@ module blake2_core(
       block_ctr_inc      = 0;
       block_ctr_rst      = 0;
 
+      update_chain_value = 0;
+
       data_in_we         = 0;
 
       ready_new          = 0;
@@ -981,6 +968,7 @@ module blake2_core(
 
         CTRL_FINALIZE:
           begin
+            update_chain_value = 1;
             ready_new          = 1;
             ready_we           = 1;
             update_output      = 1;
