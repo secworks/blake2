@@ -1,8 +1,8 @@
 //======================================================================
 //
-// blake2_compress.v
+// blake2_G.v
 // -----------
-// Verilog 2001 implementation of the compression function in the
+// Verilog 2001 implementation of the G function in the
 // blake2 hash function core. This is pure combinational logic in a
 // separade module to allow us to build versions  with 1, 2, 4
 // and even 8 parallel compression functions.
@@ -38,17 +38,18 @@
 //
 //======================================================================
 
-module blake2_compress(
-                       input wire [63 : 0]  a,
-                       input wire [63 : 0]  b,
-                       input wire [63 : 0]  c,
-                       input wire [63 : 0]  d,
+module blake2_G(
+                input wire [63 : 0]  a,
+                input wire [63 : 0]  b,
+                input wire [63 : 0]  c,
+                input wire [63 : 0]  d,
 
-                       output wire [63 : 0] a_prim,
-                       output wire [63 : 0] b_prim,
-                       output wire [63 : 0] c_prim,
-                       output wire [63 : 0] d_prim
-                      );
+                output wire [63 : 0] a_prim,
+                output wire [63 : 0] b_prim,
+                output wire [63 : 0] c_prim,
+                output wire [63 : 0] d_prim
+               );
+
 
   //----------------------------------------------------------------
   // Wires.
@@ -69,12 +70,12 @@ module blake2_compress(
 
 
   //----------------------------------------------------------------
-  // compress
+  // G
   //
-  // The actual compression function.
+  // The actual G function.
   //----------------------------------------------------------------
   always @*
-    begin : qr
+    begin : G
       reg [63 : 0] a0;
       reg [63 : 0] a1;
 
@@ -119,9 +120,9 @@ module blake2_compress(
       internal_b_prim = b3;
       internal_c_prim = c1;
       internal_d_prim = d3;
-    end // compress
-endmodule // blake2_compress
+    end // G
+endmodule // blake2_G
 
 //======================================================================
-// EOF blake2_compress.v
+// EOF blake2_G.v
 //======================================================================
