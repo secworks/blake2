@@ -695,23 +695,23 @@ module blake2_core(
 
       if (init_state)
         begin
-          v0_new  = new_state_word0;
-          v1_new  = new_state_word1;
-          v2_new  = new_state_word2;
-          v3_new  = new_state_word3;
-          v4_new  = new_state_word4;
-          v5_new  = new_state_word5;
-          v6_new  = new_state_word6;
-          v7_new  = new_state_word7;
-          v8_new  = new_state_word8;
-          v9_new  = new_state_word9;
-          v10_new = new_state_word10;
-          v11_new = new_state_word11;
-          v12_new = new_state_word12;
-          v13_new = new_state_word13;
-          v14_new = new_state_word14;
-          v15_new = new_state_word15;
-          v_we   = 1;
+          v0_new  = h0_reg;
+          v1_new  = h1_reg;
+          v2_new  = h2_reg;
+          v3_new  = h3_reg;
+          v4_new  = h4_reg;
+          v5_new  = h5_reg;
+          v6_new  = h6_reg;
+          v7_new  = h7_reg;
+          v8_new  = IV0;
+          v9_new  = IV1;
+          v10_new = IV2;
+          v11_new = IV3;
+          v12_new = t0_reg ^ IV4;
+          v13_new = t1_reg ^ IV5;
+          v14_new = f0_reg ^ IV6;
+          v15_new = f1_reg ^ IV7;
+          v_we    = 1;
         end
 
       if (update_state)
