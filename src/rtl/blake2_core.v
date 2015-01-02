@@ -64,17 +64,16 @@ module blake2_core(
   parameter STATE_QR0 = 1'b0;
   parameter STATE_QR1 = 1'b1;
 
-  parameter NUM_ROUNDS = 4'h8;
+  parameter NUM_ROUNDS = 4'ha;
 
-  parameter TAU0 = 32'h61707865;
-  parameter TAU1 = 32'h3120646e;
-  parameter TAU2 = 32'h79622d36;
-  parameter TAU3 = 32'h6b206574;
-
-  parameter SIGMA0 = 32'h61707865;
-  parameter SIGMA1 = 32'h3320646e;
-  parameter SIGMA2 = 32'h79622d32;
-  parameter SIGMA3 = 32'h6b206574;
+  parameter IV0 = 64'h6a09e667f3bcc908;
+  parameter IV1 = 64'hbb67ae8584caa73b;
+  parameter IV2 = 64'h3c6ef372fe94f82b;
+  parameter IV3 = 64'ha54ff53a5f1d36f1;
+  parameter IV4 = 64'h510e527fade682d1;
+  parameter IV5 = 64'h9b05688c2b3e6c1f;
+  parameter IV6 = 64'h9b05688c2b3e6c1f;
+  parameter IV7 = 64'h5be0cd19137e2179;
 
   parameter CTRL_IDLE     = 3'h0;
   parameter CTRL_INIT     = 3'h1;
