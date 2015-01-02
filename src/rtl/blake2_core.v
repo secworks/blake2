@@ -144,69 +144,69 @@ module blake2_core(
   reg [31 : 0] state15_new;
   reg state_we;
 
-  reg [31 : 0] x0_reg;
-  reg [31 : 0] x0_new;
-  reg          x0_we;
+  reg [31 : 0] v0_reg;
+  reg [31 : 0] v0_new;
+  reg          v0_we;
 
-  reg [31 : 0] x1_reg;
-  reg [31 : 0] x1_new;
-  reg          x1_we;
+  reg [31 : 0] v1_reg;
+  reg [31 : 0] v1_new;
+  reg          v1_we;
 
-  reg [31 : 0] x2_reg;
-  reg [31 : 0] x2_new;
-  reg          x2_we;
+  reg [31 : 0] v2_reg;
+  reg [31 : 0] v2_new;
+  reg          v2_we;
 
-  reg [31 : 0] x3_reg;
-  reg [31 : 0] x3_new;
-  reg          x3_we;
+  reg [31 : 0] v3_reg;
+  reg [31 : 0] v3_new;
+  reg          v3_we;
 
-  reg [31 : 0] x4_reg;
-  reg [31 : 0] x4_new;
-  reg          x4_we;
+  reg [31 : 0] v4_reg;
+  reg [31 : 0] v4_new;
+  reg          v4_we;
 
-  reg [31 : 0] x5_reg;
-  reg [31 : 0] x5_new;
-  reg          x5_we;
+  reg [31 : 0] v5_reg;
+  reg [31 : 0] v5_new;
+  reg          v5_we;
 
-  reg [31 : 0] x6_reg;
-  reg [31 : 0] x6_new;
-  reg          x6_we;
+  reg [31 : 0] v6_reg;
+  reg [31 : 0] v6_new;
+  reg          v6_we;
 
-  reg [31 : 0] x7_reg;
-  reg [31 : 0] x7_new;
-  reg          x7_we;
+  reg [31 : 0] v7_reg;
+  reg [31 : 0] v7_new;
+  reg          v7_we;
 
-  reg [31 : 0] x8_reg;
-  reg [31 : 0] x8_new;
-  reg          x8_we;
+  reg [31 : 0] v8_reg;
+  reg [31 : 0] v8_new;
+  reg          v8_we;
 
-  reg [31 : 0] x9_reg;
-  reg [31 : 0] x9_new;
-  reg          x9_we;
+  reg [31 : 0] v9_reg;
+  reg [31 : 0] v9_new;
+  reg          v9_we;
 
-  reg [31 : 0] x10_reg;
-  reg [31 : 0] x10_new;
-  reg          x10_we;
+  reg [31 : 0] v10_reg;
+  reg [31 : 0] v10_new;
+  reg          v10_we;
 
-  reg [31 : 0] x11_reg;
-  reg [31 : 0] x11_new;
-  reg          x11_we;
+  reg [31 : 0] v11_reg;
+  reg [31 : 0] v11_new;
+  reg          v11_we;
 
-  reg [31 : 0] x12_reg;
-  reg [31 : 0] x12_new;
-  reg          x12_we;
+  reg [31 : 0] v12_reg;
+  reg [31 : 0] v12_new;
+  reg          v12_we;
 
-  reg [31 : 0] x13_reg;
-  reg [31 : 0] x13_new;
-  reg          x13_we;
+  reg [31 : 0] v13_reg;
+  reg [31 : 0] v13_new;
+  reg          v13_we;
 
-  reg [31 : 0] x14_reg;
-  reg [31 : 0] x14_new;
-  reg          x14_we;
+  reg [31 : 0] v14_reg;
+  reg [31 : 0] v14_new;
+  reg          v14_we;
 
-  reg [31 : 0] x15_reg;
-  reg [31 : 0] x15_new;
-  reg          x15_we;
+  reg [31 : 0] v15_reg;
+  reg [31 : 0] v15_new;
+  reg          v15_we;
 
   reg [3 : 0] rounds_reg;
   reg [3 : 0] rounds_new;
@@ -400,22 +400,22 @@ module blake2_core(
           state13_reg        <= 32'h00000000;
           state14_reg        <= 32'h00000000;
           state15_reg        <= 32'h00000000;
-          x0_reg             <= 32'h00000000;
-          x1_reg             <= 32'h00000000;
-          x2_reg             <= 32'h00000000;
-          x3_reg             <= 32'h00000000;
-          x4_reg             <= 32'h00000000;
-          x5_reg             <= 32'h00000000;
-          x6_reg             <= 32'h00000000;
-          x7_reg             <= 32'h00000000;
-          x8_reg             <= 32'h00000000;
-          x9_reg             <= 32'h00000000;
-          x10_reg            <= 32'h00000000;
-          x11_reg            <= 32'h00000000;
-          x12_reg            <= 32'h00000000;
-          x13_reg            <= 32'h00000000;
-          x14_reg            <= 32'h00000000;
-          x15_reg            <= 32'h00000000;
+          v0_reg             <= 32'h00000000;
+          v1_reg             <= 32'h00000000;
+          v2_reg             <= 32'h00000000;
+          v3_reg             <= 32'h00000000;
+          v4_reg             <= 32'h00000000;
+          v5_reg             <= 32'h00000000;
+          v6_reg             <= 32'h00000000;
+          v7_reg             <= 32'h00000000;
+          v8_reg             <= 32'h00000000;
+          v9_reg             <= 32'h00000000;
+          v10_reg            <= 32'h00000000;
+          v11_reg            <= 32'h00000000;
+          v12_reg            <= 32'h00000000;
+          v13_reg            <= 32'h00000000;
+          v14_reg            <= 32'h00000000;
+          v15_reg            <= 32'h00000000;
           data_in_reg        <= 512'h00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000;
           data_out_reg       <= 512'h00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000;
           rounds_reg         <= 4'h0;
@@ -470,84 +470,84 @@ module blake2_core(
               state15_reg <= state15_new;
             end
 
-          if (x0_we)
+          if (v0_we)
             begin
-              x0_reg <= x0_new;
+              v0_reg <= v0_new;
             end
 
-          if (x1_we)
+          if (v1_we)
             begin
-              x1_reg <= x1_new;
+              v1_reg <= v1_new;
             end
 
-          if (x2_we)
+          if (v2_we)
             begin
-              x2_reg <= x2_new;
+              v2_reg <= v2_new;
             end
 
-          if (x3_we)
+          if (v3_we)
             begin
-              x3_reg <= x3_new;
+              v3_reg <= v3_new;
             end
 
-          if (x4_we)
+          if (v4_we)
             begin
-              x4_reg <= x4_new;
+              v4_reg <= v4_new;
             end
 
-          if (x5_we)
+          if (v5_we)
             begin
-              x5_reg <= x5_new;
+              v5_reg <= v5_new;
             end
 
-          if (x6_we)
+          if (v6_we)
             begin
-              x6_reg <= x6_new;
+              v6_reg <= v6_new;
             end
 
-          if (x7_we)
+          if (v7_we)
             begin
-              x7_reg <= x7_new;
+              v7_reg <= v7_new;
             end
 
-          if (x8_we)
+          if (v8_we)
             begin
-              x8_reg <= x8_new;
+              v8_reg <= v8_new;
             end
 
-          if (x9_we)
+          if (v9_we)
             begin
-              x9_reg <= x9_new;
+              v9_reg <= v9_new;
             end
 
-          if (x10_we)
+          if (v10_we)
             begin
-              x10_reg <= x10_new;
+              v10_reg <= v10_new;
             end
 
-          if (x11_we)
+          if (v11_we)
             begin
-              x11_reg <= x11_new;
+              v11_reg <= v11_new;
             end
 
-          if (x12_we)
+          if (v12_we)
             begin
-              x12_reg <= x12_new;
+              v12_reg <= v12_new;
             end
 
-          if (x13_we)
+          if (v13_we)
             begin
-              x13_reg <= x13_new;
+              v13_reg <= v13_new;
             end
 
-          if (x14_we)
+          if (v14_we)
             begin
-              x14_reg <= x14_new;
+              v14_reg <= v14_new;
             end
 
-          if (x15_we)
+          if (v15_we)
             begin
-              x15_reg <= x15_new;
+              v15_reg <= v15_new;
             end
 
           if (data_out_we)
@@ -596,7 +596,7 @@ module blake2_core(
   //----------------------------------------------------------------
   // data_out_logic
   // Final output logic that combines the result from procceing
-  // with the input word. This adds a final layer of XOR gates.
+  // with the input word. This adds a final layer of VOR gates.
   //
   // Note that we also remap all the words into LSB format.
   //----------------------------------------------------------------
@@ -645,22 +645,22 @@ module blake2_core(
 
       if (update_output)
         begin
-          msb_block_state0  = state0_reg  + x0_reg;
-          msb_block_state1  = state1_reg  + x1_reg;
-          msb_block_state2  = state2_reg  + x2_reg;
-          msb_block_state3  = state3_reg  + x3_reg;
-          msb_block_state4  = state4_reg  + x4_reg;
-          msb_block_state5  = state5_reg  + x5_reg;
-          msb_block_state6  = state6_reg  + x6_reg;
-          msb_block_state7  = state7_reg  + x7_reg;
-          msb_block_state8  = state8_reg  + x8_reg;
-          msb_block_state9  = state9_reg  + x9_reg;
-          msb_block_state10 = state10_reg + x10_reg;
-          msb_block_state11 = state11_reg + x11_reg;
-          msb_block_state12 = state12_reg + x12_reg;
-          msb_block_state13 = state13_reg + x13_reg;
-          msb_block_state14 = state14_reg + x14_reg;
-          msb_block_state15 = state15_reg + x15_reg;
+          msb_block_state0  = state0_reg  + v0_reg;
+          msb_block_state1  = state1_reg  + v1_reg;
+          msb_block_state2  = state2_reg  + v2_reg;
+          msb_block_state3  = state3_reg  + v3_reg;
+          msb_block_state4  = state4_reg  + v4_reg;
+          msb_block_state5  = state5_reg  + v5_reg;
+          msb_block_state6  = state6_reg  + v6_reg;
+          msb_block_state7  = state7_reg  + v7_reg;
+          msb_block_state8  = state8_reg  + v8_reg;
+          msb_block_state9  = state9_reg  + v9_reg;
+          msb_block_state10 = state10_reg + v10_reg;
+          msb_block_state11 = state11_reg + v11_reg;
+          msb_block_state12 = state12_reg + v12_reg;
+          msb_block_state13 = state13_reg + v13_reg;
+          msb_block_state14 = state14_reg + v14_reg;
+          msb_block_state15 = state15_reg + v15_reg;
 
           lsb_block_state0 = {msb_block_state0[7  :  0],
                               msb_block_state0[15 :  8],
@@ -849,38 +849,38 @@ module blake2_core(
       new_state_word14 = 32'h00000000;
       new_state_word15 = 32'h00000000;
 
-      x0_new  = 32'h00000000;
-      x1_new  = 32'h00000000;
-      x2_new  = 32'h00000000;
-      x3_new  = 32'h00000000;
-      x4_new  = 32'h00000000;
-      x5_new  = 32'h00000000;
-      x6_new  = 32'h00000000;
-      x7_new  = 32'h00000000;
-      x8_new  = 32'h00000000;
-      x9_new  = 32'h00000000;
-      x10_new = 32'h00000000;
-      x11_new = 32'h00000000;
-      x12_new = 32'h00000000;
-      x13_new = 32'h00000000;
-      x14_new = 32'h00000000;
-      x15_new = 32'h00000000;
-      x0_we   = 0;
-      x1_we   = 0;
-      x2_we   = 0;
-      x3_we   = 0;
-      x4_we   = 0;
-      x5_we   = 0;
-      x6_we   = 0;
-      x7_we   = 0;
-      x8_we   = 0;
-      x9_we   = 0;
-      x10_we  = 0;
-      x11_we  = 0;
-      x12_we  = 0;
-      x13_we  = 0;
-      x14_we  = 0;
-      x15_we  = 0;
+      v0_new  = 32'h00000000;
+      v1_new  = 32'h00000000;
+      v2_new  = 32'h00000000;
+      v3_new  = 32'h00000000;
+      v4_new  = 32'h00000000;
+      v5_new  = 32'h00000000;
+      v6_new  = 32'h00000000;
+      v7_new  = 32'h00000000;
+      v8_new  = 32'h00000000;
+      v9_new  = 32'h00000000;
+      v10_new = 32'h00000000;
+      v11_new = 32'h00000000;
+      v12_new = 32'h00000000;
+      v13_new = 32'h00000000;
+      v14_new = 32'h00000000;
+      v15_new = 32'h00000000;
+      v0_we   = 0;
+      v1_we   = 0;
+      v2_we   = 0;
+      v3_we   = 0;
+      v4_we   = 0;
+      v5_we   = 0;
+      v6_we   = 0;
+      v7_we   = 0;
+      v8_we   = 0;
+      v9_we   = 0;
+      v10_we  = 0;
+      v11_we  = 0;
+      v12_we  = 0;
+      v13_we  = 0;
+      v14_we  = 0;
+      v15_we  = 0;
 
       state0_new  = 32'h00000000;
       state1_new  = 32'h00000000;
@@ -938,38 +938,38 @@ module blake2_core(
               new_state_word11 = key3_reg;
             end
 
-          x0_new  = new_state_word0;
-          x1_new  = new_state_word1;
-          x2_new  = new_state_word2;
-          x3_new  = new_state_word3;
-          x4_new  = new_state_word4;
-          x5_new  = new_state_word5;
-          x6_new  = new_state_word6;
-          x7_new  = new_state_word7;
-          x8_new  = new_state_word8;
-          x9_new  = new_state_word9;
-          x10_new = new_state_word10;
-          x11_new = new_state_word11;
-          x12_new = new_state_word12;
-          x13_new = new_state_word13;
-          x14_new = new_state_word14;
-          x15_new = new_state_word15;
-          x0_we  = 1;
-          x1_we  = 1;
-          x2_we  = 1;
-          x3_we  = 1;
-          x4_we  = 1;
-          x5_we  = 1;
-          x6_we  = 1;
-          x7_we  = 1;
-          x8_we  = 1;
-          x9_we  = 1;
-          x10_we = 1;
-          x11_we = 1;
-          x12_we = 1;
-          x13_we = 1;
-          x14_we = 1;
-          x15_we = 1;
+          v0_new  = new_state_word0;
+          v1_new  = new_state_word1;
+          v2_new  = new_state_word2;
+          v3_new  = new_state_word3;
+          v4_new  = new_state_word4;
+          v5_new  = new_state_word5;
+          v6_new  = new_state_word6;
+          v7_new  = new_state_word7;
+          v8_new  = new_state_word8;
+          v9_new  = new_state_word9;
+          v10_new = new_state_word10;
+          v11_new = new_state_word11;
+          v12_new = new_state_word12;
+          v13_new = new_state_word13;
+          v14_new = new_state_word14;
+          v15_new = new_state_word15;
+          v0_we  = 1;
+          v1_we  = 1;
+          v2_we  = 1;
+          v3_we  = 1;
+          v4_we  = 1;
+          v5_we  = 1;
+          v6_we  = 1;
+          v7_we  = 1;
+          v8_we  = 1;
+          v9_we  = 1;
+          v10_we = 1;
+          v11_we = 1;
+          v12_we = 1;
+          v13_we = 1;
+          v14_we = 1;
+          v15_we = 1;
 
           state0_new  = new_state_word0;
           state1_new  = new_state_word1;
@@ -995,80 +995,80 @@ module blake2_core(
           case (qr_ctr_reg)
             STATE_QR0:
               begin
-                x0_new  = qr0_a_prim;
-                x4_new  = qr0_b_prim;
-                x8_new  = qr0_c_prim;
-                x12_new = qr0_d_prim;
-                x0_we   = 1;
-                x4_we   = 1;
-                x8_we   = 1;
-                x12_we  = 1;
+                v0_new  = qr0_a_prim;
+                v4_new  = qr0_b_prim;
+                v8_new  = qr0_c_prim;
+                v12_new = qr0_d_prim;
+                v0_we   = 1;
+                v4_we   = 1;
+                v8_we   = 1;
+                v12_we  = 1;
 
-                x1_new  = qr1_a_prim;
-                x5_new  = qr1_b_prim;
-                x9_new  = qr1_c_prim;
-                x13_new = qr1_d_prim;
-                x1_we   = 1;
-                x5_we   = 1;
-                x9_we   = 1;
-                x13_we  = 1;
+                v1_new  = qr1_a_prim;
+                v5_new  = qr1_b_prim;
+                v9_new  = qr1_c_prim;
+                v13_new = qr1_d_prim;
+                v1_we   = 1;
+                v5_we   = 1;
+                v9_we   = 1;
+                v13_we  = 1;
 
-                x2_new  = qr2_a_prim;
-                x6_new  = qr2_b_prim;
-                x10_new = qr2_c_prim;
-                x14_new = qr2_d_prim;
-                x2_we   = 1;
-                x6_we   = 1;
-                x10_we  = 1;
-                x14_we  = 1;
+                v2_new  = qr2_a_prim;
+                v6_new  = qr2_b_prim;
+                v10_new = qr2_c_prim;
+                v14_new = qr2_d_prim;
+                v2_we   = 1;
+                v6_we   = 1;
+                v10_we  = 1;
+                v14_we  = 1;
 
-                x3_new  = qr3_a_prim;
-                x7_new  = qr3_b_prim;
-                x11_new = qr3_c_prim;
-                x15_new = qr3_d_prim;
-                x3_we   = 1;
-                x7_we   = 1;
-                x11_we  = 1;
-                x15_we  = 1;
+                v3_new  = qr3_a_prim;
+                v7_new  = qr3_b_prim;
+                v11_new = qr3_c_prim;
+                v15_new = qr3_d_prim;
+                v3_we   = 1;
+                v7_we   = 1;
+                v11_we  = 1;
+                v15_we  = 1;
               end
 
             STATE_QR1:
               begin
-                x0_new  = qr0_a_prim;
-                x5_new  = qr0_b_prim;
-                x10_new = qr0_c_prim;
-                x15_new = qr0_d_prim;
-                x0_we   = 1;
-                x5_we   = 1;
-                x10_we  = 1;
-                x15_we  = 1;
+                v0_new  = qr0_a_prim;
+                v5_new  = qr0_b_prim;
+                v10_new = qr0_c_prim;
+                v15_new = qr0_d_prim;
+                v0_we   = 1;
+                v5_we   = 1;
+                v10_we  = 1;
+                v15_we  = 1;
 
-                x1_new  = qr1_a_prim;
-                x6_new  = qr1_b_prim;
-                x11_new = qr1_c_prim;
-                x12_new = qr1_d_prim;
-                x1_we   = 1;
-                x6_we   = 1;
-                x11_we  = 1;
-                x12_we  = 1;
+                v1_new  = qr1_a_prim;
+                v6_new  = qr1_b_prim;
+                v11_new = qr1_c_prim;
+                v12_new = qr1_d_prim;
+                v1_we   = 1;
+                v6_we   = 1;
+                v11_we  = 1;
+                v12_we  = 1;
 
-                x2_new  = qr2_a_prim;
-                x7_new  = qr2_b_prim;
-                x8_new  = qr2_c_prim;
-                x13_new = qr2_d_prim;
-                x2_we   = 1;
-                x7_we   = 1;
-                x8_we   = 1;
-                x13_we  = 1;
+                v2_new  = qr2_a_prim;
+                v7_new  = qr2_b_prim;
+                v8_new  = qr2_c_prim;
+                v13_new = qr2_d_prim;
+                v2_we   = 1;
+                v7_we   = 1;
+                v8_we   = 1;
+                v13_we  = 1;
 
-                x3_new  = qr3_a_prim;
-                x4_new  = qr3_b_prim;
-                x9_new  = qr3_c_prim;
-                x14_new = qr3_d_prim;
-                x3_we   = 1;
-                x4_we   = 1;
-                x9_we   = 1;
-                x14_we  = 1;
+                v3_new  = qr3_a_prim;
+                v4_new  = qr3_b_prim;
+                v9_new  = qr3_c_prim;
+                v14_new = qr3_d_prim;
+                v3_we   = 1;
+                v4_we   = 1;
+                v9_we   = 1;
+                v14_we  = 1;
               end
           endcase // case (quarterround_select)
         end // if (update_state)
@@ -1076,59 +1076,59 @@ module blake2_core(
 
 
   //----------------------------------------------------------------
-  // quarterround_mux
-  // Quarterround muxes that selects operands for quarterrounds.
+  // quarterround_muv
+  // Quarterround muves that selects operands for quarterrounds.
   //----------------------------------------------------------------
   always @*
-    begin : quarterround_mux
+    begin : quarterround_muv
       case (qr_ctr_reg)
           STATE_QR0:
             begin
-              qr0_a = x0_reg;
-              qr0_b = x4_reg;
-              qr0_c = x8_reg;
-              qr0_d = x12_reg;
+              qr0_a = v0_reg;
+              qr0_b = v4_reg;
+              qr0_c = v8_reg;
+              qr0_d = v12_reg;
 
-              qr1_a = x1_reg;
-              qr1_b = x5_reg;
-              qr1_c = x9_reg;
-              qr1_d = x13_reg;
+              qr1_a = v1_reg;
+              qr1_b = v5_reg;
+              qr1_c = v9_reg;
+              qr1_d = v13_reg;
 
-              qr2_a = x2_reg;
-              qr2_b = x6_reg;
-              qr2_c = x10_reg;
-              qr2_d = x14_reg;
+              qr2_a = v2_reg;
+              qr2_b = v6_reg;
+              qr2_c = v10_reg;
+              qr2_d = v14_reg;
 
-              qr3_a = x3_reg;
-              qr3_b = x7_reg;
-              qr3_c = x11_reg;
-              qr3_d = x15_reg;
+              qr3_a = v3_reg;
+              qr3_b = v7_reg;
+              qr3_c = v11_reg;
+              qr3_d = v15_reg;
             end
 
           STATE_QR1:
             begin
-              qr0_a = x0_reg;
-              qr0_b = x5_reg;
-              qr0_c = x10_reg;
-              qr0_d = x15_reg;
+              qr0_a = v0_reg;
+              qr0_b = v5_reg;
+              qr0_c = v10_reg;
+              qr0_d = v15_reg;
 
-              qr1_a = x1_reg;
-              qr1_b = x6_reg;
-              qr1_c = x11_reg;
-              qr1_d = x12_reg;
+              qr1_a = v1_reg;
+              qr1_b = v6_reg;
+              qr1_c = v11_reg;
+              qr1_d = v12_reg;
 
-              qr2_a = x2_reg;
-              qr2_b = x7_reg;
-              qr2_c = x8_reg;
-              qr2_d = x13_reg;
+              qr2_a = v2_reg;
+              qr2_b = v7_reg;
+              qr2_c = v8_reg;
+              qr2_d = v13_reg;
 
-              qr3_a = x3_reg;
-              qr3_b = x4_reg;
-              qr3_c = x9_reg;
-              qr3_d = x14_reg;
+              qr3_a = v3_reg;
+              qr3_b = v4_reg;
+              qr3_c = v9_reg;
+              qr3_d = v14_reg;
             end
       endcase // case (quarterround_select)
-    end // quarterround_mux
+    end // quarterround_muv
 
 
   //----------------------------------------------------------------
