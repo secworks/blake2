@@ -1,7 +1,8 @@
 blake2
 ======
 
-Hardware implementation of the blake2 hash function
+Hardware implementation of the blake2 hash function. The specific
+function implemented is blake2b
 
 See:
 https://blake2.net/
