@@ -44,16 +44,12 @@ module blake2_core(
                    input wire            init,
                    input wire            next,
 
-                   input wire [63 : 0]   iv,
-                   input wire [63 : 0]   ctr,
-                   input wire [4 : 0]    rounds,
-
-                   input wire [511 : 0]  data_in,
+                   input wire [1023 : 0] block_in,
 
                    output wire           ready,
 
-                   output wire [511 : 0] data_out,
-                   output wire           data_out_valid
+                   output wire [511 : 0] digest_out,
+                   output wire           digest_out_valid
                   );
 
 
@@ -301,9 +297,10 @@ module blake2_core(
   //----------------------------------------------------------------
   // Concurrent connectivity for ports etc.
   //----------------------------------------------------------------
-  assign data_out = data_out_reg;
+  assign digest_out = {h0_reg, h1_reg, h2_reg, h3_reg,
+                     h4_reg, h5_reg, h6_reg, h7_reg};
 
-  assign data_out_valid = data_out_valid_reg;
+  assign digest_out_valid = digest_out_valid_reg;
 
   assign ready = ready_reg;
 
