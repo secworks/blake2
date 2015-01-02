@@ -85,26 +85,6 @@ module blake2_core(
   //----------------------------------------------------------------
   // Registers including update variables and write enable.
   //----------------------------------------------------------------
-  reg [31 : 0] key0_reg;
-  reg [31 : 0] key0_new;
-  reg [31 : 0] key1_reg;
-  reg [31 : 0] key1_new;
-  reg [31 : 0] key2_reg;
-  reg [31 : 0] key2_new;
-  reg [31 : 0] key3_reg;
-  reg [31 : 0] key3_new;
-  reg [31 : 0] key4_reg;
-  reg [31 : 0] key4_new;
-  reg [31 : 0] key5_reg;
-  reg [31 : 0] key5_new;
-  reg [31 : 0] key6_reg;
-  reg [31 : 0] key6_new;
-  reg [31 : 0] key7_reg;
-  reg [31 : 0] key7_new;
-
-  reg keylen_reg;
-  reg keylen_new;
-
   reg [31 : 0] iv0_reg;
   reg [31 : 0] iv0_new;
   reg [31 : 0] iv1_reg;
@@ -146,67 +126,37 @@ module blake2_core(
 
   reg [63 : 0] v0_reg;
   reg [63 : 0] v0_new;
-  reg          v0_we;
-
   reg [63 : 0] v1_reg;
   reg [63 : 0] v1_new;
-  reg          v1_we;
-
   reg [63 : 0] v2_reg;
   reg [63 : 0] v2_new;
-  reg          v2_we;
-
   reg [63 : 0] v3_reg;
   reg [63 : 0] v3_new;
-  reg          v3_we;
-
   reg [63 : 0] v4_reg;
   reg [63 : 0] v4_new;
-  reg          v4_we;
-
   reg [63 : 0] v5_reg;
   reg [63 : 0] v5_new;
-  reg          v5_we;
-
   reg [63 : 0] v6_reg;
   reg [63 : 0] v6_new;
-  reg          v6_we;
-
   reg [63 : 0] v7_reg;
   reg [63 : 0] v7_new;
-  reg          v7_we;
-
   reg [63 : 0] v8_reg;
   reg [63 : 0] v8_new;
-  reg          v8_we;
-
   reg [63 : 0] v9_reg;
   reg [63 : 0] v9_new;
-  reg          v9_we;
-
   reg [63 : 0] v10_reg;
   reg [63 : 0] v10_new;
-  reg          v10_we;
-
   reg [63 : 0] v11_reg;
   reg [63 : 0] v11_new;
-  reg          v11_we;
-
   reg [63 : 0] v12_reg;
   reg [63 : 0] v12_new;
-  reg          v12_we;
-
   reg [63 : 0] v13_reg;
   reg [63 : 0] v13_new;
-  reg          v13_we;
-
   reg [63 : 0] v14_reg;
   reg [63 : 0] v14_new;
-  reg          v14_we;
-
   reg [63 : 0] v15_reg;
   reg [63 : 0] v15_new;
-  reg          v15_we;
+  reg          v_we;
 
   reg [3 : 0] rounds_reg;
   reg [3 : 0] rounds_new;
@@ -374,14 +324,6 @@ module blake2_core(
     begin : reg_update
       if (!reset_n)
         begin
-          key0_reg           <= 32'h00000000;
-          key1_reg           <= 32'h00000000;
-          key2_reg           <= 32'h00000000;
-          key3_reg           <= 32'h00000000;
-          key4_reg           <= 32'h00000000;
-          key5_reg           <= 32'h00000000;
-          key6_reg           <= 32'h00000000;
-          key7_reg           <= 32'h00000000;
           iv0_reg            <= 32'h00000000;
           iv1_reg            <= 32'h00000000;
           state0_reg         <= 32'h00000000;
@@ -431,14 +373,6 @@ module blake2_core(
         begin
           if (sample_params)
             begin
-              key0_reg   <= key0_new;
-              key1_reg   <= key1_new;
-              key2_reg   <= key2_new;
-              key3_reg   <= key3_new;
-              key4_reg   <= key4_new;
-              key5_reg   <= key5_new;
-              key6_reg   <= key6_new;
-              key7_reg   <= key7_new;
               iv0_reg    <= iv0_new;
               iv1_reg    <= iv1_new;
               rounds_reg <= rounds_new;
@@ -470,83 +404,23 @@ module blake2_core(
               state15_reg <= state15_new;
             end
 
-          if (v0_we)
+          if (v_we)
             begin
-              v0_reg <= v0_new;
-            end
-
-          if (v1_we)
-            begin
-              v1_reg <= v1_new;
-            end
-
-          if (v2_we)
-            begin
-              v2_reg <= v2_new;
-            end
-
-          if (v3_we)
-            begin
-              v3_reg <= v3_new;
-            end
-
-          if (v4_we)
-            begin
-              v4_reg <= v4_new;
-            end
-
-          if (v5_we)
-            begin
-              v5_reg <= v5_new;
-            end
-
-          if (v6_we)
-            begin
-              v6_reg <= v6_new;
-            end
-
-          if (v7_we)
-            begin
-              v7_reg <= v7_new;
-            end
-
-          if (v8_we)
-            begin
-              v8_reg <= v8_new;
-            end
-
-          if (v9_we)
-            begin
-              v9_reg <= v9_new;
-            end
-
-          if (v10_we)
-            begin
+              v0_reg  <= v0_new;
+              v1_reg  <= v1_new;
+              v2_reg  <= v2_new;
+              v3_reg  <= v3_new;
+              v4_reg  <= v4_new;
+              v5_reg  <= v5_new;
+              v6_reg  <= v6_new;
+              v7_reg  <= v7_new;
+              v8_reg  <= v8_new;
+              v9_reg  <= v9_new;
               v10_reg <= v10_new;
-            end
-
-          if (v11_we)
-            begin
               v11_reg <= v11_new;
-            end
-
-          if (v12_we)
-            begin
               v12_reg <= v12_new;
-            end
-
-          if (v13_we)
-            begin
               v13_reg <= v13_new;
-            end
-
-          if (v14_we)
-            begin
               v14_reg <= v14_new;
-            end
-
-          if (v15_we)
-            begin
               v15_reg <= v15_new;
             end
 
@@ -811,44 +685,11 @@ module blake2_core(
 
   //----------------------------------------------------------------
   // state_logic
+  //
   // Logic to init and update the internal state.
   //----------------------------------------------------------------
   always @*
     begin : state_logic
-      reg [31 : 0] new_state_word0;
-      reg [31 : 0] new_state_word1;
-      reg [31 : 0] new_state_word2;
-      reg [31 : 0] new_state_word3;
-      reg [31 : 0] new_state_word4;
-      reg [31 : 0] new_state_word5;
-      reg [31 : 0] new_state_word6;
-      reg [31 : 0] new_state_word7;
-      reg [31 : 0] new_state_word8;
-      reg [31 : 0] new_state_word9;
-      reg [31 : 0] new_state_word10;
-      reg [31 : 0] new_state_word11;
-      reg [31 : 0] new_state_word12;
-      reg [31 : 0] new_state_word13;
-      reg [31 : 0] new_state_word14;
-      reg [31 : 0] new_state_word15;
-
-      new_state_word0  = 32'h00000000;
-      new_state_word1  = 32'h00000000;
-      new_state_word2  = 32'h00000000;
-      new_state_word3  = 32'h00000000;
-      new_state_word4  = 32'h00000000;
-      new_state_word5  = 32'h00000000;
-      new_state_word6  = 32'h00000000;
-      new_state_word7  = 32'h00000000;
-      new_state_word8  = 32'h00000000;
-      new_state_word9  = 32'h00000000;
-      new_state_word10 = 32'h00000000;
-      new_state_word11 = 32'h00000000;
-      new_state_word12 = 32'h00000000;
-      new_state_word13 = 32'h00000000;
-      new_state_word14 = 32'h00000000;
-      new_state_word15 = 32'h00000000;
-
       v0_new  = 64'h0000000000000000;
       v1_new  = 64'h0000000000000000;
       v2_new  = 64'h0000000000000000;
@@ -865,79 +706,10 @@ module blake2_core(
       v13_new = 64'h0000000000000000;
       v14_new = 64'h0000000000000000;
       v15_new = 64'h0000000000000000;
-      v0_we   = 0;
-      v1_we   = 0;
-      v2_we   = 0;
-      v3_we   = 0;
-      v4_we   = 0;
-      v5_we   = 0;
-      v6_we   = 0;
-      v7_we   = 0;
-      v8_we   = 0;
-      v9_we   = 0;
-      v10_we  = 0;
-      v11_we  = 0;
-      v12_we  = 0;
-      v13_we  = 0;
-      v14_we  = 0;
-      v15_we  = 0;
-
-      state0_new  = 32'h00000000;
-      state1_new  = 32'h00000000;
-      state2_new  = 32'h00000000;
-      state3_new  = 32'h00000000;
-      state4_new  = 32'h00000000;
-      state5_new  = 32'h00000000;
-      state6_new  = 32'h00000000;
-      state7_new  = 32'h00000000;
-      state8_new  = 32'h00000000;
-      state9_new  = 32'h00000000;
-      state10_new = 32'h00000000;
-      state11_new = 32'h00000000;
-      state12_new = 32'h00000000;
-      state13_new = 32'h00000000;
-      state14_new = 32'h00000000;
-      state15_new = 32'h00000000;
-      state_we = 0;
+      v_we    = 0;
 
       if (init_state)
         begin
-          new_state_word4  = key0_reg;
-          new_state_word5  = key1_reg;
-          new_state_word6  = key2_reg;
-          new_state_word7  = key3_reg;
-
-          new_state_word12 = block0_ctr_reg;
-          new_state_word13 = block1_ctr_reg;
-
-          new_state_word14 = iv0_reg;
-          new_state_word15 = iv1_reg;
-
-          if (keylen_reg)
-            begin
-              // 256 bit key.
-              new_state_word0  = SIGMA0;
-              new_state_word1  = SIGMA1;
-              new_state_word2  = SIGMA2;
-              new_state_word3  = SIGMA3;
-              new_state_word8  = key4_reg;
-              new_state_word9  = key5_reg;
-              new_state_word10 = key6_reg;
-              new_state_word11 = key7_reg;
-            end
-          else
-            begin
-              // 128 bit key.
-              new_state_word0  = TAU0;
-              new_state_word1  = TAU1;
-              new_state_word2  = TAU2;
-              new_state_word3  = TAU3;
-              new_state_word8  = key0_reg;
-              new_state_word9  = key1_reg;
-              new_state_word10 = key2_reg;
-              new_state_word11 = key3_reg;
-            end
-
           v0_new  = new_state_word0;
           v1_new  = new_state_word1;
           v2_new  = new_state_word2;
@@ -954,186 +726,104 @@ module blake2_core(
           v13_new = new_state_word13;
           v14_new = new_state_word14;
           v15_new = new_state_word15;
-          v0_we  = 1;
-          v1_we  = 1;
-          v2_we  = 1;
-          v3_we  = 1;
-          v4_we  = 1;
-          v5_we  = 1;
-          v6_we  = 1;
-          v7_we  = 1;
-          v8_we  = 1;
-          v9_we  = 1;
-          v10_we = 1;
-          v11_we = 1;
-          v12_we = 1;
-          v13_we = 1;
-          v14_we = 1;
-          v15_we = 1;
+          v_we   = 1;
+        end
 
-          state0_new  = new_state_word0;
-          state1_new  = new_state_word1;
-          state2_new  = new_state_word2;
-          state3_new  = new_state_word3;
-          state4_new  = new_state_word4;
-          state5_new  = new_state_word5;
-          state6_new  = new_state_word6;
-          state7_new  = new_state_word7;
-          state8_new  = new_state_word8;
-          state9_new  = new_state_word9;
-          state10_new = new_state_word10;
-          state11_new = new_state_word11;
-          state12_new = new_state_word12;
-          state13_new = new_state_word13;
-          state14_new = new_state_word14;
-          state15_new = new_state_word15;
-          state_we = 1;
-        end // if (init_state)
-
-      else if (update_state)
+      if (update_state)
         begin
           case (G_ctr_reg)
+            // Column updates.
             STATE_G0:
               begin
+                G0_a    = v0_reg;
+                G0_b    = v4_reg;
+                G0_c    = v8_reg;
+                G0_d    = v12_reg;
                 v0_new  = G0_a_prim;
                 v4_new  = G0_b_prim;
                 v8_new  = G0_c_prim;
                 v12_new = G0_d_prim;
-                v0_we   = 1;
-                v4_we   = 1;
-                v8_we   = 1;
-                v12_we  = 1;
 
+                G1_a    = v1_reg;
+                G1_b    = v5_reg;
+                G1_c    = v9_reg;
+                G1_d    = v13_reg;
                 v1_new  = G1_a_prim;
                 v5_new  = G1_b_prim;
                 v9_new  = G1_c_prim;
                 v13_new = G1_d_prim;
-                v1_we   = 1;
-                v5_we   = 1;
-                v9_we   = 1;
-                v13_we  = 1;
 
+                G2_a    = v2_reg;
+                G2_b    = v6_reg;
+                G2_c    = v10_reg;
+                G2_d    = v14_reg;
                 v2_new  = G2_a_prim;
                 v6_new  = G2_b_prim;
                 v10_new = G2_c_prim;
                 v14_new = G2_d_prim;
-                v2_we   = 1;
-                v6_we   = 1;
-                v10_we  = 1;
-                v14_we  = 1;
 
+                G3_a    = v3_reg;
+                G3_b    = v7_reg;
+                G3_c    = v11_reg;
+                G3_d    = v15_reg;
                 v3_new  = G3_a_prim;
                 v7_new  = G3_b_prim;
                 v11_new = G3_c_prim;
                 v15_new = G3_d_prim;
-                v3_we   = 1;
-                v7_we   = 1;
-                v11_we  = 1;
-                v15_we  = 1;
+
+                v_we    = 1;
               end
 
+            // Diagonal updates.
             STATE_G1:
               begin
+                G0_a    = v0_reg;
+                G0_b    = v5_reg;
+                G0_c    = v10_reg;
+                G0_d    = v15_reg;
                 v0_new  = G0_a_prim;
                 v5_new  = G0_b_prim;
                 v10_new = G0_c_prim;
                 v15_new = G0_d_prim;
-                v0_we   = 1;
-                v5_we   = 1;
-                v10_we  = 1;
-                v15_we  = 1;
 
+                G1_a    = v1_reg;
+                G1_b    = v6_reg;
+                G1_c    = v11_reg;
+                G1_d    = v12_reg;
                 v1_new  = G1_a_prim;
                 v6_new  = G1_b_prim;
                 v11_new = G1_c_prim;
                 v12_new = G1_d_prim;
-                v1_we   = 1;
-                v6_we   = 1;
-                v11_we  = 1;
-                v12_we  = 1;
 
+                G2_a    = v2_reg;
+                G2_b    = v7_reg;
+                G2_c    = v8_reg;
+                G2_d    = v13_reg;
                 v2_new  = G2_a_prim;
                 v7_new  = G2_b_prim;
                 v8_new  = G2_c_prim;
                 v13_new = G2_d_prim;
-                v2_we   = 1;
-                v7_we   = 1;
-                v8_we   = 1;
-                v13_we  = 1;
 
+                G3_a    = v3_reg;
+                G3_b    = v4_reg;
+                G3_c    = v9_reg;
+                G3_d    = v14_reg;
                 v3_new  = G3_a_prim;
                 v4_new  = G3_b_prim;
                 v9_new  = G3_c_prim;
                 v14_new = G3_d_prim;
-                v3_we   = 1;
-                v4_we   = 1;
-                v9_we   = 1;
-                v14_we  = 1;
+
+                v_we    = 1;
               end
-          endcase // case (quarterround_select)
+          endcase // case (G_ctr_reg)
         end // if (update_state)
     end // state_logic
 
 
   //----------------------------------------------------------------
-  // quarterround_muv
-  // Quarterround muves that selects operands for quarterrounds.
-  //----------------------------------------------------------------
-  always @*
-    begin : quarterround_muv
-      case (G_ctr_reg)
-          STATE_G0:
-            begin
-              G0_a = v0_reg;
-              G0_b = v4_reg;
-              G0_c = v8_reg;
-              G0_d = v12_reg;
-
-              G1_a = v1_reg;
-              G1_b = v5_reg;
-              G1_c = v9_reg;
-              G1_d = v13_reg;
-
-              G2_a = v2_reg;
-              G2_b = v6_reg;
-              G2_c = v10_reg;
-              G2_d = v14_reg;
-
-              G3_a = v3_reg;
-              G3_b = v7_reg;
-              G3_c = v11_reg;
-              G3_d = v15_reg;
-            end
-
-          STATE_G1:
-            begin
-              G0_a = v0_reg;
-              G0_b = v5_reg;
-              G0_c = v10_reg;
-              G0_d = v15_reg;
-
-              G1_a = v1_reg;
-              G1_b = v6_reg;
-              G1_c = v11_reg;
-              G1_d = v12_reg;
-
-              G2_a = v2_reg;
-              G2_b = v7_reg;
-              G2_c = v8_reg;
-              G2_d = v13_reg;
-
-              G3_a = v3_reg;
-              G3_b = v4_reg;
-              G3_c = v9_reg;
-              G3_d = v14_reg;
-            end
-      endcase // case (quarterround_select)
-    end // quarterround_muv
-
-
-  //----------------------------------------------------------------
   // G_ctr
-  // Update logic for the quarterround counter, a monotonically
+  // Update logic for the G function counter. Basically a one bit
+  // counter that selects if we column of diaginal updates.
   // increasing counter with reset.
   //----------------------------------------------------------------
   always @*
