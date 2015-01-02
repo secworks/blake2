@@ -144,68 +144,68 @@ module blake2_core(
   reg [31 : 0] state15_new;
   reg state_we;
 
-  reg [31 : 0] v0_reg;
-  reg [31 : 0] v0_new;
+  reg [63 : 0] v0_reg;
+  reg [63 : 0] v0_new;
   reg          v0_we;
 
-  reg [31 : 0] v1_reg;
-  reg [31 : 0] v1_new;
+  reg [63 : 0] v1_reg;
+  reg [63 : 0] v1_new;
   reg          v1_we;
 
-  reg [31 : 0] v2_reg;
-  reg [31 : 0] v2_new;
+  reg [63 : 0] v2_reg;
+  reg [63 : 0] v2_new;
   reg          v2_we;
 
-  reg [31 : 0] v3_reg;
-  reg [31 : 0] v3_new;
+  reg [63 : 0] v3_reg;
+  reg [63 : 0] v3_new;
   reg          v3_we;
 
-  reg [31 : 0] v4_reg;
-  reg [31 : 0] v4_new;
+  reg [63 : 0] v4_reg;
+  reg [63 : 0] v4_new;
   reg          v4_we;
 
-  reg [31 : 0] v5_reg;
-  reg [31 : 0] v5_new;
+  reg [63 : 0] v5_reg;
+  reg [63 : 0] v5_new;
   reg          v5_we;
 
-  reg [31 : 0] v6_reg;
-  reg [31 : 0] v6_new;
+  reg [63 : 0] v6_reg;
+  reg [63 : 0] v6_new;
   reg          v6_we;
 
-  reg [31 : 0] v7_reg;
-  reg [31 : 0] v7_new;
+  reg [63 : 0] v7_reg;
+  reg [63 : 0] v7_new;
   reg          v7_we;
 
-  reg [31 : 0] v8_reg;
-  reg [31 : 0] v8_new;
+  reg [63 : 0] v8_reg;
+  reg [63 : 0] v8_new;
   reg          v8_we;
 
-  reg [31 : 0] v9_reg;
-  reg [31 : 0] v9_new;
+  reg [63 : 0] v9_reg;
+  reg [63 : 0] v9_new;
   reg          v9_we;
 
-  reg [31 : 0] v10_reg;
-  reg [31 : 0] v10_new;
+  reg [63 : 0] v10_reg;
+  reg [63 : 0] v10_new;
   reg          v10_we;
 
-  reg [31 : 0] v11_reg;
-  reg [31 : 0] v11_new;
+  reg [63 : 0] v11_reg;
+  reg [63 : 0] v11_new;
   reg          v11_we;
 
-  reg [31 : 0] v12_reg;
-  reg [31 : 0] v12_new;
+  reg [63 : 0] v12_reg;
+  reg [63 : 0] v12_new;
   reg          v12_we;
 
-  reg [31 : 0] v13_reg;
-  reg [31 : 0] v13_new;
+  reg [63 : 0] v13_reg;
+  reg [63 : 0] v13_new;
   reg          v13_we;
 
-  reg [31 : 0] v14_reg;
-  reg [31 : 0] v14_new;
+  reg [63 : 0] v14_reg;
+  reg [63 : 0] v14_new;
   reg          v14_we;
 
-  reg [31 : 0] v15_reg;
-  reg [31 : 0] v15_new;
+  reg [63 : 0] v15_reg;
+  reg [63 : 0] v15_new;
   reg          v15_we;
 
   reg [3 : 0] rounds_reg;
@@ -260,41 +260,41 @@ module blake2_core(
   reg update_state;
   reg update_output;
 
-  reg [31 : 0]  G0_a;
-  reg [31 : 0]  G0_b;
-  reg [31 : 0]  G0_c;
-  reg [31 : 0]  G0_d;
-  wire [31 : 0] G0_a_prim;
-  wire [31 : 0] G0_b_prim;
-  wire [31 : 0] G0_c_prim;
-  wire [31 : 0] G0_d_prim;
+  reg [63 : 0]  G0_a;
+  reg [63 : 0]  G0_b;
+  reg [63 : 0]  G0_c;
+  reg [63 : 0]  G0_d;
+  wire [63 : 0] G0_a_prim;
+  wire [63 : 0] G0_b_prim;
+  wire [63 : 0] G0_c_prim;
+  wire [63 : 0] G0_d_prim;
 
-  reg [31 : 0]  G1_a;
-  reg [31 : 0]  G1_b;
-  reg [31 : 0]  G1_c;
-  reg [31 : 0]  G1_d;
-  wire [31 : 0] G1_a_prim;
-  wire [31 : 0] G1_b_prim;
-  wire [31 : 0] G1_c_prim;
-  wire [31 : 0] G1_d_prim;
+  reg [63 : 0]  G1_a;
+  reg [63 : 0]  G1_b;
+  reg [63 : 0]  G1_c;
+  reg [63 : 0]  G1_d;
+  wire [63 : 0] G1_a_prim;
+  wire [63 : 0] G1_b_prim;
+  wire [63 : 0] G1_c_prim;
+  wire [63 : 0] G1_d_prim;
 
-  reg [31 : 0]  G2_a;
-  reg [31 : 0]  G2_b;
-  reg [31 : 0]  G2_c;
-  reg [31 : 0]  G2_d;
-  wire [31 : 0] G2_a_prim;
-  wire [31 : 0] G2_b_prim;
-  wire [31 : 0] G2_c_prim;
-  wire [31 : 0] G2_d_prim;
+  reg [63 : 0]  G2_a;
+  reg [63 : 0]  G2_b;
+  reg [63 : 0]  G2_c;
+  reg [63 : 0]  G2_d;
+  wire [63 : 0] G2_a_prim;
+  wire [63 : 0] G2_b_prim;
+  wire [63 : 0] G2_c_prim;
+  wire [63 : 0] G2_d_prim;
 
-  reg [31 : 0]  G3_a;
-  reg [31 : 0]  G3_b;
-  reg [31 : 0]  G3_c;
-  reg [31 : 0]  G3_d;
-  wire [31 : 0] G3_a_prim;
-  wire [31 : 0] G3_b_prim;
-  wire [31 : 0] G3_c_prim;
-  wire [31 : 0] G3_d_prim;
+  reg [63 : 0]  G3_a;
+  reg [63 : 0]  G3_b;
+  reg [63 : 0]  G3_c;
+  reg [63 : 0]  G3_d;
+  wire [63 : 0] G3_a_prim;
+  wire [63 : 0] G3_b_prim;
+  wire [63 : 0] G3_c_prim;
+  wire [63 : 0] G3_d_prim;
 
 
   //----------------------------------------------------------------
@@ -400,22 +400,22 @@ module blake2_core(
           state13_reg        <= 32'h00000000;
           state14_reg        <= 32'h00000000;
           state15_reg        <= 32'h00000000;
-          v0_reg             <= 32'h00000000;
-          v1_reg             <= 32'h00000000;
-          v2_reg             <= 32'h00000000;
-          v3_reg             <= 32'h00000000;
-          v4_reg             <= 32'h00000000;
-          v5_reg             <= 32'h00000000;
-          v6_reg             <= 32'h00000000;
-          v7_reg             <= 32'h00000000;
-          v8_reg             <= 32'h00000000;
-          v9_reg             <= 32'h00000000;
-          v10_reg            <= 32'h00000000;
-          v11_reg            <= 32'h00000000;
-          v12_reg            <= 32'h00000000;
-          v13_reg            <= 32'h00000000;
-          v14_reg            <= 32'h00000000;
-          v15_reg            <= 32'h00000000;
+          v0_reg             <= 64'h0000000000000000;
+          v1_reg             <= 64'h0000000000000000;
+          v2_reg             <= 64'h0000000000000000;
+          v3_reg             <= 64'h0000000000000000;
+          v4_reg             <= 64'h0000000000000000;
+          v5_reg             <= 64'h0000000000000000;
+          v6_reg             <= 64'h0000000000000000;
+          v7_reg             <= 64'h0000000000000000;
+          v8_reg             <= 64'h0000000000000000;
+          v9_reg             <= 64'h0000000000000000;
+          v10_reg            <= 64'h0000000000000000;
+          v11_reg            <= 64'h0000000000000000;
+          v12_reg            <= 64'h0000000000000000;
+          v13_reg            <= 64'h0000000000000000;
+          v14_reg            <= 64'h0000000000000000;
+          v15_reg            <= 64'h0000000000000000;
           data_in_reg        <= 512'h00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000;
           data_out_reg       <= 512'h00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000;
           rounds_reg         <= 4'h0;
@@ -849,22 +849,22 @@ module blake2_core(
       new_state_word14 = 32'h00000000;
       new_state_word15 = 32'h00000000;
 
-      v0_new  = 32'h00000000;
-      v1_new  = 32'h00000000;
-      v2_new  = 32'h00000000;
-      v3_new  = 32'h00000000;
-      v4_new  = 32'h00000000;
-      v5_new  = 32'h00000000;
-      v6_new  = 32'h00000000;
-      v7_new  = 32'h00000000;
-      v8_new  = 32'h00000000;
-      v9_new  = 32'h00000000;
-      v10_new = 32'h00000000;
-      v11_new = 32'h00000000;
-      v12_new = 32'h00000000;
-      v13_new = 32'h00000000;
-      v14_new = 32'h00000000;
-      v15_new = 32'h00000000;
+      v0_new  = 64'h0000000000000000;
+      v1_new  = 64'h0000000000000000;
+      v2_new  = 64'h0000000000000000;
+      v3_new  = 64'h0000000000000000;
+      v4_new  = 64'h0000000000000000;
+      v5_new  = 64'h0000000000000000;
+      v6_new  = 64'h0000000000000000;
+      v7_new  = 64'h0000000000000000;
+      v8_new  = 64'h0000000000000000;
+      v9_new  = 64'h0000000000000000;
+      v10_new = 64'h0000000000000000;
+      v11_new = 64'h0000000000000000;
+      v12_new = 64'h0000000000000000;
+      v13_new = 64'h0000000000000000;
+      v14_new = 64'h0000000000000000;
+      v15_new = 64'h0000000000000000;
       v0_we   = 0;
       v1_we   = 0;
       v2_we   = 0;
