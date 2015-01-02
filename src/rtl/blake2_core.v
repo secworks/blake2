@@ -61,8 +61,8 @@ module blake2_core(
   // Internal constant and parameter definitions.
   //----------------------------------------------------------------
   // Datapath quartterround states names.
-  parameter STATE_QR0 = 1'b0;
-  parameter STATE_QR1 = 1'b1;
+  parameter STATE_G0 = 1'b0;
+  parameter STATE_G1 = 1'b1;
 
   parameter NUM_ROUNDS = 4'ha;
 
@@ -226,11 +226,11 @@ module blake2_core(
   reg  ready_new;
   reg  ready_we;
 
-  reg         qr_ctr_reg;
-  reg         qr_ctr_new;
-  reg         qr_ctr_we;
-  reg         qr_ctr_inc;
-  reg         qr_ctr_rst;
+  reg         G_ctr_reg;
+  reg         G_ctr_new;
+  reg         G_ctr_we;
+  reg         G_ctr_inc;
+  reg         G_ctr_rst;
 
   reg [3 : 0] dr_ctr_reg;
   reg [3 : 0] dr_ctr_new;
@@ -260,95 +260,95 @@ module blake2_core(
   reg update_state;
   reg update_output;
 
-  reg [31 : 0]  qr0_a;
-  reg [31 : 0]  qr0_b;
-  reg [31 : 0]  qr0_c;
-  reg [31 : 0]  qr0_d;
-  wire [31 : 0] qr0_a_prim;
-  wire [31 : 0] qr0_b_prim;
-  wire [31 : 0] qr0_c_prim;
-  wire [31 : 0] qr0_d_prim;
+  reg [31 : 0]  G0_a;
+  reg [31 : 0]  G0_b;
+  reg [31 : 0]  G0_c;
+  reg [31 : 0]  G0_d;
+  wire [31 : 0] G0_a_prim;
+  wire [31 : 0] G0_b_prim;
+  wire [31 : 0] G0_c_prim;
+  wire [31 : 0] G0_d_prim;
 
-  reg [31 : 0]  qr1_a;
-  reg [31 : 0]  qr1_b;
-  reg [31 : 0]  qr1_c;
-  reg [31 : 0]  qr1_d;
-  wire [31 : 0] qr1_a_prim;
-  wire [31 : 0] qr1_b_prim;
-  wire [31 : 0] qr1_c_prim;
-  wire [31 : 0] qr1_d_prim;
+  reg [31 : 0]  G1_a;
+  reg [31 : 0]  G1_b;
+  reg [31 : 0]  G1_c;
+  reg [31 : 0]  G1_d;
+  wire [31 : 0] G1_a_prim;
+  wire [31 : 0] G1_b_prim;
+  wire [31 : 0] G1_c_prim;
+  wire [31 : 0] G1_d_prim;
 
-  reg [31 : 0]  qr2_a;
-  reg [31 : 0]  qr2_b;
-  reg [31 : 0]  qr2_c;
-  reg [31 : 0]  qr2_d;
-  wire [31 : 0] qr2_a_prim;
-  wire [31 : 0] qr2_b_prim;
-  wire [31 : 0] qr2_c_prim;
-  wire [31 : 0] qr2_d_prim;
+  reg [31 : 0]  G2_a;
+  reg [31 : 0]  G2_b;
+  reg [31 : 0]  G2_c;
+  reg [31 : 0]  G2_d;
+  wire [31 : 0] G2_a_prim;
+  wire [31 : 0] G2_b_prim;
+  wire [31 : 0] G2_c_prim;
+  wire [31 : 0] G2_d_prim;
 
-  reg [31 : 0]  qr3_a;
-  reg [31 : 0]  qr3_b;
-  reg [31 : 0]  qr3_c;
-  reg [31 : 0]  qr3_d;
-  wire [31 : 0] qr3_a_prim;
-  wire [31 : 0] qr3_b_prim;
-  wire [31 : 0] qr3_c_prim;
-  wire [31 : 0] qr3_d_prim;
+  reg [31 : 0]  G3_a;
+  reg [31 : 0]  G3_b;
+  reg [31 : 0]  G3_c;
+  reg [31 : 0]  G3_d;
+  wire [31 : 0] G3_a_prim;
+  wire [31 : 0] G3_b_prim;
+  wire [31 : 0] G3_c_prim;
+  wire [31 : 0] G3_d_prim;
 
 
   //----------------------------------------------------------------
   // Instantiation of the compression modules.
   //----------------------------------------------------------------
   blake2_G G0(
-              .a(qr0_a),
-              .b(qr0_b),
-              .c(qr0_c),
-              .d(qr0_d),
+              .a(G0_a),
+              .b(G0_b),
+              .c(G0_c),
+              .d(G0_d),
 
-              .a_prim(qr0_a_prim),
-              .b_prim(qr0_b_prim),
-              .c_prim(qr0_c_prim),
-              .d_prim(qr0_d_prim)
+              .a_prim(G0_a_prim),
+              .b_prim(G0_b_prim),
+              .c_prim(G0_c_prim),
+              .d_prim(G0_d_prim)
              );
 
 
   blake2_G G1(
-              .a(qr1_a),
-              .b(qr1_b),
-              .c(qr1_c),
-              .d(qr1_d),
+              .a(G1_a),
+              .b(G1_b),
+              .c(G1_c),
+              .d(G1_d),
 
-              .a_prim(qr1_a_prim),
-              .b_prim(qr1_b_prim),
-              .c_prim(qr1_c_prim),
-              .d_prim(qr1_d_prim)
+              .a_prim(G1_a_prim),
+              .b_prim(G1_b_prim),
+              .c_prim(G1_c_prim),
+              .d_prim(G1_d_prim)
              );
 
 
   blake2_G G2(
-              .a(qr2_a),
-              .b(qr2_b),
-              .c(qr2_c),
-              .d(qr2_d),
+              .a(G2_a),
+              .b(G2_b),
+              .c(G2_c),
+              .d(G2_d),
 
-              .a_prim(qr2_a_prim),
-              .b_prim(qr2_b_prim),
-              .c_prim(qr2_c_prim),
-              .d_prim(qr2_d_prim)
+              .a_prim(G2_a_prim),
+              .b_prim(G2_b_prim),
+              .c_prim(G2_c_prim),
+              .d_prim(G2_d_prim)
              );
 
 
   blake2_G G3(
-              .a(qr3_a),
-              .b(qr3_b),
-              .c(qr3_c),
-              .d(qr3_d),
+              .a(G3_a),
+              .b(G3_b),
+              .c(G3_c),
+              .d(G3_d),
 
-              .a_prim(qr3_a_prim),
-              .b_prim(qr3_b_prim),
-              .c_prim(qr3_c_prim),
-              .d_prim(qr3_d_prim)
+              .a_prim(G3_a_prim),
+              .b_prim(G3_b_prim),
+              .c_prim(G3_c_prim),
+              .d_prim(G3_d_prim)
              );
 
 
@@ -421,7 +421,7 @@ module blake2_core(
           rounds_reg         <= 4'h0;
           ready_reg          <= 1;
           data_out_valid_reg <= 0;
-          qr_ctr_reg         <= STATE_QR0;
+          G_ctr_reg         <= STATE_G0;
           dr_ctr_reg         <= 0;
           block0_ctr_reg     <= 32'h00000000;
           block1_ctr_reg     <= 32'h00000000;
@@ -565,9 +565,9 @@ module blake2_core(
               data_out_valid_reg <= data_out_valid_new;
             end
 
-          if (qr_ctr_we)
+          if (G_ctr_we)
             begin
-              qr_ctr_reg <= qr_ctr_new;
+              G_ctr_reg <= G_ctr_new;
             end
 
           if (dr_ctr_we)
@@ -992,79 +992,79 @@ module blake2_core(
 
       else if (update_state)
         begin
-          case (qr_ctr_reg)
-            STATE_QR0:
+          case (G_ctr_reg)
+            STATE_G0:
               begin
-                v0_new  = qr0_a_prim;
-                v4_new  = qr0_b_prim;
-                v8_new  = qr0_c_prim;
-                v12_new = qr0_d_prim;
+                v0_new  = G0_a_prim;
+                v4_new  = G0_b_prim;
+                v8_new  = G0_c_prim;
+                v12_new = G0_d_prim;
                 v0_we   = 1;
                 v4_we   = 1;
                 v8_we   = 1;
                 v12_we  = 1;
 
-                v1_new  = qr1_a_prim;
-                v5_new  = qr1_b_prim;
-                v9_new  = qr1_c_prim;
-                v13_new = qr1_d_prim;
+                v1_new  = G1_a_prim;
+                v5_new  = G1_b_prim;
+                v9_new  = G1_c_prim;
+                v13_new = G1_d_prim;
                 v1_we   = 1;
                 v5_we   = 1;
                 v9_we   = 1;
                 v13_we  = 1;
 
-                v2_new  = qr2_a_prim;
-                v6_new  = qr2_b_prim;
-                v10_new = qr2_c_prim;
-                v14_new = qr2_d_prim;
+                v2_new  = G2_a_prim;
+                v6_new  = G2_b_prim;
+                v10_new = G2_c_prim;
+                v14_new = G2_d_prim;
                 v2_we   = 1;
                 v6_we   = 1;
                 v10_we  = 1;
                 v14_we  = 1;
 
-                v3_new  = qr3_a_prim;
-                v7_new  = qr3_b_prim;
-                v11_new = qr3_c_prim;
-                v15_new = qr3_d_prim;
+                v3_new  = G3_a_prim;
+                v7_new  = G3_b_prim;
+                v11_new = G3_c_prim;
+                v15_new = G3_d_prim;
                 v3_we   = 1;
                 v7_we   = 1;
                 v11_we  = 1;
                 v15_we  = 1;
               end
 
-            STATE_QR1:
+            STATE_G1:
               begin
-                v0_new  = qr0_a_prim;
-                v5_new  = qr0_b_prim;
-                v10_new = qr0_c_prim;
-                v15_new = qr0_d_prim;
+                v0_new  = G0_a_prim;
+                v5_new  = G0_b_prim;
+                v10_new = G0_c_prim;
+                v15_new = G0_d_prim;
                 v0_we   = 1;
                 v5_we   = 1;
                 v10_we  = 1;
                 v15_we  = 1;
 
-                v1_new  = qr1_a_prim;
-                v6_new  = qr1_b_prim;
-                v11_new = qr1_c_prim;
-                v12_new = qr1_d_prim;
+                v1_new  = G1_a_prim;
+                v6_new  = G1_b_prim;
+                v11_new = G1_c_prim;
+                v12_new = G1_d_prim;
                 v1_we   = 1;
                 v6_we   = 1;
                 v11_we  = 1;
                 v12_we  = 1;
 
-                v2_new  = qr2_a_prim;
-                v7_new  = qr2_b_prim;
-                v8_new  = qr2_c_prim;
-                v13_new = qr2_d_prim;
+                v2_new  = G2_a_prim;
+                v7_new  = G2_b_prim;
+                v8_new  = G2_c_prim;
+                v13_new = G2_d_prim;
                 v2_we   = 1;
                 v7_we   = 1;
                 v8_we   = 1;
                 v13_we  = 1;
 
-                v3_new  = qr3_a_prim;
-                v4_new  = qr3_b_prim;
-                v9_new  = qr3_c_prim;
-                v14_new = qr3_d_prim;
+                v3_new  = G3_a_prim;
+                v4_new  = G3_b_prim;
+                v9_new  = G3_c_prim;
+                v14_new = G3_d_prim;
                 v3_we   = 1;
                 v4_we   = 1;
                 v9_we   = 1;
@@ -1081,78 +1081,78 @@ module blake2_core(
   //----------------------------------------------------------------
   always @*
     begin : quarterround_muv
-      case (qr_ctr_reg)
-          STATE_QR0:
+      case (G_ctr_reg)
+          STATE_G0:
             begin
-              qr0_a = v0_reg;
-              qr0_b = v4_reg;
-              qr0_c = v8_reg;
-              qr0_d = v12_reg;
+              G0_a = v0_reg;
+              G0_b = v4_reg;
+              G0_c = v8_reg;
+              G0_d = v12_reg;
 
-              qr1_a = v1_reg;
-              qr1_b = v5_reg;
-              qr1_c = v9_reg;
-              qr1_d = v13_reg;
+              G1_a = v1_reg;
+              G1_b = v5_reg;
+              G1_c = v9_reg;
+              G1_d = v13_reg;
 
-              qr2_a = v2_reg;
-              qr2_b = v6_reg;
-              qr2_c = v10_reg;
-              qr2_d = v14_reg;
+              G2_a = v2_reg;
+              G2_b = v6_reg;
+              G2_c = v10_reg;
+              G2_d = v14_reg;
 
-              qr3_a = v3_reg;
-              qr3_b = v7_reg;
-              qr3_c = v11_reg;
-              qr3_d = v15_reg;
+              G3_a = v3_reg;
+              G3_b = v7_reg;
+              G3_c = v11_reg;
+              G3_d = v15_reg;
             end
 
-          STATE_QR1:
+          STATE_G1:
             begin
-              qr0_a = v0_reg;
-              qr0_b = v5_reg;
-              qr0_c = v10_reg;
-              qr0_d = v15_reg;
+              G0_a = v0_reg;
+              G0_b = v5_reg;
+              G0_c = v10_reg;
+              G0_d = v15_reg;
 
-              qr1_a = v1_reg;
-              qr1_b = v6_reg;
-              qr1_c = v11_reg;
-              qr1_d = v12_reg;
+              G1_a = v1_reg;
+              G1_b = v6_reg;
+              G1_c = v11_reg;
+              G1_d = v12_reg;
 
-              qr2_a = v2_reg;
-              qr2_b = v7_reg;
-              qr2_c = v8_reg;
-              qr2_d = v13_reg;
+              G2_a = v2_reg;
+              G2_b = v7_reg;
+              G2_c = v8_reg;
+              G2_d = v13_reg;
 
-              qr3_a = v3_reg;
-              qr3_b = v4_reg;
-              qr3_c = v9_reg;
-              qr3_d = v14_reg;
+              G3_a = v3_reg;
+              G3_b = v4_reg;
+              G3_c = v9_reg;
+              G3_d = v14_reg;
             end
       endcase // case (quarterround_select)
     end // quarterround_muv
 
 
   //----------------------------------------------------------------
-  // qr_ctr
+  // G_ctr
   // Update logic for the quarterround counter, a monotonically
   // increasing counter with reset.
   //----------------------------------------------------------------
   always @*
-    begin : qr_ctr
-      qr_ctr_new = 0;
-      qr_ctr_we  = 0;
+    begin : G_ctr
+      G_ctr_new = 0;
+      G_ctr_we  = 0;
 
-      if (qr_ctr_rst)
+      if (G_ctr_rst)
         begin
-          qr_ctr_new = 0;
-          qr_ctr_we  = 1;
+          G_ctr_new = 0;
+          G_ctr_we  = 1;
         end
 
-      if (qr_ctr_inc)
+      if (G_ctr_inc)
         begin
-          qr_ctr_new = qr_ctr_reg + 1'b1;
-          qr_ctr_we  = 1;
+          G_ctr_new = G_ctr_reg + 1'b1;
+          G_ctr_we  = 1;
         end
-    end // qr_ctr
+    end // G_ctr
 
 
   //----------------------------------------------------------------
@@ -1226,8 +1226,8 @@ module blake2_core(
       sample_params      = 0;
       update_output      = 0;
 
-      qr_ctr_inc         = 0;
-      qr_ctr_rst         = 0;
+      G_ctr_inc         = 0;
+      G_ctr_rst         = 0;
 
       dr_ctr_inc         = 0;
       dr_ctr_rst         = 0;
@@ -1266,7 +1266,7 @@ module blake2_core(
         CTRL_INIT:
           begin
             init_state      = 1;
-            qr_ctr_rst      = 1;
+            G_ctr_rst      = 1;
             dr_ctr_rst      = 1;
             blake2_ctrl_new = CTRL_ROUNDS;
             blake2_ctrl_we  = 1;
@@ -1276,8 +1276,8 @@ module blake2_core(
         CTRL_ROUNDS:
           begin
             update_state = 1;
-            qr_ctr_inc   = 1;
-            if (qr_ctr_reg == STATE_QR1)
+            G_ctr_inc   = 1;
+            if (G_ctr_reg == STATE_G1)
               begin
                 dr_ctr_inc = 1;
                 if (dr_ctr_reg == (rounds_reg - 1))
