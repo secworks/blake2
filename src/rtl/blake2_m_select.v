@@ -2,12 +2,17 @@
 //
 // blake2_m_select.v
 // -----------
-// Verilog 2001 implementation of the G function in the
-// blake2 hash function core. This is pure combinational logic in a
-// separade module to allow us to build versions  with 1, 2, 4
-// and even 8 parallel compression functions.
+// Verilog 2001 implementation of the message word selection in the
+// blake2 hash function core. Based on the given round we extract
+// the indices for the four different sets of m words to select.
+// The words are then selected and returned.
+//
+// Note that we use the state to signal which indices to select
+// for a given round. This is because we don't do 8 G functions
+// in a single cycle.
 //
 //
+// Author: Joachim Strömbergson
 // Copyright (c) 2014, Secworks Sweden AB
 // All rights reserved.
 //
@@ -72,6 +77,12 @@ module blake2_m_select(
 
   assign G3_m0 = 64'h0000000000000000;
   assign G3_m1 = 64'h0000000000000000;
+
+
+  always @*
+    begin : m_select
+
+    end
 
 endmodule // blake2_m_select
 
