@@ -757,6 +757,8 @@ module blake2_core(
                 G0_b    = v4_reg;
                 G0_c    = v8_reg;
                 G0_d    = v12_reg;
+                G0_m0   = 64'h0000000000000000;
+                G0_m1   = 64'h0000000000000000;
                 v0_new  = G0_a_prim;
                 v4_new  = G0_b_prim;
                 v8_new  = G0_c_prim;
@@ -766,6 +768,8 @@ module blake2_core(
                 G1_b    = v5_reg;
                 G1_c    = v9_reg;
                 G1_d    = v13_reg;
+                G1_m0   = 64'h0000000000000000;
+                G1_m1   = 64'h0000000000000000;
                 v1_new  = G1_a_prim;
                 v5_new  = G1_b_prim;
                 v9_new  = G1_c_prim;
@@ -775,6 +779,8 @@ module blake2_core(
                 G2_b    = v6_reg;
                 G2_c    = v10_reg;
                 G2_d    = v14_reg;
+                G2_m0   = 64'h0000000000000000;
+                G2_m1   = 64'h0000000000000000;
                 v2_new  = G2_a_prim;
                 v6_new  = G2_b_prim;
                 v10_new = G2_c_prim;
@@ -784,6 +790,8 @@ module blake2_core(
                 G3_b    = v7_reg;
                 G3_c    = v11_reg;
                 G3_d    = v15_reg;
+                G3_m0   = 64'h0000000000000000;
+                G3_m1   = 64'h0000000000000000;
                 v3_new  = G3_a_prim;
                 v7_new  = G3_b_prim;
                 v11_new = G3_c_prim;
@@ -799,6 +807,8 @@ module blake2_core(
                 G0_b    = v5_reg;
                 G0_c    = v10_reg;
                 G0_d    = v15_reg;
+                G0_m0   = 64'h0000000000000000;
+                G0_m1   = 64'h0000000000000000;
                 v0_new  = G0_a_prim;
                 v5_new  = G0_b_prim;
                 v10_new = G0_c_prim;
@@ -808,6 +818,8 @@ module blake2_core(
                 G1_b    = v6_reg;
                 G1_c    = v11_reg;
                 G1_d    = v12_reg;
+                G1_m0   = 64'h0000000000000000;
+                G1_m1   = 64'h0000000000000000;
                 v1_new  = G1_a_prim;
                 v6_new  = G1_b_prim;
                 v11_new = G1_c_prim;
@@ -817,6 +829,8 @@ module blake2_core(
                 G2_b    = v7_reg;
                 G2_c    = v8_reg;
                 G2_d    = v13_reg;
+                G2_m0   = 64'h0000000000000000;
+                G2_m1   = 64'h0000000000000000;
                 v2_new  = G2_a_prim;
                 v7_new  = G2_b_prim;
                 v8_new  = G2_c_prim;
@@ -826,6 +840,8 @@ module blake2_core(
                 G3_b    = v4_reg;
                 G3_c    = v9_reg;
                 G3_d    = v14_reg;
+                G3_m0   = 64'h0000000000000000;
+                G3_m1   = 64'h0000000000000000;
                 v3_new  = G3_a_prim;
                 v4_new  = G3_b_prim;
                 v9_new  = G3_c_prim;
