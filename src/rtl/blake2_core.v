@@ -250,6 +250,21 @@ module blake2_core(
   //----------------------------------------------------------------
   // Instantiation of the compression modules.
   //----------------------------------------------------------------
+  blake2_m_select mselect(
+                          .m(block_in),
+                          .r(rounds_reg),
+                          .state(G_ctr_reg),
+                          .G0_m0(G0_m0),
+                          .G0_m1(G0_m1),
+                          .G1_m0(G0_m0),
+                          .G1_m1(G0_m1),
+                          .G2_m0(G0_m0),
+                          .G2_m1(G0_m1),
+                          .G3_m0(G0_m0),
+                          .G3_m1(G0_m1),
+                         );
+
+
   blake2_G G0(
               .a(G0_a),
               .b(G0_b),
