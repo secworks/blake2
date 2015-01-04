@@ -84,12 +84,6 @@ module blake2_m_select(
   parameter R8_1 = 5'b10001;
   parameter R9_0 = 5'b10010;
   parameter R9_1 = 5'b10011;
-  parameter RA_0 = 5'b10100;
-  parameter RA_1 = 5'b10101;
-  parameter RB_0 = 5'b10110;
-  parameter RB_1 = 5'b10111;
-  parameter RC_0 = 5'b11000;
-  parameter RC_1 = 5'b11001;
 
 
   //----------------------------------------------------------------
@@ -181,90 +175,194 @@ module blake2_m_select(
 
         R2_0:
           begin
+            G0_m0_i = 11;
+            G0_m1_i = 8;
+            G1_m0_i = 12;
+            G1_m1_i = 0;
+            G2_m0_i = 5;
+            G2_m1_i = 2;
+            G3_m0_i = 15;
+            G3_m1_i = 13;
           end
 
         R2_1:
           begin
+            G0_m0_i = 10;
+            G0_m1_i = 14;
+            G1_m0_i = 3;
+            G1_m1_i = 6;
+            G2_m0_i = 7;
+            G2_m1_i = 1;
+            G3_m0_i = 9;
+            G3_m1_i = 4;
           end
 
         R3_0:
           begin
+            G0_m0_i = 7;
+            G0_m1_i = 9;
+            G1_m0_i = 3;
+            G1_m1_i = 1;
+            G2_m0_i = 13;
+            G2_m1_i = 12;
+            G3_m0_i = 11;
+            G3_m1_i = 14;
           end
 
         R3_1:
           begin
+            G0_m0_i = 2;
+            G0_m1_i = 6;
+            G1_m0_i = 5;
+            G1_m1_i = 10;
+            G2_m0_i = 4;
+            G2_m1_i = 0;
+            G3_m0_i = 15;
+            G3_m1_i = 8;
           end
 
         R4_0:
           begin
+            G0_m0_i = 9;
+            G0_m1_i = 0;
+            G1_m0_i = 5;
+            G1_m1_i = 7;
+            G2_m0_i = 2;
+            G2_m1_i = 4;
+            G3_m0_i = 10;
+            G3_m1_i = 15;
           end
 
         R4_1:
           begin
+            G0_m0_i = 14;
+            G0_m1_i = 1;
+            G1_m0_i = 11;
+            G1_m1_i = 12;
+            G2_m0_i = 6;
+            G2_m1_i = 8;
+            G3_m0_i = 3;
+            G3_m1_i = 13;
           end
 
         R5_0:
           begin
+            G0_m0_i = 2;
+            G0_m1_i = 12;
+            G1_m0_i = 6;
+            G1_m1_i = 10;
+            G2_m0_i = 0;
+            G2_m1_i = 11;
+            G3_m0_i = 8;
+            G3_m1_i = 3;
           end
 
         R5_1:
           begin
+            G0_m0_i = 4;
+            G0_m1_i = 13;
+            G1_m0_i = 7;
+            G1_m1_i = 5;
+            G2_m0_i = 15;
+            G2_m1_i = 14;
+            G3_m0_i = 1;
+            G3_m1_i = 9;
           end
 
         R6_0:
           begin
+            G0_m0_i = 12;
+            G0_m1_i = 5;
+            G1_m0_i = 1;
+            G1_m1_i = 15;
+            G2_m0_i = 14;
+            G2_m1_i = 13;
+            G3_m0_i = 4;
+            G3_m1_i = 10;
           end
 
         R6_1:
           begin
+            G0_m0_i = 0;
+            G0_m1_i = 7;
+            G1_m0_i = 6;
+            G1_m1_i = 3;
+            G2_m0_i = 9;
+            G2_m1_i = 2;
+            G3_m0_i = 8;
+            G3_m1_i = 1;
           end
 
         R7_0:
           begin
+            G0_m0_i = 13;
+            G0_m1_i = 11;
+            G1_m0_i = 7;
+            G1_m1_i = 14;
+            G2_m0_i = 12;
+            G2_m1_i = 1;
+            G3_m0_i = 3;
+            G3_m1_i = 9;
           end
 
         R7_1:
           begin
+            G0_m0_i = 5;
+            G0_m1_i = 0;
+            G1_m0_i = 15;
+            G1_m1_i = 4;
+            G2_m0_i = 8;
+            G2_m1_i = 6;
+            G3_m0_i = 2;
+            G3_m1_i = 10;
           end
 
         R8_0:
           begin
+            G0_m0_i = 6;
+            G0_m1_i = 15;
+            G1_m0_i = 14;
+            G1_m1_i = 9;
+            G2_m0_i = 11;
+            G2_m1_i = 3;
+            G3_m0_i = 0;
+            G3_m1_i = 8;
           end
 
         R8_1:
           begin
+            G0_m0_i = 12;
+            G0_m1_i = 2;
+            G1_m0_i = 13;
+            G1_m1_i = 7;
+            G2_m0_i = 1;
+            G2_m1_i = 4;
+            G3_m0_i = 10;
+            G3_m1_i = 5;
           end
 
         R9_0:
           begin
+            G0_m0_i = 10;
+            G0_m1_i = 2;
+            G1_m0_i = 8;
+            G1_m1_i = 4;
+            G2_m0_i = 7;
+            G2_m1_i = 6;
+            G3_m0_i = 1;
+            G3_m1_i = 5;
           end
 
         R9_1:
           begin
-          end
-
-        RA_0:
-          begin
-          end
-
-        RA_1:
-          begin
-          end
-
-        RB_0:
-          begin
-          end
-
-        RB_1:
-          begin
-          end
-
-        RC_0:
-          begin
-          end
-
-        RC_1:
-          begin
+            G0_m0_i = 15;
+            G0_m1_i = 11;
+            G1_m0_i = 9;
+            G1_m1_i = 14;
+            G2_m0_i = 3;
+            G2_m1_i = 12;
+            G3_m0_i = 13;
+            G3_m1_i = 0;
           end
 
         default:
