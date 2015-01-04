@@ -5,7 +5,10 @@
 // Verilog 2001 implementation of the message word selection in the
 // blake2 hash function core. Based on the given round we extract
 // the indices for the four different sets of m words to select.
-// The words are then selected and returned.
+// The words are then selected and returned. This is basically a
+// mux based implementation of the permutation table in combination
+// with the actual word selection.
+//
 //
 // Note that we use the state to signal which indices to select
 // for a given round. This is because we don't do 8 G functions
