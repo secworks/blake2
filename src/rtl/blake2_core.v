@@ -206,6 +206,8 @@ module blake2_core(
   reg [63 : 0]  G0_b;
   reg [63 : 0]  G0_c;
   reg [63 : 0]  G0_d;
+  reg [63 : 0]  G0_m0;
+  reg [63 : 0]  G0_m1;
   wire [63 : 0] G0_a_prim;
   wire [63 : 0] G0_b_prim;
   wire [63 : 0] G0_c_prim;
@@ -215,6 +217,8 @@ module blake2_core(
   reg [63 : 0]  G1_b;
   reg [63 : 0]  G1_c;
   reg [63 : 0]  G1_d;
+  reg [63 : 0]  G1_m0;
+  reg [63 : 0]  G1_m1;
   wire [63 : 0] G1_a_prim;
   wire [63 : 0] G1_b_prim;
   wire [63 : 0] G1_c_prim;
@@ -224,6 +228,8 @@ module blake2_core(
   reg [63 : 0]  G2_b;
   reg [63 : 0]  G2_c;
   reg [63 : 0]  G2_d;
+  reg [63 : 0]  G2_m0;
+  reg [63 : 0]  G2_m1;
   wire [63 : 0] G2_a_prim;
   wire [63 : 0] G2_b_prim;
   wire [63 : 0] G2_c_prim;
@@ -233,6 +239,8 @@ module blake2_core(
   reg [63 : 0]  G3_b;
   reg [63 : 0]  G3_c;
   reg [63 : 0]  G3_d;
+  reg [63 : 0]  G3_m0;
+  reg [63 : 0]  G3_m1;
   wire [63 : 0] G3_a_prim;
   wire [63 : 0] G3_b_prim;
   wire [63 : 0] G3_c_prim;
@@ -247,6 +255,8 @@ module blake2_core(
               .b(G0_b),
               .c(G0_c),
               .d(G0_d),
+              .d(G0_m0),
+              .d(G0_m1),
 
               .a_prim(G0_a_prim),
               .b_prim(G0_b_prim),
@@ -260,6 +270,8 @@ module blake2_core(
               .b(G1_b),
               .c(G1_c),
               .d(G1_d),
+              .d(G1_m0),
+              .d(G1_m1),
 
               .a_prim(G1_a_prim),
               .b_prim(G1_b_prim),
@@ -273,6 +285,8 @@ module blake2_core(
               .b(G2_b),
               .c(G2_c),
               .d(G2_d),
+              .d(G2_m0),
+              .d(G2_m1),
 
               .a_prim(G2_a_prim),
               .b_prim(G2_b_prim),
@@ -286,6 +300,8 @@ module blake2_core(
               .b(G3_b),
               .c(G3_c),
               .d(G3_d),
+              .d(G3_m0),
+              .d(G3_m1),
 
               .a_prim(G3_a_prim),
               .b_prim(G3_b_prim),
