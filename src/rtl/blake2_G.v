@@ -43,6 +43,8 @@ module blake2_G(
                 input wire [63 : 0]  b,
                 input wire [63 : 0]  c,
                 input wire [63 : 0]  d,
+                input wire [63 : 0]  m0,
+                input wire [63 : 0]  m1,
 
                 output wire [63 : 0] a_prim,
                 output wire [63 : 0] b_prim,
@@ -92,9 +94,6 @@ module blake2_G(
       reg [63 : 0] d1;
       reg [63 : 0] d2;
       reg [63 : 0] d3;
-
-      reg [63 : 0] m0;
-      reg [63 : 0] m1;
 
       a0 = a + b + m0;
 
