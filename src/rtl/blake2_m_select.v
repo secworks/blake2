@@ -47,6 +47,9 @@
 //======================================================================
 
 module blake2_m_select(
+                       input wire            clk,
+                       input wire            reset,
+
                        input wire [1023 : 0] m,
                        input wire [3 : 0]    r,
                        input wire            state,
