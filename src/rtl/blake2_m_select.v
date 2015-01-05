@@ -50,6 +50,8 @@ module blake2_m_select(
                        input wire            clk,
                        input wire            reset,
 
+                       input wire            load,
+
                        input wire [1023 : 0] m,
                        input wire [3 : 0]    r,
                        input wire            state,
@@ -63,6 +65,7 @@ module blake2_m_select(
                        output wire [63 : 0]  G3_m0,
                        output wire [63 : 0]  G3_m1
                       );
+
 
   //----------------------------------------------------------------
   // Internal constant and parameter definitions.
@@ -90,6 +93,12 @@ module blake2_m_select(
 
 
   //----------------------------------------------------------------
+  // regs.
+  //----------------------------------------------------------------
+  reg [63 : 0] m_mem [0 : 15];
+
+
+  //----------------------------------------------------------------
   // Wires.
   //----------------------------------------------------------------
   reg [3 : 0] G0_m0_i;
@@ -105,17 +114,70 @@ module blake2_m_select(
   //----------------------------------------------------------------
   // Concurrent connectivity for ports.
   //----------------------------------------------------------------
-  assign G0_m0 = m[G0_m0_i];
-  assign G0_m1 = m[G0_m1_i];
+  assign G0_m0 = m_mem[G0_m0_i];
+  assign G0_m1 = m_mem[G0_m1_i];
 
-  assign G1_m0 = m[G1_m0_i];
-  assign G1_m1 = m[G1_m1_i];
+  assign G1_m0 = m_mem[G1_m0_i];
+  assign G1_m1 = m_mem[G1_m1_i];
 
-  assign G2_m0 = m[G2_m0_i];
-  assign G2_m1 = m[G2_m1_i];
+  assign G2_m0 = m_mem[G2_m0_i];
+  assign G2_m1 = m_mem[G2_m1_i];
 
-  assign G3_m0 = m[G3_m0_i];
-  assign G3_m1 = m[G3_m1_i];
+  assign G3_m0 = m_mem[G3_m0_i];
+  assign G3_m1 = m_mem[G3_m1_i];
+
+
+  //----------------------------------------------------------------
+  // reg_update
+  //
+  // Update functionality for all registers in the core.
+  // All registers are positive edge triggered with asynchronous
+  // active low reset. All registers have write enable.
+  //----------------------------------------------------------------
+  always @ (posedge clk or negedge reset_n)
+    begin : reg_update
+      if (!reset_n)
+        begin
+          m_mem[00] <= 64'h0000000000000000;
+          m_mem[01] <= 64'h0000000000000000;
+          m_mem[02] <= 64'h0000000000000000;
+          m_mem[03] <= 64'h0000000000000000;
+          m_mem[04] <= 64'h0000000000000000;
+          m_mem[05] <= 64'h0000000000000000;
+          m_mem[06] <= 64'h0000000000000000;
+          m_mem[07] <= 64'h0000000000000000;
+          m_mem[08] <= 64'h0000000000000000;
+          m_mem[09] <= 64'h0000000000000000;
+          m_mem[10] <= 64'h0000000000000000;
+          m_mem[11] <= 64'h0000000000000000;
+          m_mem[12] <= 64'h0000000000000000;
+          m_mem[13] <= 64'h0000000000000000;
+          m_mem[14] <= 64'h0000000000000000;
+          m_mem[15] <= 64'h0000000000000000;
+        end
+      else
+        begin
+          if (load)
+            begin
+              m_mem[00] <= m[0063 : 0000];
+              m_mem[01] <= m[0127 : 0064];
+              m_mem[02] <= m[0191 : 0128];
+              m_mem[03] <= m[0255 : 0192];
+              m_mem[04] <= m[0319 : 0256];
+              m_mem[05] <= m[0383 : 0320];
+              m_mem[06] <= m[0447 : 0384];
+              m_mem[07] <= m[0511 : 0448];
+              m_mem[08] <= m[0575 : 0512];
+              m_mem[09] <= m[0639 : 0576];
+              m_mem[10] <= m[0703 : 0640];
+              m_mem[11] <= m[0767 : 0704];
+              m_mem[12] <= m[0831 : 0768];
+              m_mem[13] <= m[0895 : 0832];
+              m_mem[14] <= m[0959 : 0896];
+              m_mem[15] <= m[1023 : 0960];
+            end
+        end
+    end // reg_update
 
 
   //----------------------------------------------------------------
