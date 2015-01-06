@@ -275,8 +275,8 @@ module blake2_core(
               .b(G0_b),
               .c(G0_c),
               .d(G0_d),
-              .d(G0_m0),
-              .d(G0_m1),
+              .m0(G0_m0),
+              .m1(G0_m1),
 
               .a_prim(G0_a_prim),
               .b_prim(G0_b_prim),
@@ -290,8 +290,8 @@ module blake2_core(
               .b(G1_b),
               .c(G1_c),
               .d(G1_d),
-              .d(G1_m0),
-              .d(G1_m1),
+              .m0(G1_m0),
+              .m1(G1_m1),
 
               .a_prim(G1_a_prim),
               .b_prim(G1_b_prim),
@@ -305,8 +305,8 @@ module blake2_core(
               .b(G2_b),
               .c(G2_c),
               .d(G2_d),
-              .d(G2_m0),
-              .d(G2_m1),
+              .m0(G2_m0),
+              .m1(G2_m1),
 
               .a_prim(G2_a_prim),
               .b_prim(G2_b_prim),
@@ -320,8 +320,8 @@ module blake2_core(
               .b(G3_b),
               .c(G3_c),
               .d(G3_d),
-              .d(G3_m0),
-              .d(G3_m1),
+              .m0(G3_m0),
+              .m1(G3_m1),
 
               .a_prim(G3_a_prim),
               .b_prim(G3_b_prim),
