@@ -90,7 +90,6 @@ module blake2_G(
       reg [63 : 0] c1;
 
       reg [63 : 0] d0;
-      reg [63 : 0] d0;
       reg [63 : 0] d1;
       reg [63 : 0] d2;
       reg [63 : 0] d3;
@@ -98,7 +97,7 @@ module blake2_G(
       a0 = a + b + m0;
 
       d0 = d ^ a0;
-      d1 = {d0[31 : 0], d0[64 : 32]};
+      d1 = {d0[31 : 0], d0[63 : 32]};
 
       c0 = c + d1;
 
