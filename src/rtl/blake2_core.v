@@ -153,13 +153,6 @@ module blake2_core(
   reg [3 : 0] rounds_reg;
   reg [3 : 0] rounds_new;
 
-  reg [511 : 0] data_in_reg;
-  reg           data_in_we;
-
-  reg [511 : 0] data_out_reg;
-  reg [511 : 0] data_out_new;
-  reg           data_out_we;
-
   reg  digest_valid_reg;
   reg  digest_valid_new;
   reg  digest_valid_we;
@@ -179,15 +172,6 @@ module blake2_core(
   reg         dr_ctr_we;
   reg         dr_ctr_inc;
   reg         dr_ctr_rst;
-
-  reg [31 : 0] block0_ctr_reg;
-  reg [31 : 0] block0_ctr_new;
-  reg          block0_ctr_we;
-  reg [31 : 0] block1_ctr_reg;
-  reg [31 : 0] block1_ctr_new;
-  reg          block1_ctr_we;
-  reg          block_ctr_inc;
-  reg          block_ctr_rst;
 
   reg [2 : 0] blake2_ctrl_reg;
   reg [2 : 0] blake2_ctrl_new;
@@ -381,14 +365,11 @@ module blake2_core(
           v13_reg            <= 64'h0000000000000000;
           v14_reg            <= 64'h0000000000000000;
           v15_reg            <= 64'h0000000000000000;
-          data_out_reg       <= 512'h00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000;
           rounds_reg         <= 4'h0;
           ready_reg          <= 1;
-          data_out_valid_reg <= 0;
+          digest_valid_reg   <= 0;
           G_ctr_reg          <= STATE_G0;
           dr_ctr_reg         <= 0;
-          block0_ctr_reg     <= 32'h00000000;
-          block1_ctr_reg     <= 32'h00000000;
           blake2_ctrl_reg    <= CTRL_IDLE;
         end
       else
@@ -425,19 +406,14 @@ module blake2_core(
               v15_reg <= v15_new;
             end
 
-          if (data_out_we)
-            begin
-              data_out_reg <= data_out_new;
-            end
-
           if (ready_we)
             begin
               ready_reg <= ready_new;
             end
 
-          if (data_out_valid_we)
+          if (digest_valid_we)
             begin
-              data_out_valid_reg <= data_out_valid_new;
+              digest_valid_reg <= digest_valid_new;
             end
 
           if (G_ctr_we)
@@ -450,16 +426,6 @@ module blake2_core(
               dr_ctr_reg <= dr_ctr_new;
             end
 
-          if (block0_ctr_we)
-            begin
-              block0_ctr_reg <= block0_ctr_new;
-            end
-
-          if (block1_ctr_we)
-            begin
-              block1_ctr_reg <= block1_ctr_new;
-            end
-
           if (blake2_ctrl_we)
             begin
               blake2_ctrl_reg <= blake2_ctrl_new;
@@ -467,221 +433,6 @@ module blake2_core(
         end
     end // reg_update
 
-
-  //----------------------------------------------------------------
-  // data_out_logic
-  // Final output logic that combines the result from procceing
-  // with the input word. This adds a final layer of VOR gates.
-  //
-  // Note that we also remap all the words into LSB format.
-  //----------------------------------------------------------------
-  always @*
-    begin : data_out_logic
-      reg [31 : 0]  msb_block_state0;
-      reg [31 : 0]  msb_block_state1;
-      reg [31 : 0]  msb_block_state2;
-      reg [31 : 0]  msb_block_state3;
-      reg [31 : 0]  msb_block_state4;
-      reg [31 : 0]  msb_block_state5;
-      reg [31 : 0]  msb_block_state6;
-      reg [31 : 0]  msb_block_state7;
-      reg [31 : 0]  msb_block_state8;
-      reg [31 : 0]  msb_block_state9;
-      reg [31 : 0]  msb_block_state10;
-      reg [31 : 0]  msb_block_state11;
-      reg [31 : 0]  msb_block_state12;
-      reg [31 : 0]  msb_block_state13;
-      reg [31 : 0]  msb_block_state14;
-      reg [31 : 0]  msb_block_state15;
-
-      reg [31 : 0]  lsb_block_state0;
-      reg [31 : 0]  lsb_block_state1;
-      reg [31 : 0]  lsb_block_state2;
-      reg [31 : 0]  lsb_block_state3;
-      reg [31 : 0]  lsb_block_state4;
-      reg [31 : 0]  lsb_block_state5;
-      reg [31 : 0]  lsb_block_state6;
-      reg [31 : 0]  lsb_block_state7;
-      reg [31 : 0]  lsb_block_state8;
-      reg [31 : 0]  lsb_block_state9;
-      reg [31 : 0]  lsb_block_state10;
-      reg [31 : 0]  lsb_block_state11;
-      reg [31 : 0]  lsb_block_state12;
-      reg [31 : 0]  lsb_block_state13;
-      reg [31 : 0]  lsb_block_state14;
-      reg [31 : 0]  lsb_block_state15;
-
-      reg [511 : 0] lsb_block_state;
-
-      lsb_block_state = 512'h00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000;
-
-      data_out_new = 512'h00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000;
-      data_out_we = 0;
-
-      if (update_output)
-        begin
-          msb_block_state0  = state0_reg  + v0_reg;
-          msb_block_state1  = state1_reg  + v1_reg;
-          msb_block_state2  = state2_reg  + v2_reg;
-          msb_block_state3  = state3_reg  + v3_reg;
-          msb_block_state4  = state4_reg  + v4_reg;
-          msb_block_state5  = state5_reg  + v5_reg;
-          msb_block_state6  = state6_reg  + v6_reg;
-          msb_block_state7  = state7_reg  + v7_reg;
-          msb_block_state8  = state8_reg  + v8_reg;
-          msb_block_state9  = state9_reg  + v9_reg;
-          msb_block_state10 = state10_reg + v10_reg;
-          msb_block_state11 = state11_reg + v11_reg;
-          msb_block_state12 = state12_reg + v12_reg;
-          msb_block_state13 = state13_reg + v13_reg;
-          msb_block_state14 = state14_reg + v14_reg;
-          msb_block_state15 = state15_reg + v15_reg;
-
-          lsb_block_state0 = {msb_block_state0[7  :  0],
-                              msb_block_state0[15 :  8],
-                              msb_block_state0[23 : 16],
-                              msb_block_state0[31 : 24]};
-
-          lsb_block_state1 = {msb_block_state1[7  :  0],
-                              msb_block_state1[15 :  8],
-                              msb_block_state1[23 : 16],
-                              msb_block_state1[31 : 24]};
-
-          lsb_block_state2 = {msb_block_state2[7  :  0],
-                              msb_block_state2[15 :  8],
-                              msb_block_state2[23 : 16],
-                              msb_block_state2[31 : 24]};
-
-          lsb_block_state3 = {msb_block_state3[7  :  0],
-                              msb_block_state3[15 :  8],
-                              msb_block_state3[23 : 16],
-                              msb_block_state3[31 : 24]};
-
-          lsb_block_state4 = {msb_block_state4[7  :  0],
-                              msb_block_state4[15 :  8],
-                              msb_block_state4[23 : 16],
-                              msb_block_state4[31 : 24]};
-
-          lsb_block_state5 = {msb_block_state5[7  :  0],
-                              msb_block_state5[15 :  8],
-                              msb_block_state5[23 : 16],
-                              msb_block_state5[31 : 24]};
-
-          lsb_block_state6 = {msb_block_state6[7  :  0],
-                              msb_block_state6[15 :  8],
-                              msb_block_state6[23 : 16],
-                              msb_block_state6[31 : 24]};
-
-          lsb_block_state7 = {msb_block_state7[7  :  0],
-                              msb_block_state7[15 :  8],
-                              msb_block_state7[23 : 16],
-                              msb_block_state7[31 : 24]};
-
-          lsb_block_state8 = {msb_block_state8[7  :  0],
-                              msb_block_state8[15 :  8],
-                              msb_block_state8[23 : 16],
-                              msb_block_state8[31 : 24]};
-
-          lsb_block_state9 = {msb_block_state9[7  :  0],
-                              msb_block_state9[15 :  8],
-                              msb_block_state9[23 : 16],
-                              msb_block_state9[31 : 24]};
-
-          lsb_block_state10 = {msb_block_state10[7  :  0],
-                               msb_block_state10[15 :  8],
-                               msb_block_state10[23 : 16],
-                               msb_block_state10[31 : 24]};
-
-          lsb_block_state11 = {msb_block_state11[7  :  0],
-                               msb_block_state11[15 :  8],
-                               msb_block_state11[23 : 16],
-                               msb_block_state11[31 : 24]};
-
-          lsb_block_state12 = {msb_block_state12[7  :  0],
-                               msb_block_state12[15 :  8],
-                               msb_block_state12[23 : 16],
-                               msb_block_state12[31 : 24]};
-
-          lsb_block_state13 = {msb_block_state13[7  :  0],
-                               msb_block_state13[15 :  8],
-                               msb_block_state13[23 : 16],
-                               msb_block_state13[31 : 24]};
-
-          lsb_block_state14 = {msb_block_state14[7  :  0],
-                               msb_block_state14[15 :  8],
-                               msb_block_state14[23 : 16],
-                               msb_block_state14[31 : 24]};
-
-          lsb_block_state15 = {msb_block_state15[7  :  0],
-                               msb_block_state15[15 :  8],
-                               msb_block_state15[23 : 16],
-                               msb_block_state15[31 : 24]};
-
-          lsb_block_state = {lsb_block_state0,  lsb_block_state1,
-                             lsb_block_state2,  lsb_block_state3,
-                             lsb_block_state4,  lsb_block_state5,
-                             lsb_block_state6,  lsb_block_state7,
-                             lsb_block_state8,  lsb_block_state9,
-                             lsb_block_state10, lsb_block_state11,
-                             lsb_block_state12, lsb_block_state13,
-                             lsb_block_state14, lsb_block_state15};
-
-          data_out_new = data_in_reg ^ lsb_block_state;
-          data_out_we   = 1;
-        end // if (update_output)
-    end // data_out_logic
-
-
-  //----------------------------------------------------------------
-  // sample_parameters
-  // Logic (wires) that convert parameter input to appropriate
-  // format for processing.
-  //----------------------------------------------------------------
-  always @*
-    begin : sample_parameters
-      key0_new   = 32'h00000000;
-      key1_new   = 32'h00000000;
-      key2_new   = 32'h00000000;
-      key3_new   = 32'h00000000;
-      key4_new   = 32'h00000000;
-      key5_new   = 32'h00000000;
-      key6_new   = 32'h00000000;
-      key7_new   = 32'h00000000;
-      iv0_new    = 32'h00000000;
-      iv1_new    = 32'h00000000;
-      rounds_new = 4'h0;
-      keylen_new = 1'b0;
-
-      if (sample_params)
-        begin
-          key0_new = {key[231 : 224], key[239 : 232],
-                      key[247 : 240], key[255 : 248]};
-          key1_new = {key[199 : 192], key[207 : 200],
-                      key[215 : 208], key[223 : 216]};
-          key2_new = {key[167 : 160], key[175 : 168],
-                      key[183 : 176], key[191 : 184]};
-          key3_new = {key[135 : 128], key[143 : 136],
-                      key[151 : 144], key[159 : 152]};
-          key4_new = {key[103 :  96], key[111 : 104],
-                      key[119 : 112], key[127 : 120]};
-          key5_new = {key[71  :  64], key[79  :  72],
-                      key[87  :  80], key[95  :  88]};
-          key6_new = {key[39  :  32], key[47  :  40],
-                      key[55  :  48], key[63  :  56]};
-          key7_new = {key[7   :   0], key[15  :   8],
-                      key[23  :  16], key[31  :  24]};
-
-          iv0_new = {iv[39  :  32], iv[47  :  40],
-                     iv[55  :  48], iv[63  :  56]};
-          iv1_new = {iv[7   :   0], iv[15  :   8],
-                     iv[23  :  16], iv[31  :  24]};
-
-          // Div by two since we count double rounds.
-          rounds_new = rounds[4 : 1];
-
-          keylen_new = keylen;
-        end
-    end
 
   //----------------------------------------------------------------
   // chain_logic
@@ -902,42 +653,6 @@ module blake2_core(
 
 
   //----------------------------------------------------------------
-  // block_ctr
-  // Update logic for the 64-bit block counter, a monotonically
-  // increasing counter with reset.
-  //----------------------------------------------------------------
-  always @*
-    begin : block_ctr
-      // Defult assignments
-      block0_ctr_new = 32'h00000000;
-      block1_ctr_new = 32'h00000000;
-      block0_ctr_we = 0;
-      block1_ctr_we = 0;
-
-      if (block_ctr_rst)
-        begin
-          block0_ctr_new = ctr[31 : 00];
-          block1_ctr_new = ctr[63 : 32];
-          block0_ctr_we = 1;
-          block1_ctr_we = 1;
-        end
-
-      if (block_ctr_inc)
-        begin
-          block0_ctr_new = block0_ctr_reg + 1;
-          block0_ctr_we = 1;
-
-          // Avoid chaining the 32-bit adders.
-          if (block0_ctr_reg == 32'hffffffff)
-            begin
-              block1_ctr_new = block1_ctr_reg + 1;
-              block1_ctr_we = 1;
-            end
-        end
-    end // block_ctr
-
-
-  //----------------------------------------------------------------
   // blake2_ctrl_fsm
   // Logic for the state machine controlling the core behaviour.
   //----------------------------------------------------------------
@@ -945,8 +660,6 @@ module blake2_core(
     begin : blake2_ctrl_fsm
       init_state         = 0;
       update_state       = 0;
-      sample_params      = 0;
-      update_output      = 0;
 
       load_m             = 0;
 
@@ -956,18 +669,13 @@ module blake2_core(
       dr_ctr_inc         = 0;
       dr_ctr_rst         = 0;
 
-      block_ctr_inc      = 0;
-      block_ctr_rst      = 0;
-
       update_chain_value = 0;
-
-      data_in_we         = 0;
 
       ready_new          = 0;
       ready_we           = 0;
 
-      data_out_valid_new = 0;
-      data_out_valid_we  = 0;
+      digest_valid_new   = 0;
+      digest_valid_we    = 0;
 
       blake2_ctrl_new    = CTRL_IDLE;
       blake2_ctrl_we     = 0;
@@ -980,10 +688,7 @@ module blake2_core(
               begin
                 ready_new       = 0;
                 ready_we        = 1;
-                data_in_we      = 1;
                 load_m          = 1;
-                sample_params   = 1;
-                block_ctr_rst   = 1;
                 blake2_ctrl_new = CTRL_INIT;
                 blake2_ctrl_we  = 1;
               end
@@ -1021,9 +726,8 @@ module blake2_core(
             update_chain_value = 1;
             ready_new          = 1;
             ready_we           = 1;
-            update_output      = 1;
-            data_out_valid_new = 1;
-            data_out_valid_we  = 1;
+            digest_valid_new   = 1;
+            digest_valid_we    = 1;
             blake2_ctrl_new    = CTRL_DONE;
             blake2_ctrl_we     = 1;
           end
@@ -1033,28 +737,23 @@ module blake2_core(
           begin
             if (init)
               begin
-                ready_new          = 0;
-                ready_we           = 1;
-                data_out_valid_new = 0;
-                data_out_valid_we  = 1;
-                data_in_we         = 1;
-                load_m             = 1;
-                sample_params      = 1;
-                block_ctr_rst      = 1;
-                blake2_ctrl_new    = CTRL_INIT;
-                blake2_ctrl_we     = 1;
+                ready_new        = 0;
+                ready_we         = 1;
+                digest_valid_new = 0;
+                digest_valid_we  = 1;
+                load_m           = 1;
+                blake2_ctrl_new  = CTRL_INIT;
+                blake2_ctrl_we   = 1;
               end
             else if (next)
               begin
-                ready_new          = 0;
-                ready_we           = 1;
-                data_out_valid_new = 0;
-                data_out_valid_we  = 1;
-                data_in_we         = 1;
-                load_m             = 1;
-                block_ctr_inc      = 1;
-                blake2_ctrl_new    = CTRL_INIT;
-                blake2_ctrl_we     = 1;
+                ready_new        = 0;
+                ready_we         = 1;
+                digest_valid_new = 0;
+                digest_valid_we  = 1;
+                load_m           = 1;
+                blake2_ctrl_new  = CTRL_INIT;
+                blake2_ctrl_we   = 1;
               end
           end
 
