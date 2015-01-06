@@ -48,8 +48,8 @@ module blake2_core(
 
                    output wire           ready,
 
-                   output wire [511 : 0] digest_out,
-                   output wire           digest_out_valid
+                   output wire [511 : 0] digest,
+                   output wire           digest_valid
                   );
 
 
@@ -160,9 +160,9 @@ module blake2_core(
   reg [511 : 0] data_out_new;
   reg           data_out_we;
 
-  reg  data_out_valid_reg;
-  reg  data_out_valid_new;
-  reg  data_out_valid_we;
+  reg  digest_valid_reg;
+  reg  digest_valid_new;
+  reg  digest_valid_we;
 
   reg  ready_reg;
   reg  ready_new;
@@ -333,10 +333,10 @@ module blake2_core(
   //----------------------------------------------------------------
   // Concurrent connectivity for ports etc.
   //----------------------------------------------------------------
-  assign digest_out = {h0_reg, h1_reg, h2_reg, h3_reg,
-                     h4_reg, h5_reg, h6_reg, h7_reg};
+  assign digest = {h0_reg, h1_reg, h2_reg, h3_reg,
+                   h4_reg, h5_reg, h6_reg, h7_reg};
 
-  assign digest_out_valid = digest_out_valid_reg;
+  assign digest_valid = digest_valid_reg;
 
   assign ready = ready_reg;
 
@@ -381,7 +381,6 @@ module blake2_core(
           v13_reg            <= 64'h0000000000000000;
           v14_reg            <= 64'h0000000000000000;
           v15_reg            <= 64'h0000000000000000;
-          data_in_reg        <= 512'h00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000;
           data_out_reg       <= 512'h00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000;
           rounds_reg         <= 4'h0;
           ready_reg          <= 1;
@@ -394,11 +393,6 @@ module blake2_core(
         end
       else
         begin
-          if (data_in_we)
-            begin
-              data_in_reg <= data_in;
-            end
-
           if (h_we)
             begin
               h0_reg  <= h0_new;
