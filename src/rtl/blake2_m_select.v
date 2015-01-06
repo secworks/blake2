@@ -432,18 +432,18 @@ module blake2_m_select(
 
         default:
           begin
-            G0_m0_i = 4'h00;
-            G0_m1_i = 4'h00;
-            G1_m0_i = 4'h00;
-            G1_m1_i = 4'h00;
-            G2_m0_i = 4'h00;
-            G2_m1_i = 4'h00;
-            G3_m0_i = 4'h00;
-            G3_m1_i = 4'h00;
+            G0_m0_i = 4'h0;
+            G0_m1_i = 4'h0;
+            G1_m0_i = 4'h0;
+            G1_m1_i = 4'h0;
+            G2_m0_i = 4'h0;
+            G2_m1_i = 4'h0;
+            G3_m0_i = 4'h0;
+            G3_m1_i = 4'h0;
           end
       endcase // case ({r, state})
-
     end
+
 endmodule // blake2_m_select
 
 //======================================================================
