@@ -202,6 +202,8 @@ module blake2_core(
   reg update_state;
   reg update_output;
 
+  reg load_m;
+
   reg [63 : 0]  G0_a;
   reg [63 : 0]  G0_b;
   reg [63 : 0]  G0_c;
@@ -251,6 +253,9 @@ module blake2_core(
   // Instantiation of the compression modules.
   //----------------------------------------------------------------
   blake2_m_select mselect(
+                          .clk(clk),
+                          .reset_n(reset_n),
+                          .load(load_m),
                           .m(block_in),
                           .r(rounds_reg),
                           .state(G_ctr_reg),
@@ -949,8 +954,10 @@ module blake2_core(
       sample_params      = 0;
       update_output      = 0;
 
-      G_ctr_inc         = 0;
-      G_ctr_rst         = 0;
+      load_m             = 0;
+
+      G_ctr_inc          = 0;
+      G_ctr_rst          = 0;
 
       dr_ctr_inc         = 0;
       dr_ctr_rst         = 0;
@@ -980,6 +987,7 @@ module blake2_core(
                 ready_new       = 0;
                 ready_we        = 1;
                 data_in_we      = 1;
+                load_m          = 1;
                 sample_params   = 1;
                 block_ctr_rst   = 1;
                 blake2_ctrl_new = CTRL_INIT;
@@ -991,7 +999,7 @@ module blake2_core(
         CTRL_INIT:
           begin
             init_state      = 1;
-            G_ctr_rst      = 1;
+            G_ctr_rst       = 1;
             dr_ctr_rst      = 1;
             blake2_ctrl_new = CTRL_ROUNDS;
             blake2_ctrl_we  = 1;
@@ -1036,6 +1044,7 @@ module blake2_core(
                 data_out_valid_new = 0;
                 data_out_valid_we  = 1;
                 data_in_we         = 1;
+                load_m             = 1;
                 sample_params      = 1;
                 block_ctr_rst      = 1;
                 blake2_ctrl_new    = CTRL_INIT;
@@ -1048,6 +1057,7 @@ module blake2_core(
                 data_out_valid_new = 0;
                 data_out_valid_we  = 1;
                 data_in_we         = 1;
+                load_m             = 1;
                 block_ctr_inc      = 1;
                 blake2_ctrl_new    = CTRL_INIT;
                 blake2_ctrl_we     = 1;
