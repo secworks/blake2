@@ -44,7 +44,7 @@ module blake2_core(
                    input wire            init,
                    input wire            next,
 
-                   input wire [1023 : 0] block_in,
+                   input wire [1023 : 0] block,
 
                    output wire           ready,
 
@@ -240,7 +240,7 @@ module blake2_core(
                           .clk(clk),
                           .reset_n(reset_n),
                           .load(load_m),
-                          .m(block_in),
+                          .m(block),
                           .r(rounds_reg),
                           .state(G_ctr_reg),
                           .G0_m0(G0_m0),
