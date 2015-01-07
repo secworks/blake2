@@ -62,59 +62,11 @@ module blake2(
   parameter ADDR_STATUS      = 8'h01;
   parameter STATUS_READY_BIT = 0;
 
-  parameter ADDR_KEYLEN      = 8'h08;
-  parameter KEYLEN_BIT       = 0;
-  parameter ADDR_ROUNDS      = 8'h09;
-  parameter ROUNDS_HIGH_BIT  = 4;
-  parameter ROUNDS_LOW_BIT   = 0;
+  parameter ADDR_BLOCK_W00   = 8'h10;
+  parameter ADDR_BLOCK_W31   = 8'h2f;
 
-  parameter ADDR_KEY0        = 8'h10;
-  parameter ADDR_KEY1        = 8'h11;
-  parameter ADDR_KEY2        = 8'h12;
-  parameter ADDR_KEY3        = 8'h13;
-  parameter ADDR_KEY4        = 8'h14;
-  parameter ADDR_KEY5        = 8'h15;
-  parameter ADDR_KEY6        = 8'h16;
-  parameter ADDR_KEY7        = 8'h17;
-
-  parameter ADDR_IV0         = 8'h20;
-  parameter ADDR_IV1         = 8'h21;
-
-  parameter ADDR_DATA_IN0    = 8'h40;
-  parameter ADDR_DATA_IN1    = 8'h41;
-  parameter ADDR_DATA_IN2    = 8'h42;
-  parameter ADDR_DATA_IN3    = 8'h43;
-  parameter ADDR_DATA_IN4    = 8'h44;
-  parameter ADDR_DATA_IN5    = 8'h45;
-  parameter ADDR_DATA_IN6    = 8'h46;
-  parameter ADDR_DATA_IN7    = 8'h47;
-  parameter ADDR_DATA_IN8    = 8'h48;
-  parameter ADDR_DATA_IN9    = 8'h49;
-  parameter ADDR_DATA_IN10   = 8'h4a;
-  parameter ADDR_DATA_IN11   = 8'h4b;
-  parameter ADDR_DATA_IN12   = 8'h4c;
-  parameter ADDR_DATA_IN13   = 8'h4d;
-  parameter ADDR_DATA_IN14   = 8'h4e;
-  parameter ADDR_DATA_IN15   = 8'h4f;
-
-  parameter ADDR_DATA_OUT0   = 8'h80;
-  parameter ADDR_DATA_OUT1   = 8'h81;
-  parameter ADDR_DATA_OUT2   = 8'h82;
-  parameter ADDR_DATA_OUT3   = 8'h83;
-  parameter ADDR_DATA_OUT4   = 8'h84;
-  parameter ADDR_DATA_OUT5   = 8'h85;
-  parameter ADDR_DATA_OUT6   = 8'h86;
-  parameter ADDR_DATA_OUT7   = 8'h87;
-  parameter ADDR_DATA_OUT8   = 8'h88;
-  parameter ADDR_DATA_OUT9   = 8'h89;
-  parameter ADDR_DATA_OUT10  = 8'h8a;
-  parameter ADDR_DATA_OUT11  = 8'h8b;
-  parameter ADDR_DATA_OUT12  = 8'h8c;
-  parameter ADDR_DATA_OUT13  = 8'h8d;
-  parameter ADDR_DATA_OUT14  = 8'h8e;
-  parameter ADDR_DATA_OUT15  = 8'h8f;
-
-  parameter DEFAULT_CTR_INIT = 64'h0000000000000000;
+  parameter ADDR_DIGEST00    = 8'h80;
+  parameter ADDR_DIGEST15    = 8'h8f;
 
 
   //----------------------------------------------------------------
@@ -126,103 +78,27 @@ module blake2(
 
   reg ready_reg;
 
-  reg keylen_reg;
-  reg keylen_we;
+  reg digest_valid_reg;
 
-  reg [4 : 0] rounds_reg;
-  reg         rounds_we;
+  reg [31 : 0] block_mem [0 : 31];
+  reg          block_mem_we;
 
-  reg data_out_valid_reg;
-
-  reg [31 : 0] key0_reg;
-  reg          key0_we;
-  reg [31 : 0] key1_reg;
-  reg          key1_we;
-  reg [31 : 0] key2_reg;
-  reg          key2_we;
-  reg [31 : 0] key3_reg;
-  reg          key3_we;
-  reg [31 : 0] key4_reg;
-  reg          key4_we;
-  reg [31 : 0] key5_reg;
-  reg          key5_we;
-  reg [31 : 0] key6_reg;
-  reg          key6_we;
-  reg [31 : 0] key7_reg;
-  reg          key7_we;
-
-  reg [31 : 0] iv0_reg;
-  reg          iv0_we;
-  reg [31 : 0] iv1_reg;
-  reg          iv1_we;
-
-  reg [31 : 0] data_in0_reg;
-  reg          data_in0_we;
-  reg [31 : 0] data_in1_reg;
-  reg          data_in1_we;
-  reg [31 : 0] data_in2_reg;
-  reg          data_in2_we;
-  reg [31 : 0] data_in3_reg;
-  reg          data_in3_we;
-  reg [31 : 0] data_in4_reg;
-  reg          data_in4_we;
-  reg [31 : 0] data_in5_reg;
-  reg          data_in5_we;
-  reg [31 : 0] data_in6_reg;
-  reg          data_in6_we;
-  reg [31 : 0] data_in7_reg;
-  reg          data_in7_we;
-  reg [31 : 0] data_in8_reg;
-  reg          data_in8_we;
-  reg [31 : 0] data_in9_reg;
-  reg          data_in9_we;
-  reg [31 : 0] data_in10_reg;
-  reg          data_in10_we;
-  reg [31 : 0] data_in11_reg;
-  reg          data_in11_we;
-  reg [31 : 0] data_in12_reg;
-  reg          data_in12_we;
-  reg [31 : 0] data_in13_reg;
-  reg          data_in13_we;
-  reg [31 : 0] data_in14_reg;
-  reg          data_in14_we;
-  reg [31 : 0] data_in15_reg;
-  reg          data_in15_we;
-
-  reg [31 : 0] data_out0_reg;
-  reg [31 : 0] data_out1_reg;
-  reg [31 : 0] data_out2_reg;
-  reg [31 : 0] data_out3_reg;
-  reg [31 : 0] data_out4_reg;
-  reg [31 : 0] data_out5_reg;
-  reg [31 : 0] data_out6_reg;
-  reg [31 : 0] data_out7_reg;
-  reg [31 : 0] data_out8_reg;
-  reg [31 : 0] data_out9_reg;
-  reg [31 : 0] data_out10_reg;
-  reg [31 : 0] data_out11_reg;
-  reg [31 : 0] data_out12_reg;
-  reg [31 : 0] data_out13_reg;
-  reg [31 : 0] data_out14_reg;
-  reg [31 : 0] data_out15_reg;
+  reg [31 : 0] digest_mem [0 : 16];
+  reg          digest_mem_we;
 
 
   //----------------------------------------------------------------
   // Wires.
   //----------------------------------------------------------------
-  wire           core_init;
-  wire           core_next;
-  wire [255 : 0] core_key;
-  wire           core_keylen;
-  wire [4 : 0]   core_rounds;
-  wire [63 : 0]  core_iv;
-  wire           core_ready;
-  wire [511 : 0] core_data_in;
-  wire [511 : 0] core_data_out;
-  wire           core_data_out_valid;
+  wire            core_init;
+  wire            core_next;
+  wire            core_ready;
+  wire [1023 : 0] core_block;
+  wire [511 : 0]  core_digest;
+  wire            core_digest_valid;
 
-  reg [31 : 0]   tmp_read_data;
-  reg            tmp_error;
+  reg [31 : 0]    tmp_read_data;
+  reg             tmp_error;
 
 
   //----------------------------------------------------------------
@@ -260,18 +136,12 @@ module blake2(
                     .init(core_init),
                     .next(core_next),
 
-                    .key(core_key),
-                    .keylen(core_keylen),
-                    .iv(core_iv),
-                    .ctr(DEFAULT_CTR_INIT),
-                    .rounds(core_rounds),
-
-                    .data_in(core_data_in),
+                    .block(core_block),
 
                     .ready(core_ready),
 
-                    .data_out(core_data_out),
-                    .data_out_valid(core_data_out_valid)
+                    .digest(core_digest),
+                    .digest_valid(core_digest_valid)
                    );
 
 
@@ -284,60 +154,23 @@ module blake2(
   //----------------------------------------------------------------
   always @ (posedge clk or negedge reset_n)
     begin
+      integer i;
+
       if (!reset_n)
         begin
-          init_reg           <= 0;
-          next_reg           <= 0;
-          ready_reg          <= 0;
-          keylen_reg         <= 0;
-          rounds_reg         <= 5'b00000;
-          data_out_valid_reg <= 0;
+          init_reg      <= 0;
+          next_reg      <= 0;
+          ready_reg     <= 0;
 
-          key0_reg           <= 32'h00000000;
-          key1_reg           <= 32'h00000000;
-          key2_reg           <= 32'h00000000;
-          key3_reg           <= 32'h00000000;
-          key4_reg           <= 32'h00000000;
-          key5_reg           <= 32'h00000000;
-          key6_reg           <= 32'h00000000;
-          key7_reg           <= 32'h00000000;
+          for (i = 0 ; i < 32 ; i = i + 1)
+            begin
+              block_mem[i] <= 32'h00000000;
+            end
 
-          iv0_reg            <= 32'h00000000;
-          iv1_reg            <= 32'h00000000;
-
-          data_in0_reg       <= 32'h00000000;
-          data_in1_reg       <= 32'h00000000;
-          data_in2_reg       <= 32'h00000000;
-          data_in3_reg       <= 32'h00000000;
-          data_in4_reg       <= 32'h00000000;
-          data_in5_reg       <= 32'h00000000;
-          data_in6_reg       <= 32'h00000000;
-          data_in7_reg       <= 32'h00000000;
-          data_in8_reg       <= 32'h00000000;
-          data_in9_reg       <= 32'h00000000;
-          data_in10_reg      <= 32'h00000000;
-          data_in11_reg      <= 32'h00000000;
-          data_in12_reg      <= 32'h00000000;
-          data_in13_reg      <= 32'h00000000;
-          data_in14_reg      <= 32'h00000000;
-          data_in15_reg      <= 32'h00000000;
-
-          data_out0_reg      <= 32'h00000000;
-          data_out1_reg      <= 32'h00000000;
-          data_out2_reg      <= 32'h00000000;
-          data_out3_reg      <= 32'h00000000;
-          data_out4_reg      <= 32'h00000000;
-          data_out5_reg      <= 32'h00000000;
-          data_out6_reg      <= 32'h00000000;
-          data_out7_reg      <= 32'h00000000;
-          data_out8_reg      <= 32'h00000000;
-          data_out9_reg      <= 32'h00000000;
-          data_out10_reg     <= 32'h00000000;
-          data_out11_reg     <= 32'h00000000;
-          data_out12_reg     <= 32'h00000000;
-          data_out13_reg     <= 32'h00000000;
-          data_out14_reg     <= 32'h00000000;
-          data_out15_reg     <= 32'h00000000;
+          for (i = 0 ; i < 16 ; i = i + 1)
+            begin
+              digest_mem[i] <= 32'h00000000;
+            end
         end
       else
         begin
@@ -350,165 +183,11 @@ module blake2(
               next_reg <= write_data[CTRL_NEXT_BIT];
             end
 
-          if (keylen_we)
+          if (block_mem_we)
             begin
-              keylen_reg <= write_data[KEYLEN_BIT];
+              block_mem[address[4 : 0]] <= write_data;
             end
 
-          if (rounds_we)
-            begin
-              rounds_reg <= write_data[ROUNDS_HIGH_BIT : ROUNDS_LOW_BIT];
-            end
-
-          if (key0_we)
-            begin
-              key0_reg <= write_data;
-            end
-
-          if (key1_we)
-            begin
-              key1_reg <= write_data;
-            end
-
-          if (key2_we)
-            begin
-              key2_reg <= write_data;
-            end
-
-          if (key3_we)
-            begin
-              key3_reg <= write_data;
-            end
-
-          if (key4_we)
-            begin
-              key4_reg <= write_data;
-            end
-
-          if (key5_we)
-            begin
-              key5_reg <= write_data;
-            end
-
-          if (key6_we)
-            begin
-              key6_reg <= write_data;
-            end
-
-          if (key7_we)
-            begin
-              key7_reg <= write_data;
-            end
-
-          if (iv0_we)
-            begin
-              iv0_reg <= write_data;
-            end
-
-          if (iv1_we)
-            begin
-              iv1_reg <= write_data;
-            end
-
-          if (data_in0_we)
-            begin
-              data_in0_reg <= write_data;
-            end
-
-          if (data_in1_we)
-            begin
-              data_in1_reg <= write_data;
-            end
-
-          if (data_in2_we)
-            begin
-              data_in2_reg <= write_data;
-            end
-
-          if (data_in3_we)
-            begin
-              data_in3_reg <= write_data;
-            end
-
-          if (data_in4_we)
-            begin
-              data_in4_reg <= write_data;
-            end
-
-          if (data_in5_we)
-            begin
-              data_in5_reg <= write_data;
-            end
-
-          if (data_in6_we)
-            begin
-              data_in6_reg <= write_data;
-            end
-
-          if (data_in7_we)
-            begin
-              data_in7_reg <= write_data;
-            end
-
-          if (data_in8_we)
-            begin
-              data_in8_reg <= write_data;
-            end
-
-          if (data_in9_we)
-            begin
-              data_in9_reg <= write_data;
-            end
-
-          if (data_in10_we)
-            begin
-              data_in10_reg <= write_data;
-            end
-
-          if (data_in11_we)
-            begin
-              data_in11_reg <= write_data;
-            end
-
-          if (data_in12_we)
-            begin
-              data_in12_reg <= write_data;
-            end
-
-          if (data_in13_we)
-            begin
-              data_in13_reg <= write_data;
-            end
-
-          if (data_in14_we)
-            begin
-              data_in14_reg <= write_data;
-            end
-
-          if (data_in15_we)
-            begin
-              data_in15_reg <= write_data;
-            end
-
-          if (core_data_out_valid)
-            begin
-              data_out0_reg  <= core_data_out[511 : 480];
-              data_out1_reg  <= core_data_out[479 : 448];
-              data_out2_reg  <= core_data_out[447 : 416];
-              data_out3_reg  <= core_data_out[415 : 384];
-              data_out4_reg  <= core_data_out[383 : 352];
-              data_out5_reg  <= core_data_out[351 : 320];
-              data_out6_reg  <= core_data_out[319 : 288];
-              data_out7_reg  <= core_data_out[287 : 256];
-              data_out8_reg  <= core_data_out[255 : 224];
-              data_out9_reg  <= core_data_out[223 : 192];
-              data_out10_reg <= core_data_out[191 : 160];
-              data_out11_reg <= core_data_out[159 : 128];
-              data_out12_reg <= core_data_out[127 :  96];
-              data_out13_reg <= core_data_out[95  :  64];
-              data_out14_reg <= core_data_out[63  :  32];
-              data_out15_reg <= core_data_out[31  :   0];
-            end
         end
     end // reg_update
 
@@ -518,38 +197,8 @@ module blake2(
   //----------------------------------------------------------------
   always @*
     begin : addr_decoder
-      ctrl_we      = 0;
-      keylen_we    = 0;
-      rounds_we    = 0;
-
-      key0_we      = 0;
-      key1_we      = 0;
-      key2_we      = 0;
-      key3_we      = 0;
-      key4_we      = 0;
-      key5_we      = 0;
-      key6_we      = 0;
-      key7_we      = 0;
-
-      iv0_we       = 0;
-      iv1_we       = 0;
-
-      data_in0_we  = 0;
-      data_in1_we  = 0;
-      data_in2_we  = 0;
-      data_in3_we  = 0;
-      data_in4_we  = 0;
-      data_in5_we  = 0;
-      data_in6_we  = 0;
-      data_in7_we  = 0;
-      data_in8_we  = 0;
-      data_in9_we  = 0;
-      data_in10_we = 0;
-      data_in11_we = 0;
-      data_in12_we = 0;
-      data_in13_we = 0;
-      data_in14_we = 0;
-      data_in15_we = 0;
+      block_mem_we  = 0;
+      digest_mem_we = 0;
 
       tmp_read_data = 32'h00000000;
       tmp_error     = 0;
@@ -558,6 +207,11 @@ module blake2(
         begin
           if (we)
             begin
+              if ((addr >= ADDR_BLOCK_W00) && (addr <= ADDR_BLOCK_W31))
+                begin
+                  block_mem_we = 1;
+                end
+
               case (address)
                 ADDR_CTRL:
                   begin
