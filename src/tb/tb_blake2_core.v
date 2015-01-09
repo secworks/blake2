@@ -55,34 +55,41 @@ module tb_blake2_core();
   //----------------------------------------------------------------
   // Register and Wire declarations.
   //----------------------------------------------------------------
-  reg tb_clk;
-  reg tb_reset_n;
+  reg [63 : 0]   cycle_ctr;
+  reg [31 : 0]   error_ctr;
+  reg [31 : 0]   tc_ctr;
 
-  reg           tb_cs;
-  reg           tb_write_read;
+  reg            tb_clk;
+  reg            tb_reset_n;
 
-  reg  [7 : 0]  tb_address;
-  reg  [31 : 0] tb_data_in;
-  wire [31 : 0] tb_data_out;
-  wire          tb_error;
+  reg            tb_init;
+  reg            tb_next;
+  reg [1023 : 0] tb_block;
+  wire           tb_ready;
+  wire [511 : 0] tb_digest;
+  wire           tb_digest_valid;
 
-  reg [63 : 0] cycle_ctr;
-  reg [31 : 0] error_ctr;
-  reg [31 : 0] tc_ctr;
+  reg            error_found;
+  reg [31 : 0]   read_data;
 
-  reg          error_found;
-  reg [31 : 0] read_data;
+  reg [511 : 0]  extracted_data;
 
-  reg [511 : 0] extracted_data;
-
-  reg display_cycle_ctr;
-  reg display_read_write;
+  reg            display_cycle_ctr;
+  reg            display_read_write;
 
 
   //----------------------------------------------------------------
   // blake2_core device under test.
   //----------------------------------------------------------------
   blake2_core dut(
+                  .clk(tb_clk),
+                  .reset_n(tb_reset_n),
+                  .init(tb_init),
+                  .next(tb_next),
+                  .block(tb_block),
+                  .ready(tb_ready),
+                  .digest(tb_digest),
+                  .digest_valid(tb_digest_valid)
                  );
 
 
@@ -191,6 +198,9 @@ module tb_blake2_core();
       tc_ctr        = 0;
       tb_clk        = 0;
       tb_reset_n    = 0;
+      tb_init       = 0;
+      tb_next       = 0;
+      tb_block      = {16{64'h0000000000000000}};
     end
   endtask // init_dut
 
