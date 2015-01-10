@@ -1,11 +1,12 @@
 //======================================================================
 //
 // tb_blake2_core.v
-// -----------
-// Testbench for the Blake2_core top level wrapper.
+// ----------------
+// Testbench for the Blake2 core.
 //
 //
-// Copyright (c) 2013, Secworks Sweden AB
+// Author: Joachim Strömbergson
+// Copyright (c) 2014, Secworks Sweden AB
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or
@@ -38,7 +39,7 @@
 //------------------------------------------------------------------
 // Simulator directives.
 //------------------------------------------------------------------
-`timescale 1ns/10ps
+`timescale 1ns/100ps
 
 module tb_blake2_core();
 
@@ -75,7 +76,6 @@ module tb_blake2_core();
   reg [511 : 0]  extracted_data;
 
   reg            display_cycle_ctr;
-  reg            display_read_write;
 
 
   //----------------------------------------------------------------
@@ -117,22 +117,6 @@ module tb_blake2_core();
       if (display_cycle_ctr)
         begin
           $display("cycle = %016x:", cycle_ctr);
-        end
-
-      if (display_read_write)
-        begin
-
-          if (dut.cs)
-            begin
-              if (dut.we)
-                begin
-                  $display("*** Write acess: addr 0x%02x = 0x%08x", dut.address, dut.write_data);
-                end
-              else
-                begin
-                  $display("*** Read acess: addr 0x%02x = 0x%08x", dut.address, dut.read_data);
-                end
-            end
         end
 
     end // dut_monitor
@@ -193,14 +177,14 @@ module tb_blake2_core();
     begin
       // Set clock, reset and DUT input signals to
       // defined values at simulation start.
-      cycle_ctr     = 0;
-      error_ctr     = 0;
-      tc_ctr        = 0;
-      tb_clk        = 0;
-      tb_reset_n    = 0;
-      tb_init       = 0;
-      tb_next       = 0;
-      tb_block      = {16{64'h0000000000000000}};
+      cycle_ctr  = 0;
+      error_ctr  = 0;
+      tc_ctr     = 0;
+      tb_clk     = 0;
+      tb_reset_n = 0;
+      tb_init    = 0;
+      tb_next    = 0;
+      tb_block   = {16{64'h0000000000000000}};
     end
   endtask // init_dut
 
