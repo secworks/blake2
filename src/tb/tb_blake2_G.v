@@ -161,8 +161,6 @@ module tb_blake2_G();
   //----------------------------------------------------------------
   task init_dut();
     begin
-      // Set clock, reset and DUT input signals to
-      // defined values at simulation start.
       cycle_ctr = 0;
       error_ctr = 0;
       tc_ctr    = 0;
