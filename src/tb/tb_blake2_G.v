@@ -50,8 +50,6 @@ module tb_blake2_G();
 
   parameter CLK_HALF_PERIOD = 2;
 
-  // API for the dut.
-
 
   //----------------------------------------------------------------
   // Register and Wire declarations.
