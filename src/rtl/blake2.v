@@ -147,9 +147,9 @@ module blake2(
   // All registers are positive edge triggered with asynchronous
   // active low reset. All registers have write enable.
   //----------------------------------------------------------------
-  always @ (posedge clk or negedge reset_n)
-    begin
-      integer i;
+  always @ (posedge clk)
+    begin : reg_update
+      reg [6 : 0] i;
 
       if (!reset_n)
         begin
