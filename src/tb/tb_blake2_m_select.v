@@ -150,7 +150,7 @@ module tb_blake2_m_select();
       $display("------------------");
       $display("");
     end
-  endtask // dump_top_state
+  endtask // dump_dut_state
 
 
   //----------------------------------------------------------------
@@ -204,7 +204,7 @@ module tb_blake2_m_select();
       reset_dut();
 
       $display("State at init after reset:");
-      dump_top_state();
+      dump_dut_state();
 
 
       display_test_result();
