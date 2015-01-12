@@ -58,16 +58,17 @@ module tb_blake2_G();
   reg [31 : 0]  error_ctr;
   reg [31 : 0]  tc_ctr;
 
+  reg           tb_clk;
   reg [63 : 0]  tb_a;
   reg [63 : 0]  tb_b;
   reg [63 : 0]  tb_c;
   reg [63 : 0]  tb_d;
   reg [63 : 0]  tb_m0;
   reg [63 : 0]  tb_m1;
-  wire [63 : 0] tb_a;
-  wire [63 : 0] tb_b;
-  wire [63 : 0] tb_c;
-  wire [63 : 0] tb_d;
+  wire [63 : 0] tb_a_prim;
+  wire [63 : 0] tb_b_prim;
+  wire [63 : 0] tb_c_prim;
+  wire [63 : 0] tb_d_prim;
 
   reg           display_cycle_ctr;
 
@@ -130,7 +131,7 @@ module tb_blake2_G();
       $display("------------------");
       $display("");
     end
-  endtask // dump_top_state
+  endtask // dump_dut_state
 
 
   //----------------------------------------------------------------
@@ -184,7 +185,7 @@ module tb_blake2_G();
       init_dut();
 
       $display("State at init after reset:");
-      dump_top_state();
+      dump_dut_state();
 
 
       display_test_result();
