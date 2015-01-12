@@ -199,8 +199,7 @@ module tb_blake2_core();
       reset_dut();
 
       $display("State at init after reset:");
-      dump_top_state();
-
+      dump_dut_state();
 
       display_test_result();
       $display("*** blake2_core simulation done.");
