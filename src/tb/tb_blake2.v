@@ -140,73 +140,18 @@ module tb_blake2();
 
 
   //----------------------------------------------------------------
-  // read_reg
+  // dump_dut_state
   //
-  // Task that reads and display the value of
-  // a register in the dut.
+  // Dump the internal state of the dut to std out.
   //----------------------------------------------------------------
-  task read_reg(input [7 : 0] addr);
-    begin
-      tb_cs         = 1;
-      tb_write_read = 0;
-      tb_address    = addr;
-      #(2 * CLK_HALF_PERIOD);
-      tb_cs         = 0;
-      tb_write_read = 0;
-      tb_address    = 8'h00;
-      tb_data_in    = 32'h00000000;
-    end
-  endtask // read_reg
-
-
-  //----------------------------------------------------------------
-  // write_reg
-  //
-  // Task that writes to a register in the dut.
-  //----------------------------------------------------------------
-  task write_reg(input [7 : 0] addr, input [31 : 0] data);
-    begin
-      tb_cs         = 1;
-      tb_write_read = 1;
-      tb_address    = addr;
-      tb_data_in    = data;
-      #(2 * CLK_HALF_PERIOD);
-      tb_cs         = 0;
-      tb_write_read = 0;
-      tb_address    = 8'h00;
-      tb_data_in    = 32'h00000000;
-    end
-  endtask // write_reg
-
-
-  //----------------------------------------------------------------
-  // dump_top_state
-  //
-  // Dump the internal state of the top to std out.
-  //----------------------------------------------------------------
-  task dump_top_state();
+  task dump_dut_state();
     begin
       $display("");
-      $display("Top internal state");
+      $display("DUT internal state");
       $display("------------------");
       $display("");
     end
-  endtask // dump_top_state
-
-
-  //----------------------------------------------------------------
-  // dump_core_state
-  //
-  // Dump the internal state of the core to std out.
-  //----------------------------------------------------------------
-  task dump_core_state();
-    begin
-      $display("");
-      $display("Core internal state");
-      $display("-------------------");
-      $display("");
-    end
-  endtask // dump_core_state
+  endtask // dump_dut_state
 
 
   //----------------------------------------------------------------
@@ -261,7 +206,7 @@ module tb_blake2();
       reset_dut();
 
       $display("State at init after reset:");
-      dump_top_state();
+      dump_dut_state();
 
 
       display_test_result();
