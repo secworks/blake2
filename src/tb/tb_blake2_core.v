@@ -46,11 +46,10 @@ module tb_blake2_core();
   //----------------------------------------------------------------
   // Internal constant and parameter definitions.
   //----------------------------------------------------------------
-  parameter DEBUG = 0;
+  parameter DISPLAY_STATE = 1;
 
   parameter CLK_HALF_PERIOD = 2;
-
-  // API for the dut.
+  parameter CLK_PERIOD      = 2 * CLK_HALF_PERIOD;
 
 
   //----------------------------------------------------------------
@@ -119,6 +118,11 @@ module tb_blake2_core();
           $display("cycle = %016x:", cycle_ctr);
         end
 
+      if (DISPLAY_STATE)
+        begin
+          dump_dut_state();
+        end
+
     end // dut_monitor
 
 
@@ -128,7 +132,7 @@ module tb_blake2_core();
   task reset_dut();
     begin
       tb_reset_n = 0;
-      #(4 * CLK_HALF_PERIOD);
+      #(2 * CLK_PERIOD);
       tb_reset_n = 1;
     end
   endtask // reset_dut
@@ -141,9 +145,17 @@ module tb_blake2_core();
   //----------------------------------------------------------------
   task dump_dut_state();
     begin
-      $display("");
       $display("DUT internal state");
       $display("------------------");
+      $display("Inputs and outputs:");
+      $display("init  = 0x%01x, next  = 0x%01x", dut.init, dut.next);
+      $display("ready = 0x%01x, valid = 0x%01x", dut.ready, dut.digest_valid);
+      $display("");
+
+      $display("State and control:");
+      $display("blake2_ctrl_reg = 0x%02x", dut.blake2_ctrl_reg);
+      $display("G_ctr_reg       = 0x%01x, dr_ctr_reg = 0x%04x", dut.G_ctr_reg,
+               dut.dr_ctr_reg);
       $display("");
     end
   endtask // dump_top_state
@@ -200,6 +212,12 @@ module tb_blake2_core();
 
       $display("State at init after reset:");
       dump_dut_state();
+
+      tb_init = 1;
+      #(2 * CLK_PERIOD);
+      tb_init = 0;
+
+      #(100 * CLK_PERIOD);
 
       display_test_result();
       $display("*** blake2_core simulation done.");
