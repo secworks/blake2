@@ -48,7 +48,9 @@ module tb_blake2_m_select();
   //----------------------------------------------------------------
   parameter DEBUG = 0;
 
+
   parameter CLK_HALF_PERIOD = 2;
+  parameter CLK_PERIOD      = 2 * CLK_HALF_PERIOD;
 
 
   //----------------------------------------------------------------
@@ -205,6 +207,12 @@ module tb_blake2_m_select();
 
       $display("State at init after reset:");
       dump_dut_state();
+
+      tb_load = 1;
+      #(2 * CLK_PERIOD);
+      tb_load = 0;
+
+      #(100 * CLK_PERIOD);
 
 
       display_test_result();
