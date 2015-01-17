@@ -153,17 +153,20 @@ module tb_blake2_m_select();
       $display("Inputs:");
       $display("load = 0x%01x, r = 0x%02x, state = 0x%01x",
                dut.load, dut.r, dut.state);
-      $display("m = 0x%0128", dut.m);
+      $display("m[1023 : 0768] = 0x%064x", dut.m[1023 : 0768]);
+      $display("m[0767 : 0512] = 0x%064x", dut.m[0767 : 0512]);
+      $display("m[0511 : 0256] = 0x%064x", dut.m[0511 : 0256]);
+      $display("m[0255 : 0000] = 0x%064x", dut.m[0255 : 0000]);
       $display("");
 
       $display("Outputs:");
-      $display("G0_m0 = 0x%032x, G0_m1 = 0x%032x:",
+      $display("G0_m0 = 0x%016x, G0_m1 = 0x%016x",
                dut.G0_m0, dut.G0_m1);
-      $display("G1_m0 = 0x%032x, G1_m1 = 0x%032x:",
+      $display("G1_m0 = 0x%016x, G1_m1 = 0x%016x",
                dut.G1_m0, dut.G1_m1);
-      $display("G2_m0 = 0x%032x, G2_m1 = 0x%032x:",
+      $display("G2_m0 = 0x%016x, G2_m1 = 0x%016x",
                dut.G2_m0, dut.G2_m1);
-      $display("G3_m0 = 0x%032x, G3_m1 = 0x%032x:",
+      $display("G3_m0 = 0x%016x, G3_m1 = 0x%016x",
                dut.G3_m0, dut.G3_m1);
       $display("");
     end
@@ -217,6 +220,10 @@ module tb_blake2_m_select();
   initial
     begin : blake2_m_select_test
       $display("   -- Testbench for blake2 m select module started --");
+
+      $display("State before reset:");
+      dump_dut_state();
+
       init_dut();
       reset_dut();
 
