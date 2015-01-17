@@ -82,7 +82,7 @@ module tb_blake2_m_select();
   //----------------------------------------------------------------
   // blake2_m_select device under test.
   //----------------------------------------------------------------
-  blake2_m_select DUT(
+  blake2_m_select dut(
                       .clk(tb_clk),
                       .reset_n(tb_reset_n),
                       .load(tb_load),
@@ -134,7 +134,7 @@ module tb_blake2_m_select();
   task reset_dut();
     begin
       tb_reset_n = 0;
-      #(4 * CLK_HALF_PERIOD);
+      #(2 * CLK_PERIOD);
       tb_reset_n = 1;
     end
   endtask // reset_dut
@@ -150,6 +150,21 @@ module tb_blake2_m_select();
       $display("");
       $display("DUT internal state");
       $display("------------------");
+      $display("Inputs:");
+      $display("load = 0x%01x, r = 0x%02x, state = 0x%01x",
+               dut.load, dut.r, dut.state);
+      $display("m = 0x%0128", dut.m);
+      $display("");
+
+      $display("Outputs:");
+      $display("G0_m0 = 0x%032x, G0_m1 = 0x%032x:",
+               dut.G0_m0, dut.G0_m1);
+      $display("G1_m0 = 0x%032x, G1_m1 = 0x%032x:",
+               dut.G1_m0, dut.G1_m1);
+      $display("G2_m0 = 0x%032x, G2_m1 = 0x%032x:",
+               dut.G2_m0, dut.G2_m1);
+      $display("G3_m0 = 0x%032x, G3_m1 = 0x%032x:",
+               dut.G3_m0, dut.G3_m1);
       $display("");
     end
   endtask // dump_dut_state
