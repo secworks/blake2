@@ -159,6 +159,25 @@ module tb_blake2_m_select();
       $display("m[0255 : 0000] = 0x%064x", dut.m[0255 : 0000]);
       $display("");
 
+      $display("M memory:");
+      $display("m[00] = 0x%016x", dut.m[00]);
+      $display("m[01] = 0x%016x", dut.m[01]);
+      $display("m[02] = 0x%016x", dut.m[02]);
+      $display("m[03] = 0x%016x", dut.m[03]);
+      $display("m[04] = 0x%016x", dut.m[04]);
+      $display("m[05] = 0x%016x", dut.m[05]);
+      $display("m[06] = 0x%016x", dut.m[06]);
+      $display("m[07] = 0x%016x", dut.m[07]);
+      $display("m[08] = 0x%016x", dut.m[08]);
+      $display("m[09] = 0x%016x", dut.m[09]);
+      $display("m[10] = 0x%016x", dut.m[10]);
+      $display("m[11] = 0x%016x", dut.m[11]);
+      $display("m[12] = 0x%016x", dut.m[12]);
+      $display("m[13] = 0x%016x", dut.m[13]);
+      $display("m[14] = 0x%016x", dut.m[14]);
+      $display("m[15] = 0x%016x", dut.m[15]);
+      $display("");
+
       $display("Outputs:");
       $display("G0_m0 = 0x%016x, G0_m1 = 0x%016x",
                dut.G0_m0, dut.G0_m1);
