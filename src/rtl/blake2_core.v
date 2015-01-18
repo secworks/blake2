@@ -365,7 +365,7 @@ module blake2_core(
           v13_reg            <= 64'h0000000000000000;
           v14_reg            <= 64'h0000000000000000;
           v15_reg            <= 64'h0000000000000000;
-          rounds_reg         <= 4'h0;
+          rounds_reg         <= NUM_ROUNDS;
           ready_reg          <= 1;
           digest_valid_reg   <= 0;
           G_ctr_reg          <= STATE_G0;
