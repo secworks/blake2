@@ -150,6 +150,12 @@ module tb_blake2_core();
       $display("Inputs and outputs:");
       $display("init  = 0x%01x, next  = 0x%01x", dut.init, dut.next);
       $display("ready = 0x%01x, valid = 0x%01x", dut.ready, dut.digest_valid);
+      $display("block[1023 : 0768] = 0x%064x", dut.block[1023 : 0768]);
+      $display("block[0767 : 0512] = 0x%064x", dut.block[0767 : 0512]);
+      $display("block[0511 : 0256] = 0x%064x", dut.block[0511 : 0256]);
+      $display("block[0255 : 0000] = 0x%064x", dut.block[0255 : 0000]);
+      $display("digest[511 : 256]  = 0x%064x", dut.digest[0511 : 0256]);
+      $display("digest[255 : 000]  = 0x%064x", dut.digest[0255 : 0000]);
       $display("");
 
       $display("State and control:");
