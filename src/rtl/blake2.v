@@ -1,6 +1,6 @@
 //======================================================================
 //
-// chacha.v
+// blake2.v
 // --------
 // Top level wrapper for the blake2 hash function core providing
 // a simple memory like interface with 32 bit data access.
