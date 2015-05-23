@@ -57,13 +57,57 @@ module blake2_core(
 
 
   //----------------------------------------------------------------
-  // Internal constant and parameter definitions.
+  // Configuration parameters.
+  //----------------------------------------------------------------
+  // Default number of rounds
+  parameter NUM_ROUNDS = 4'hc;
+
+  //----------------------------------------------------------------
+  // Parameter block.
+  //----------------------------------------------------------------
+  // The digest length in bytes. Minimum: 1, Maximum: 64
+  parameter [7:0] DIGEST_LENGTH = 8'd64;
+
+  // The key length in bytes. Minimum: 0 (for no key used), Maximum: 64
+  parameter [7:0] KEY_LENGTH = 8'd0;
+
+  // Fanout
+  parameter [7:0] FANOUT = 8'h01;
+
+  // Depth (maximal)
+  parameter [7:0] DEPTH = 8'h01;
+
+  // 4-byte leaf length
+  parameter [31:0] LEAF_LENGTH = 32'h00000000;
+
+  // 8-byte node offset
+  parameter [64:0] NODE_OFFSET = 64'h0000000000000000;
+
+  // Node Depth
+  parameter [7:0] NODE_DEPTH = 8'h00;
+
+  // Inner hash length
+  parameter [7:0] INNER_LENGTH = 8'h00;
+
+  // Reserved for future use (14 bytes)
+  parameter [111:0] RESERVED = 112'h0000000000000000000000000000;
+
+  // 16-byte salt, little-endian byte order
+  parameter [127:0] SALT = 128'h00000000000000000000000000000000;
+
+  // 16-byte personalization, little-endian byte order
+  parameter [127:0] PERSONALIZATION = 128'h00000000000000000000000000000000;
+
+  wire [511:0] parameter_block = {PERSONALIZATION, SALT, RESERVED, INNER_LENGTH,
+                                  NODE_DEPTH, NODE_OFFSET, LEAF_LENGTH, DEPTH,
+                                  FANOUT, KEY_LENGTH, DIGEST_LENGTH};
+
+  //----------------------------------------------------------------
+  // Internal constant definitions.
   //----------------------------------------------------------------
   // Datapath quartterround states names.
   parameter STATE_G0 = 1'b0;
   parameter STATE_G1 = 1'b1;
-
-  parameter NUM_ROUNDS = 4'hc;
 
   parameter IV0 = 64'h6a09e667f3bcc908;
   parameter IV1 = 64'hbb67ae8584caa73b;
@@ -496,14 +540,24 @@ module blake2_core(
 
       if (init_state)
         begin
-          v0_new  = h0_reg;
-          v1_new  = h1_reg;
-          v2_new  = h2_reg;
-          v3_new  = h3_reg;
-          v4_new  = h4_reg;
-          v5_new  = h5_reg;
-          v6_new  = h6_reg;
-          v7_new  = h7_reg;
+          h0_new  = IV0 ^ parameter_block[63:0];
+          h1_new  = IV1 ^ parameter_block[127:64];
+          h2_new  = IV2 ^ parameter_block[191:128];
+          h3_new  = IV3 ^ parameter_block[255:192];
+          h4_new  = IV4 ^ parameter_block[319:256];
+          h5_new  = IV5 ^ parameter_block[383:320];
+          h6_new  = IV6 ^ parameter_block[447:384];
+          h7_new  = IV7 ^ parameter_block[511:448];
+          h_we    = 1;
+
+          v0_new  = IV0 ^ parameter_block[63:0];
+          v1_new  = IV1 ^ parameter_block[127:64];
+          v2_new  = IV2 ^ parameter_block[191:128];
+          v3_new  = IV3 ^ parameter_block[255:192];
+          v4_new  = IV4 ^ parameter_block[319:256];
+          v5_new  = IV5 ^ parameter_block[383:320];
+          v6_new  = IV6 ^ parameter_block[447:384];
+          v7_new  = IV7 ^ parameter_block[511:448];
           v8_new  = IV0;
           v9_new  = IV1;
           v10_new = IV2;

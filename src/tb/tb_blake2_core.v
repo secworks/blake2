@@ -81,16 +81,19 @@ module tb_blake2_core();
   //----------------------------------------------------------------
   // blake2_core device under test.
   //----------------------------------------------------------------
-  blake2_core dut(
-                  .clk(tb_clk),
-                  .reset_n(tb_reset_n),
-                  .init(tb_init),
-                  .next(tb_next),
-                  .block(tb_block),
-                  .ready(tb_ready),
-                  .digest(tb_digest),
-                  .digest_valid(tb_digest_valid)
-                 );
+  blake2_core #(
+    .DIGEST_LENGTH(64)
+  )
+  dut (
+    .clk(tb_clk),
+    .reset_n(tb_reset_n),
+    .init(tb_init),
+    .next(tb_next),
+    .block(tb_block),
+    .ready(tb_ready),
+    .digest(tb_digest),
+    .digest_valid(tb_digest_valid)
+   );
 
 
   //----------------------------------------------------------------
@@ -157,6 +160,7 @@ module tb_blake2_core();
       $display("block[0255 : 0000] = 0x%064x", dut.block[0255 : 0000]);
       $display("digest[511 : 256]  = 0x%064x", dut.digest[0511 : 0256]);
       $display("digest[255 : 000]  = 0x%064x", dut.digest[0255 : 0000]);
+      $display("parameter_block[64:0]: %016x", dut.parameter_block[64:0]);
       $display("");
 
       $display("State and control:");
