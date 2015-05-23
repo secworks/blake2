@@ -36,6 +36,8 @@
 //
 //======================================================================
 
+`include "blake2_core.v"
+
 module blake2(
               // Clock and reset.
               input wire           clk,

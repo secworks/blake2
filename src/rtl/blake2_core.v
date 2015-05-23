@@ -37,6 +37,9 @@
 //
 //======================================================================
 
+`include "blake2_G.v"
+`include "blake2_m_select.v"
+
 module blake2_core(
                    input wire            clk,
                    input wire            reset_n,

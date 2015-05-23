@@ -3,7 +3,7 @@ install: sudo apt-get install iverilog
 before_script: cd toolruns
 script:
   - make
-  - make sim-top
-  - make sim-core
-  - make sim-G
-  - make sim-m_select
+  - ./blake2.sim
+  - ./blake2_core.sim
+  - ./blake2_G.sim
+  - ./blake2_m_select.sim
