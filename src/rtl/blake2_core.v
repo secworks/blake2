@@ -498,6 +498,19 @@ module blake2_core(
       h7_new = 64'h0000000000000000;
       h_we   = 0;
 
+      if (init_state)
+        begin
+          h0_new  = IV0 ^ parameter_block[63:0];
+          h1_new  = IV1 ^ parameter_block[127:64];
+          h2_new  = IV2 ^ parameter_block[191:128];
+          h3_new  = IV3 ^ parameter_block[255:192];
+          h4_new  = IV4 ^ parameter_block[319:256];
+          h5_new  = IV5 ^ parameter_block[383:320];
+          h6_new  = IV6 ^ parameter_block[447:384];
+          h7_new  = IV7 ^ parameter_block[511:448];
+          h_we    = 1;
+        end
+
       if (update_chain_value)
         begin
           h0_new = h0_reg ^ v0_reg ^ v8_reg;
@@ -540,16 +553,6 @@ module blake2_core(
 
       if (init_state)
         begin
-          h0_new  = IV0 ^ parameter_block[63:0];
-          h1_new  = IV1 ^ parameter_block[127:64];
-          h2_new  = IV2 ^ parameter_block[191:128];
-          h3_new  = IV3 ^ parameter_block[255:192];
-          h4_new  = IV4 ^ parameter_block[319:256];
-          h5_new  = IV5 ^ parameter_block[383:320];
-          h6_new  = IV6 ^ parameter_block[447:384];
-          h7_new  = IV7 ^ parameter_block[511:448];
-          h_we    = 1;
-
           v0_new  = IV0 ^ parameter_block[63:0];
           v1_new  = IV1 ^ parameter_block[127:64];
           v2_new  = IV2 ^ parameter_block[191:128];
