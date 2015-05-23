@@ -51,6 +51,7 @@ module tb_blake2_core();
   parameter CLK_HALF_PERIOD = 2;
   parameter CLK_PERIOD      = 2 * CLK_HALF_PERIOD;
 
+  parameter TEST_DIGEST = 512'h865939e120e6805438478841afb739ae4250cf372653078a065cdcfffca4caf798e6d462b65d658fc165782640eded70963449ae1500fb0f24981d7727e22c41;
 
   //----------------------------------------------------------------
   // Register and Wire declarations.
@@ -225,9 +226,17 @@ module tb_blake2_core();
 
       #(100 * CLK_PERIOD);
 
+      $display("tb_digest:   %0128x", tb_digest);
+      $display("TEST_DIGEST: %0128x", TEST_DIGEST);
+
+      if (tb_digest == TEST_DIGEST)
+        tc_ctr = tc_ctr + 1;
+      else
+        error_ctr = error_ctr + 1;
+
       display_test_result();
       $display("*** blake2_core simulation done.");
-      $finish;
+      $finish_and_return(error_ctr);
     end // blake2_core_test
 endmodule // tb_blake2_core
 
