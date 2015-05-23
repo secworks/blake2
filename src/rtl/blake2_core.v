@@ -106,23 +106,23 @@ module blake2_core(
   // Internal constant definitions.
   //----------------------------------------------------------------
   // Datapath quartterround states names.
-  parameter STATE_G0 = 1'b0;
-  parameter STATE_G1 = 1'b1;
+  localparam STATE_G0 = 1'b0;
+  localparam STATE_G1 = 1'b1;
 
-  parameter IV0 = 64'h6a09e667f3bcc908;
-  parameter IV1 = 64'hbb67ae8584caa73b;
-  parameter IV2 = 64'h3c6ef372fe94f82b;
-  parameter IV3 = 64'ha54ff53a5f1d36f1;
-  parameter IV4 = 64'h510e527fade682d1;
-  parameter IV5 = 64'h9b05688c2b3e6c1f;
-  parameter IV6 = 64'h1f83d9abfb41bd6b;
-  parameter IV7 = 64'h5be0cd19137e2179;
+  localparam IV0 = 64'h6a09e667f3bcc908;
+  localparam IV1 = 64'hbb67ae8584caa73b;
+  localparam IV2 = 64'h3c6ef372fe94f82b;
+  localparam IV3 = 64'ha54ff53a5f1d36f1;
+  localparam IV4 = 64'h510e527fade682d1;
+  localparam IV5 = 64'h9b05688c2b3e6c1f;
+  localparam IV6 = 64'h1f83d9abfb41bd6b;
+  localparam IV7 = 64'h5be0cd19137e2179;
 
-  parameter CTRL_IDLE     = 3'h0;
-  parameter CTRL_INIT     = 3'h1;
-  parameter CTRL_ROUNDS   = 3'h2;
-  parameter CTRL_FINALIZE = 3'h3;
-  parameter CTRL_DONE     = 3'h4;
+  localparam CTRL_IDLE     = 3'h0;
+  localparam CTRL_INIT     = 3'h1;
+  localparam CTRL_ROUNDS   = 3'h2;
+  localparam CTRL_FINALIZE = 3'h3;
+  localparam CTRL_DONE     = 3'h4;
 
 
   //----------------------------------------------------------------
