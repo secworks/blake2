@@ -71,7 +71,7 @@ module blake2_core(
   parameter IV3 = 64'ha54ff53a5f1d36f1;
   parameter IV4 = 64'h510e527fade682d1;
   parameter IV5 = 64'h9b05688c2b3e6c1f;
-  parameter IV6 = 64'h9b05688c2b3e6c1f;
+  parameter IV6 = 64'h1f83d9abfb41bd6b;
   parameter IV7 = 64'h5be0cd19137e2179;
 
   parameter CTRL_IDLE     = 3'h0;
