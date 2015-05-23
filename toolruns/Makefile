@@ -107,7 +107,7 @@ help:
 	@echo "core:         Build the top simulation target."
 	@echo "sim-top:      Run top level simulation."
 	@echo "sim-core:     Run core level simulation."
-	@echo "sim-g:        Run G function simulation."
+	@echo "sim-G:        Run G function simulation."
 	@echo "sim-m_select: Run m_select module simulation."
 	@echo "debug:        Print the internal varibles."
 	@echo "clean:        Remove build results."

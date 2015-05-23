@@ -5,5 +5,5 @@ script:
   - make
   - make sim-top
   - make sim-core
-  - make sim-g
+  - make sim-G
   - make sim-m_select
