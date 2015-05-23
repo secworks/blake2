@@ -1,0 +1,9 @@
+language: c
+install: sudo apt-get install iverilog
+before_script: cd toolruns
+script:
+  - make
+  - make sim-top
+  - make sim-core
+  - make sim-g
+  - make sim-m_select
