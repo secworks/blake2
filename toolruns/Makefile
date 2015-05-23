@@ -110,7 +110,7 @@ help:
 	@echo "sim-g:        Run G function simulation."
 	@echo "sim-m_select: Run m_select module simulation."
 	@echo "debug:        Print the internal varibles."
-	@echo "clan:         Remove build results."
+	@echo "clean:        Remove build results."
 
 #===================================================================
 # EOF Makefile
