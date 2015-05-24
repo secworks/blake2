@@ -355,7 +355,7 @@ module blake2_m_select(
             G2_m0_i = 9;
             G2_m1_i = 2;
             G3_m0_i = 8;
-            G3_m1_i = 1;
+            G3_m1_i = 11;
           end
 
         R7_0:
