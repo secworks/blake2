@@ -49,7 +49,13 @@ module tb_blake2_G();
   parameter DEBUG = 0;
 
   parameter CLK_HALF_PERIOD = 2;
+  parameter CLK_PERIOD = 2 * CLK_HALF_PERIOD;
 
+  parameter [63 : 0]
+    TEST_A_PRIME = 64'hf0c9aa0de38b1b89,
+    TEST_B_PRIME = 64'hbbdf863401fde49b,
+    TEST_C_PRIME = 64'he85eb23c42183d3d,
+    TEST_D_PRIME = 64'h7111fd8b6445099d;
 
   //----------------------------------------------------------------
   // Register and Wire declarations.
@@ -164,10 +170,10 @@ module tb_blake2_G();
       error_ctr = 0;
       tc_ctr    = 0;
       tb_clk    = 0;
-      tb_a      = 64'h0000000000000000;
-      tb_b      = 64'h0000000000000000;
-      tb_c      = 64'h0000000000000000;
-      tb_d      = 64'h0000000000000000;
+      tb_a      = 64'h6a09e667f2bdc948;
+      tb_b      = 64'h510e527fade682d1;
+      tb_c      = 64'h6a09e667f3bcc908;
+      tb_d      = 64'h510e527fade68251;
       tb_m0     = 64'h0000000000000000;
       tb_m1     = 64'h0000000000000000;
     end
@@ -184,13 +190,40 @@ module tb_blake2_G();
       $display("   -- Testbench for Blake2 G function test started --");
       init_dut();
 
-      $display("State at init after reset:");
-      dump_dut_state();
+      #(2 * CLK_PERIOD);
 
+      if (tb_a_prim == TEST_A_PRIME)
+        tc_ctr = tc_ctr + 1;
+      else
+        error_ctr = error_ctr + 1;
+
+      if (tb_b_prim == TEST_B_PRIME)
+        tc_ctr = tc_ctr + 1;
+      else
+        error_ctr = error_ctr + 1;
+
+      if (tb_c_prim == TEST_C_PRIME)
+        tc_ctr = tc_ctr + 1;
+      else
+        error_ctr = error_ctr + 1;
+
+      if (tb_d_prim == TEST_D_PRIME)
+        tc_ctr = tc_ctr + 1;
+      else
+        error_ctr = error_ctr + 1;
+
+      if (error_ctr)
+        begin
+          $display("Errors found--dumping state:");
+          $display("tb_a_prim: %016x", tb_a_prim);
+          $display("tb_b_prim: %016x", tb_b_prim);
+          $display("tb_c_prim: %016x", tb_c_prim);
+          $display("tb_d_prim: %016x", tb_d_prim);
+        end
 
       display_test_result();
       $display("*** Blake2 G functions simulation done.");
-      $finish;
+      $finish_and_return(error_ctr);
     end // tb_blake2_G_test
 endmodule // tb_blake2_G
 
