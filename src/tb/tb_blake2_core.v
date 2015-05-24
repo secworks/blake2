@@ -65,6 +65,7 @@ module tb_blake2_core();
 
   reg            tb_init;
   reg            tb_next;
+  reg            tb_final;
   reg [1023 : 0] tb_block;
   wire           tb_ready;
   wire [511 : 0] tb_digest;
@@ -89,6 +90,7 @@ module tb_blake2_core();
     .reset_n(tb_reset_n),
     .init(tb_init),
     .next(tb_next),
+    .final_block(tb_final),
     .block(tb_block),
     .ready(tb_ready),
     .digest(tb_digest),
@@ -205,6 +207,7 @@ module tb_blake2_core();
       tb_reset_n = 0;
       tb_init    = 0;
       tb_next    = 0;
+      tb_final   = 0;
       tb_block   = {16{64'h0000000000000000}};
     end
   endtask // init_dut
@@ -225,6 +228,7 @@ module tb_blake2_core();
       dump_dut_state();
 
       tb_init = 1;
+      tb_final = 1;
       #(2 * CLK_PERIOD);
       tb_init = 0;
 

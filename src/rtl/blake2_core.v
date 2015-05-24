@@ -46,6 +46,7 @@ module blake2_core(
 
                    input wire            init,
                    input wire            next,
+                   input wire            final_block,
 
                    input wire [1023 : 0] block,
 
@@ -567,7 +568,10 @@ module blake2_core(
           v11_new = IV3;
           v12_new = t0_reg ^ IV4;
           v13_new = t1_reg ^ IV5;
-          v14_new = f0_reg ^ IV6;
+          if (final_block)
+            v14_new = 64'hffffffffffffffff ^ IV6;
+          else
+            v14_new = IV6;
           v15_new = f1_reg ^ IV7;
           v_we    = 1;
         end
