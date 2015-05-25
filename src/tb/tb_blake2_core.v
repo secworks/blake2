@@ -68,6 +68,7 @@ module tb_blake2_core();
   reg            tb_next;
   reg            tb_final;
   reg [1023 : 0] tb_block;
+  reg [127 : 0]  tb_length;
   wire           tb_ready;
   wire [511 : 0] tb_digest;
   wire           tb_digest_valid;
@@ -93,6 +94,7 @@ module tb_blake2_core();
     .next(tb_next),
     .final_block(tb_final),
     .block(tb_block),
+    .data_length(tb_length),
     .ready(tb_ready),
     .digest(tb_digest),
     .digest_valid(tb_digest_valid)
@@ -218,6 +220,7 @@ module tb_blake2_core();
       tb_next    = 0;
       tb_final   = 0;
       tb_block   = {16{64'h0000000000000000}};
+      tb_length  = 128;
     end
   endtask // init_dut
 

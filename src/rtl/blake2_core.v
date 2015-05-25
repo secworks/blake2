@@ -49,6 +49,7 @@ module blake2_core(
                    input wire            final_block,
 
                    input wire [1023 : 0] block,
+                   input wire [127 : 0]  data_length,
 
                    output wire           ready,
 
@@ -62,10 +63,6 @@ module blake2_core(
   //----------------------------------------------------------------
   // Default number of rounds
   parameter NUM_ROUNDS = 4'hc;
-
-  // The total length of the input data in bytes. Minimum: 0, Maximum: 128
-  // TODO: Make 128 bits long; handle multi-block data input
-  parameter [63:0] DATA_LENGTH = 63'd128;
 
   //----------------------------------------------------------------
   // Parameter block.
@@ -555,7 +552,7 @@ module blake2_core(
           v9_new  = IV1;
           v10_new = IV2;
           v11_new = IV3;
-          v12_new = DATA_LENGTH ^ IV4;
+          v12_new = data_length[63:0] ^ IV4;
           v13_new = t1_reg ^ IV5;
           if (final_block)
             v14_new = 64'hffffffffffffffff ^ IV6;
