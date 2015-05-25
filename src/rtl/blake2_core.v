@@ -658,6 +658,29 @@ module blake2_core(
 
                 v_we    = 1;
               end
+
+            default:
+              begin
+                G0_a = 0;
+                G0_b = 0;
+                G0_c = 0;
+                G0_d = 0;
+
+                G1_a = 0;
+                G1_b = 0;
+                G1_c = 0;
+                G1_d = 0;
+
+                G2_a = 0;
+                G2_b = 0;
+                G2_c = 0;
+                G2_d = 0;
+
+                G3_a = 0;
+                G3_b = 0;
+                G3_c = 0;
+                G3_d = 0;
+              end
           endcase // case (G_ctr_reg)
         end // if (update_state)
     end // state_logic
