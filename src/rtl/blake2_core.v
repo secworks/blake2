@@ -820,7 +820,7 @@ module blake2_core(
 
         default:
           begin
-
+            blake2_ctrl_reg = CTRL_IDLE;
           end
       endcase // case (blake2_ctrl_reg)
     end // blake2_ctrl_fsm
