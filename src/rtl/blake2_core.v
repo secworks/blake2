@@ -289,7 +289,7 @@ module blake2_core(
                           .reset_n(reset_n),
                           .load(load_m),
                           .m(block),
-                          .r(rounds_reg),
+                          .r(dr_ctr_reg),
                           .state(G_ctr_reg),
                           .G0_m0(G0_m0),
                           .G0_m1(G0_m1),
