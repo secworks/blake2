@@ -90,6 +90,10 @@ module blake2_m_select(
   parameter R8_1 = 5'b10001;
   parameter R9_0 = 5'b10010;
   parameter R9_1 = 5'b10011;
+  parameter R10_0 = 5'b10100;
+  parameter R10_1 = 5'b10101;
+  parameter R11_0 = 5'b10110;
+  parameter R11_1 = 5'b10111;
 
 
   //----------------------------------------------------------------
@@ -190,7 +194,7 @@ module blake2_m_select(
     begin : get_indices
 
       case ({r, state})
-        R0_0:
+        R0_0, R10_0:
           begin
             G0_m0_i = 0;
             G0_m1_i = 1;
@@ -202,7 +206,7 @@ module blake2_m_select(
             G3_m1_i = 7;
           end
 
-        R0_1:
+        R0_1, R10_1:
           begin
             G0_m0_i = 8;
             G0_m1_i = 9;
@@ -214,7 +218,7 @@ module blake2_m_select(
             G3_m1_i = 15;
           end
 
-        R1_0:
+        R1_0, R11_0:
           begin
             G0_m0_i = 14;
             G0_m1_i = 10;
@@ -226,7 +230,7 @@ module blake2_m_select(
             G3_m1_i = 6;
           end
 
-        R1_1:
+        R1_1, R11_1:
           begin
             G0_m0_i = 1;
             G0_m1_i = 12;
