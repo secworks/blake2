@@ -224,7 +224,10 @@ module tb_blake2_m_select();
       tb_clk     = 0;
       tb_reset_n = 0;
       tb_load    = 0;
-      tb_m       = {16{64'h0000000000000000}};
+      tb_m       = {64'h0f0f0f0f0f0f0f0f, 64'h0e0e0e0e0e0e0e0e, 64'h0d0d0d0d0d0d0d0d, 64'h0c0c0c0c0c0c0c0c,
+                    64'h0b0b0b0b0b0b0b0b, 64'h0a0a0a0a0a0a0a0a, 64'h0909090909090909, 64'h0808080808080808,
+                    64'h0707070707070707, 64'h0606060606060606, 64'h0505050505050505, 64'h0404040404040404,
+                    64'h0303030303030303, 64'h0202020202020202, 64'h0101010101010101, 64'h0000000000000000};
       tb_state   = 0;
       tb_r       = 4'h0;
     end
@@ -255,10 +258,31 @@ module tb_blake2_m_select();
 
       #(100 * CLK_PERIOD);
 
+      $display("State after load:");
+      dump_dut_state();
+
+      for (tb_r = 0; tb_r < 12; tb_r = tb_r + 1)
+        begin
+          tb_state = 0;
+          #(100 * CLK_PERIOD);
+          $display("tb_r = %02d, tb_state = %d", tb_r, tb_state);
+          $display("G0_m0 = 0x%016x, G0_m1 = 0x%016x", dut.G0_m0, dut.G0_m1);
+          $display("G1_m0 = 0x%016x, G1_m1 = 0x%016x", dut.G1_m0, dut.G1_m1);
+          $display("G2_m0 = 0x%016x, G2_m1 = 0x%016x", dut.G2_m0, dut.G2_m1);
+          $display("G3_m0 = 0x%016x, G3_m1 = 0x%016x", dut.G3_m0, dut.G3_m1);
+
+          tb_state = 1;
+          #(100 * CLK_PERIOD);
+          $display("tb_r = %02d, tb_state = %d", tb_r, tb_state);
+          $display("G0_m0 = 0x%016x, G0_m1 = 0x%016x", dut.G0_m0, dut.G0_m1);
+          $display("G1_m0 = 0x%016x, G1_m1 = 0x%016x", dut.G1_m0, dut.G1_m1);
+          $display("G2_m0 = 0x%016x, G2_m1 = 0x%016x", dut.G2_m0, dut.G2_m1);
+          $display("G3_m0 = 0x%016x, G3_m1 = 0x%016x", dut.G3_m0, dut.G3_m1);
+        end
 
       display_test_result();
       $display("*** blake2 m select simulation done.");
-      $finish;
+      $finish_and_return(error_ctr);
     end // blake2_m_select_test
 endmodule // tb_blake2_m_select
 
