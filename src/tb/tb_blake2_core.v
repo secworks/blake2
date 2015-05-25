@@ -51,7 +51,6 @@ module tb_blake2_core();
   parameter CLK_HALF_PERIOD = 2;
   parameter CLK_PERIOD      = 2 * CLK_HALF_PERIOD;
 
-  parameter TEST_DIGEST = 512'h865939e120e6805438478841afb739ae4250cf372653078a065cdcfffca4caf798e6d462b65d658fc165782640eded70963449ae1500fb0f24981d7727e22c41;
 
   //----------------------------------------------------------------
   // Register and Wire declarations.
@@ -59,19 +58,18 @@ module tb_blake2_core();
   reg [63 : 0]   cycle_ctr;
   reg [31 : 0]   error_ctr;
   reg [31 : 0]   tc_ctr;
-  reg            display_state;
 
   reg            tb_clk;
   reg            tb_reset_n;
 
-  reg            tb_init;
-  reg            tb_next;
-  reg            tb_final;
-  reg [1023 : 0] tb_block;
-  reg [127 : 0]  tb_length;
-  wire           tb_ready;
-  wire [511 : 0] tb_digest;
-  wire           tb_digest_valid;
+  reg            tb_init_512, tb_init_256;
+  reg            tb_next_512, tb_next_256;
+  reg            tb_final_512, tb_final_256;
+  reg [1023 : 0] tb_block_512, tb_block_256;
+  reg [127 : 0]  tb_length_512, tb_length_256;
+  wire           tb_ready_512, tb_ready_256;
+  wire [511 : 0] tb_digest_512, tb_digest_256;
+  wire           tb_digest_valid_512, tb_digest_valid_256;
 
   reg            error_found;
   reg [31 : 0]   read_data;
@@ -82,23 +80,42 @@ module tb_blake2_core();
 
 
   //----------------------------------------------------------------
-  // blake2_core device under test.
+  // blake2_core devices under test.
   //----------------------------------------------------------------
+
+  // The BLAKE2b-512 core
   blake2_core #(
     .DIGEST_LENGTH(64)
   )
-  dut (
+  dut_512 (
     .clk(tb_clk),
     .reset_n(tb_reset_n),
-    .init(tb_init),
-    .next(tb_next),
-    .final_block(tb_final),
-    .block(tb_block),
-    .data_length(tb_length),
-    .ready(tb_ready),
-    .digest(tb_digest),
-    .digest_valid(tb_digest_valid)
-   );
+    .init(tb_init_512),
+    .next(tb_next_512),
+    .final_block(tb_final_512),
+    .block(tb_block_512),
+    .data_length(tb_length_512),
+    .ready(tb_ready_512),
+    .digest(tb_digest_512),
+    .digest_valid(tb_digest_valid_512)
+  );
+
+  // The BLAKE2b-256 core
+  blake2_core #(
+    .DIGEST_LENGTH(32)
+  )
+  dut_256 (
+    .clk(tb_clk),
+    .reset_n(tb_reset_n),
+    .init(tb_init_256),
+    .next(tb_next_256),
+    .final_block(tb_final_256),
+    .block(tb_block_256),
+    .data_length(tb_length_256),
+    .ready(tb_ready_256),
+    .digest(tb_digest_256),
+    .digest_valid(tb_digest_valid_256)
+  );
 
 
   //----------------------------------------------------------------
@@ -112,29 +129,6 @@ module tb_blake2_core();
     end // clk_gen
 
 
-  //--------------------------------------------------------------------
-  // dut_monitor
-  //
-  // Monitor displaying information every cycle.
-  // Includes the cycle counter.
-  //--------------------------------------------------------------------
-  always @ (posedge tb_clk)
-    begin : dut_monitor
-      cycle_ctr = cycle_ctr + 1;
-
-      if (display_cycle_ctr)
-        begin
-          $display("cycle = %016x:", cycle_ctr);
-        end
-
-      if (display_state)
-        begin
-          dump_dut_state();
-        end
-
-    end // dut_monitor
-
-
   //----------------------------------------------------------------
   // reset_dut
   //----------------------------------------------------------------
@@ -145,44 +139,6 @@ module tb_blake2_core();
       tb_reset_n = 1;
     end
   endtask // reset_dut
-
-
-  //----------------------------------------------------------------
-  // dump_dut_state
-  //
-  // Dump the internal state of the dut to std out.
-  //----------------------------------------------------------------
-  task dump_dut_state();
-    begin
-      $display("DUT internal state");
-      $display("------------------");
-      $display("Inputs and outputs:");
-      $display("init  = 0x%01x, next  = 0x%01x, final_block = 0x%01x", dut.init, dut.next, dut.final_block);
-      $display("ready = 0x%01x, valid = 0x%01x", dut.ready, dut.digest_valid);
-      $display("block[1023 : 0768] = 0x%064x", dut.block[1023 : 0768]);
-      $display("block[0767 : 0512] = 0x%064x", dut.block[0767 : 0512]);
-      $display("block[0511 : 0256] = 0x%064x", dut.block[0511 : 0256]);
-      $display("block[0255 : 0000] = 0x%064x", dut.block[0255 : 0000]);
-      $display("digest[511 : 256]  = 0x%064x", dut.digest[0511 : 0256]);
-      $display("digest[255 : 000]  = 0x%064x", dut.digest[0255 : 0000]);
-      $display("parameter_block[64:0]: %016x", dut.parameter_block[64:0]);
-      $display("");
-
-      $display("State and control:");
-      $display("blake2_ctrl_reg = 0x%02x", dut.blake2_ctrl_reg);
-      $display("G_ctr_reg       = 0x%01x, dr_ctr_reg = 0x%04x", dut.G_ctr_reg,
-               dut.dr_ctr_reg);
-      $display("v0_reg  = 0x%016x, v1_reg  = 0x%016x", dut.v0_reg, dut.v1_reg);
-      $display("v2_reg  = 0x%016x, v3_reg  = 0x%016x", dut.v2_reg, dut.v3_reg);
-      $display("v4_reg  = 0x%016x, v5_reg  = 0x%016x", dut.v4_reg, dut.v5_reg);
-      $display("v6_reg  = 0x%016x, v7_reg  = 0x%016x", dut.v6_reg, dut.v7_reg);
-      $display("v8_reg  = 0x%016x, v9_reg  = 0x%016x", dut.v8_reg, dut.v9_reg);
-      $display("v10_reg = 0x%016x, v11_reg = 0x%016x", dut.v10_reg, dut.v11_reg);
-      $display("v12_reg = 0x%016x, v13_reg = 0x%016x", dut.v12_reg, dut.v13_reg);
-      $display("v14_reg = 0x%016x, v15_reg = 0x%016x", dut.v14_reg, dut.v15_reg);
-      $display("");
-    end
-  endtask // dump_top_state
 
 
   //----------------------------------------------------------------
@@ -205,24 +161,87 @@ module tb_blake2_core();
 
 
   //----------------------------------------------------------------
-  // init_dut()
+  // init()
   //
   // Set the input to the DUT to defined values.
   //----------------------------------------------------------------
-  task init_dut();
+  task init();
     begin
       cycle_ctr  = 0;
       error_ctr  = 0;
       tc_ctr     = 0;
       tb_clk     = 0;
-      tb_reset_n = 0;
-      tb_init    = 0;
-      tb_next    = 0;
-      tb_final   = 0;
-      tb_block   = {16{64'h0000000000000000}};
-      tb_length  = 128;
+      tb_reset_n = 1;
     end
-  endtask // init_dut
+  endtask // init
+
+
+  //----------------------------------------------------------------
+  // test_512_core
+  //
+  // Test the 512-bit hashing core
+  //----------------------------------------------------------------
+  task test_512_core(
+      input [1023 : 0] block,
+      input [127 : 0]  data_length,
+      input [511 : 0]  expected
+    );
+    begin
+      tb_block_512 = block;
+      tb_length_512 = data_length;
+
+      reset_dut();
+
+      tb_init_512 = 1;
+      tb_final_512 = 1;
+      #(2 * CLK_PERIOD);
+      tb_final_512 = 0;
+      tb_init_512 = 0;
+
+      while (!tb_digest_valid_512)
+        #(CLK_PERIOD);
+      #(CLK_PERIOD);
+
+      if (tb_digest_512 == expected)
+        tc_ctr = tc_ctr + 1;
+      else
+        error_ctr = error_ctr + 1;
+    end
+  endtask // test_512_core
+
+
+  //----------------------------------------------------------------
+  // test_256_core
+  //
+  // Test the 256-bit hashing core
+  //----------------------------------------------------------------
+  task test_256_core(
+      input [1023 : 0] block,
+      input [127 : 0]  data_length,
+      input [255 : 0]  expected
+    );
+    begin
+      tb_block_256 = block;
+      tb_length_256 = data_length;
+
+      reset_dut();
+
+      tb_init_256 = 1;
+      tb_final_256 = 1;
+      #(2 * CLK_PERIOD);
+      tb_final_256 = 0;
+      tb_init_256 = 0;
+
+      while (!tb_digest_valid_256)
+        #(CLK_PERIOD);
+      #(CLK_PERIOD);
+
+      if (tb_digest_256[511:256] == expected)
+        tc_ctr = tc_ctr + 1;
+      else
+        error_ctr = error_ctr + 1;
+    end
+  endtask // test_256_core
 
 
   //----------------------------------------------------------------
@@ -233,31 +252,25 @@ module tb_blake2_core();
   initial
     begin : blake2_core_test
       $display("   -- Testbench for blake2_core started --");
-      init_dut();
-      reset_dut();
+      init();
 
-      $display("State at init after reset:");
-      dump_dut_state();
+      test_512_core(
+        {16{64'h0000000000000000}},
+        128,
+        512'h865939e120e6805438478841afb739ae4250cf372653078a065cdcfffca4caf798e6d462b65d658fc165782640eded70963449ae1500fb0f24981d7727e22c41
+      );
 
-      display_state = 1;
+      test_512_core(
+        {8'h01, {30{8'h00}}, 8'h02, {8{8'h00}}, 8'h02, {30{8'h00}}, 8'h01, {56{8'h00}}},
+        72,
+        512'hcbeffcb224f964ea408d2742963e87171e18f267960774136e56091915a82917bf6780b39061dd1ad31e4e90ef371358d1917646b39ea46153e1cfc54ea50416
+      );
 
-      tb_init = 1;
-      tb_final = 1;
-      #(2 * CLK_PERIOD);
-      tb_final = 0;
-      tb_init = 0;
-
-      while (!tb_digest_valid)
-        #(CLK_PERIOD);
-      #(CLK_PERIOD);
-
-      $display("tb_digest:   %0128x", tb_digest);
-      $display("TEST_DIGEST: %0128x", TEST_DIGEST);
-
-      if (tb_digest == TEST_DIGEST)
-        tc_ctr = tc_ctr + 1;
-      else
-        error_ctr = error_ctr + 1;
+      test_256_core(
+        {8'h01, {30{8'h00}}, 8'h02, {8{8'h00}}, 8'h02, {30{8'h00}}, 8'h01, {56{8'h00}}},
+        72,
+        256'h0b3f693476c351014a7f90472055f584b45d5652284b01c90be5d29765db0b2b
+      );
 
       display_test_result();
       $display("*** blake2_core simulation done.");
