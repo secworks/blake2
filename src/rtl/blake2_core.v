@@ -531,24 +531,6 @@ module blake2_core(
   //----------------------------------------------------------------
   always @*
     begin : state_logic
-      v0_new  = 64'h0000000000000000;
-      v1_new  = 64'h0000000000000000;
-      v2_new  = 64'h0000000000000000;
-      v3_new  = 64'h0000000000000000;
-      v4_new  = 64'h0000000000000000;
-      v5_new  = 64'h0000000000000000;
-      v6_new  = 64'h0000000000000000;
-      v7_new  = 64'h0000000000000000;
-      v8_new  = 64'h0000000000000000;
-      v9_new  = 64'h0000000000000000;
-      v10_new = 64'h0000000000000000;
-      v11_new = 64'h0000000000000000;
-      v12_new = 64'h0000000000000000;
-      v13_new = 64'h0000000000000000;
-      v14_new = 64'h0000000000000000;
-      v15_new = 64'h0000000000000000;
-      v_we    = 0;
-
       if (init_state)
         begin
           v0_new  = IV0 ^ parameter_block[63:0];
@@ -572,8 +554,7 @@ module blake2_core(
           v15_new = f1_reg ^ IV7;
           v_we    = 1;
         end
-
-      if (update_state)
+      else if (update_state)
         begin
           case (G_ctr_reg)
             // Column updates.
@@ -684,6 +665,26 @@ module blake2_core(
               end
           endcase // case (G_ctr_reg)
         end // if (update_state)
+      else
+        begin
+          v0_new  = 64'h0000000000000000;
+          v1_new  = 64'h0000000000000000;
+          v2_new  = 64'h0000000000000000;
+          v3_new  = 64'h0000000000000000;
+          v4_new  = 64'h0000000000000000;
+          v5_new  = 64'h0000000000000000;
+          v6_new  = 64'h0000000000000000;
+          v7_new  = 64'h0000000000000000;
+          v8_new  = 64'h0000000000000000;
+          v9_new  = 64'h0000000000000000;
+          v10_new = 64'h0000000000000000;
+          v11_new = 64'h0000000000000000;
+          v12_new = 64'h0000000000000000;
+          v13_new = 64'h0000000000000000;
+          v14_new = 64'h0000000000000000;
+          v15_new = 64'h0000000000000000;
+          v_we    = 0;
+        end
     end // state_logic
 
 
@@ -720,19 +721,20 @@ module blake2_core(
   //----------------------------------------------------------------
   always @*
     begin : dr_ctr
-      dr_ctr_new = 0;
-      dr_ctr_we  = 0;
-
       if (dr_ctr_rst)
         begin
           dr_ctr_new = 0;
           dr_ctr_we  = 1;
         end
-
-      if (dr_ctr_inc)
+      else if (dr_ctr_inc)
         begin
           dr_ctr_new = dr_ctr_reg + 1'b1;
           dr_ctr_we  = 1;
+        end
+      else
+        begin
+          dr_ctr_new = 0;
+          dr_ctr_we  = 0;
         end
     end // dr_ctr
 
