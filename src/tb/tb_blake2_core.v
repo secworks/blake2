@@ -170,6 +170,14 @@ module tb_blake2_core();
       $display("blake2_ctrl_reg = 0x%02x", dut.blake2_ctrl_reg);
       $display("G_ctr_reg       = 0x%01x, dr_ctr_reg = 0x%04x", dut.G_ctr_reg,
                dut.dr_ctr_reg);
+      $display("v0_reg  = 0x%016x, v1_reg  = 0x%016x", dut.v0_reg, dut.v1_reg);
+      $display("v2_reg  = 0x%016x, v3_reg  = 0x%016x", dut.v2_reg, dut.v3_reg);
+      $display("v4_reg  = 0x%016x, v5_reg  = 0x%016x", dut.v4_reg, dut.v5_reg);
+      $display("v6_reg  = 0x%016x, v7_reg  = 0x%016x", dut.v6_reg, dut.v7_reg);
+      $display("v8_reg  = 0x%016x, v9_reg  = 0x%016x", dut.v8_reg, dut.v9_reg);
+      $display("v10_reg = 0x%016x, v11_reg = 0x%016x", dut.v10_reg, dut.v11_reg);
+      $display("v12_reg = 0x%016x, v13_reg = 0x%016x", dut.v12_reg, dut.v13_reg);
+      $display("v14_reg = 0x%016x, v15_reg = 0x%016x", dut.v14_reg, dut.v15_reg);
       $display("");
     end
   endtask // dump_top_state
