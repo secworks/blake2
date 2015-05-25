@@ -190,7 +190,7 @@ module tb_blake2_G();
       $display("   -- Testbench for Blake2 G function test started --");
       init_dut();
 
-      #(2 * CLK_PERIOD);
+      #(CLK_PERIOD);
 
       if (tb_a_prim == TEST_A_PRIME)
         tc_ctr = tc_ctr + 1;
