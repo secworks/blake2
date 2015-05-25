@@ -198,9 +198,6 @@ module blake2_core(
   reg [63 : 0] f1_new;
   reg          f1_we;
 
-  reg [3 : 0] rounds_reg;
-  reg [3 : 0] rounds_new;
-
   reg  digest_valid_reg;
   reg  digest_valid_new;
   reg  digest_valid_we;
@@ -413,7 +410,6 @@ module blake2_core(
           v13_reg            <= 64'h0000000000000000;
           v14_reg            <= 64'h0000000000000000;
           v15_reg            <= 64'h0000000000000000;
-          rounds_reg         <= NUM_ROUNDS;
           ready_reg          <= 1;
           digest_valid_reg   <= 0;
           G_ctr_reg          <= STATE_G0;
@@ -776,7 +772,7 @@ module blake2_core(
             if (G_ctr_reg == STATE_G1)
               begin
                 dr_ctr_inc = 1;
-                if (dr_ctr_reg == (rounds_reg - 1))
+                if (dr_ctr_reg == (NUM_ROUNDS - 1))
                   begin
                     blake2_ctrl_new = CTRL_FINALIZE;
                     blake2_ctrl_we  = 1;
