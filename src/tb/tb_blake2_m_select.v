@@ -261,19 +261,408 @@ module tb_blake2_m_select();
       $display("State after load:");
       dump_dut_state();
 
-      for (tb_r = 0; tb_r < 12; tb_r = tb_r + 1)
+      tb_r = 00; tb_state = 0;
+      #(100 * CLK_PERIOD);
+      if (dut.G0_m0 == 64'h0f0f0f0f00000000 && dut.G0_m1 == 64'h0e0e0e0e00000000 |
+          dut.G1_m0 == 64'h0d0d0d0d00000000 && dut.G1_m1 == 64'h0c0c0c0c00000000 |
+          dut.G2_m0 == 64'h0b0b0b0b00000000 && dut.G2_m1 == 64'h0a0a0a0a00000000 |
+          dut.G3_m0 == 64'h0909090900000000 && dut.G3_m1 == 64'h0808080800000000)
+        tc_ctr = tc_ctr + 1;
+      else
         begin
-          tb_state = 0;
-          #(100 * CLK_PERIOD);
-          $display("tb_r = %02d, tb_state = %d", tb_r, tb_state);
+          error_ctr = error_ctr + 1;
+          $display("Failed test: tb_r = %02d, tb_state = %d", tb_r, tb_state);
           $display("G0_m0 = 0x%016x, G0_m1 = 0x%016x", dut.G0_m0, dut.G0_m1);
           $display("G1_m0 = 0x%016x, G1_m1 = 0x%016x", dut.G1_m0, dut.G1_m1);
           $display("G2_m0 = 0x%016x, G2_m1 = 0x%016x", dut.G2_m0, dut.G2_m1);
           $display("G3_m0 = 0x%016x, G3_m1 = 0x%016x", dut.G3_m0, dut.G3_m1);
+        end
 
-          tb_state = 1;
-          #(100 * CLK_PERIOD);
-          $display("tb_r = %02d, tb_state = %d", tb_r, tb_state);
+      tb_r = 00; tb_state = 1;
+      #(100 * CLK_PERIOD);
+      if (dut.G0_m0 == 64'h0707070700000000 && dut.G0_m1 == 64'h0606060600000000 |
+          dut.G1_m0 == 64'h0505050500000000 && dut.G1_m1 == 64'h0404040400000000 |
+          dut.G2_m0 == 64'h0303030300000000 && dut.G2_m1 == 64'h0202020200000000 |
+          dut.G3_m0 == 64'h0101010100000000 && dut.G3_m1 == 64'h0000000000000000)
+        tc_ctr = tc_ctr + 1;
+      else
+        begin
+          error_ctr = error_ctr + 1;
+          $display("Failed test: tb_r = %02d, tb_state = %d", tb_r, tb_state);
+          $display("G0_m0 = 0x%016x, G0_m1 = 0x%016x", dut.G0_m0, dut.G0_m1);
+          $display("G1_m0 = 0x%016x, G1_m1 = 0x%016x", dut.G1_m0, dut.G1_m1);
+          $display("G2_m0 = 0x%016x, G2_m1 = 0x%016x", dut.G2_m0, dut.G2_m1);
+          $display("G3_m0 = 0x%016x, G3_m1 = 0x%016x", dut.G3_m0, dut.G3_m1);
+        end
+
+      tb_r = 01; tb_state = 0;
+      #(100 * CLK_PERIOD);
+      if (dut.G0_m0 == 64'h0101010100000000 && dut.G0_m1 == 64'h0505050500000000 |
+          dut.G1_m0 == 64'h0b0b0b0b00000000 && dut.G1_m1 == 64'h0707070700000000 |
+          dut.G2_m0 == 64'h0606060600000000 && dut.G2_m1 == 64'h0000000000000000 |
+          dut.G3_m0 == 64'h0202020200000000 && dut.G3_m1 == 64'h0909090900000000)
+        tc_ctr = tc_ctr + 1;
+      else
+        begin
+          error_ctr = error_ctr + 1;
+          $display("Failed test: tb_r = %02d, tb_state = %d", tb_r, tb_state);
+          $display("G0_m0 = 0x%016x, G0_m1 = 0x%016x", dut.G0_m0, dut.G0_m1);
+          $display("G1_m0 = 0x%016x, G1_m1 = 0x%016x", dut.G1_m0, dut.G1_m1);
+          $display("G2_m0 = 0x%016x, G2_m1 = 0x%016x", dut.G2_m0, dut.G2_m1);
+          $display("G3_m0 = 0x%016x, G3_m1 = 0x%016x", dut.G3_m0, dut.G3_m1);
+        end
+
+      tb_r = 01; tb_state = 1;
+      #(100 * CLK_PERIOD);
+      if (dut.G0_m0 == 64'h0e0e0e0e00000000 && dut.G0_m1 == 64'h0303030300000000 |
+          dut.G1_m0 == 64'h0f0f0f0f00000000 && dut.G1_m1 == 64'h0d0d0d0d00000000 |
+          dut.G2_m0 == 64'h0404040400000000 && dut.G2_m1 == 64'h0808080800000000 |
+          dut.G3_m0 == 64'h0a0a0a0a00000000 && dut.G3_m1 == 64'h0c0c0c0c00000000)
+        tc_ctr = tc_ctr + 1;
+      else
+        begin
+          error_ctr = error_ctr + 1;
+          $display("Failed test: tb_r = %02d, tb_state = %d", tb_r, tb_state);
+          $display("G0_m0 = 0x%016x, G0_m1 = 0x%016x", dut.G0_m0, dut.G0_m1);
+          $display("G1_m0 = 0x%016x, G1_m1 = 0x%016x", dut.G1_m0, dut.G1_m1);
+          $display("G2_m0 = 0x%016x, G2_m1 = 0x%016x", dut.G2_m0, dut.G2_m1);
+          $display("G3_m0 = 0x%016x, G3_m1 = 0x%016x", dut.G3_m0, dut.G3_m1);
+        end
+
+      tb_r = 02; tb_state = 0;
+      #(100 * CLK_PERIOD);
+      if (dut.G0_m0 == 64'h0404040400000000 && dut.G0_m1 == 64'h0707070700000000 |
+          dut.G1_m0 == 64'h0303030300000000 && dut.G1_m1 == 64'h0f0f0f0f00000000 |
+          dut.G2_m0 == 64'h0a0a0a0a00000000 && dut.G2_m1 == 64'h0d0d0d0d00000000 |
+          dut.G3_m0 == 64'h0000000000000000 && dut.G3_m1 == 64'h0202020200000000)
+        tc_ctr = tc_ctr + 1;
+      else
+        begin
+          error_ctr = error_ctr + 1;
+          $display("Failed test: tb_r = %02d, tb_state = %d", tb_r, tb_state);
+          $display("G0_m0 = 0x%016x, G0_m1 = 0x%016x", dut.G0_m0, dut.G0_m1);
+          $display("G1_m0 = 0x%016x, G1_m1 = 0x%016x", dut.G1_m0, dut.G1_m1);
+          $display("G2_m0 = 0x%016x, G2_m1 = 0x%016x", dut.G2_m0, dut.G2_m1);
+          $display("G3_m0 = 0x%016x, G3_m1 = 0x%016x", dut.G3_m0, dut.G3_m1);
+        end
+
+      tb_r = 02; tb_state = 1;
+      #(100 * CLK_PERIOD);
+      if (dut.G0_m0 == 64'h0505050500000000 && dut.G0_m1 == 64'h0101010100000000 |
+          dut.G1_m0 == 64'h0c0c0c0c00000000 && dut.G1_m1 == 64'h0909090900000000 |
+          dut.G2_m0 == 64'h0808080800000000 && dut.G2_m1 == 64'h0e0e0e0e00000000 |
+          dut.G3_m0 == 64'h0606060600000000 && dut.G3_m1 == 64'h0b0b0b0b00000000)
+        tc_ctr = tc_ctr + 1;
+      else
+        begin
+          error_ctr = error_ctr + 1;
+          $display("Failed test: tb_r = %02d, tb_state = %d", tb_r, tb_state);
+          $display("G0_m0 = 0x%016x, G0_m1 = 0x%016x", dut.G0_m0, dut.G0_m1);
+          $display("G1_m0 = 0x%016x, G1_m1 = 0x%016x", dut.G1_m0, dut.G1_m1);
+          $display("G2_m0 = 0x%016x, G2_m1 = 0x%016x", dut.G2_m0, dut.G2_m1);
+          $display("G3_m0 = 0x%016x, G3_m1 = 0x%016x", dut.G3_m0, dut.G3_m1);
+        end
+
+      tb_r = 03; tb_state = 0;
+      #(100 * CLK_PERIOD);
+      if (dut.G0_m0 == 64'h0808080800000000 && dut.G0_m1 == 64'h0606060600000000 |
+          dut.G1_m0 == 64'h0c0c0c0c00000000 && dut.G1_m1 == 64'h0e0e0e0e00000000 |
+          dut.G2_m0 == 64'h0202020200000000 && dut.G2_m1 == 64'h0303030300000000 |
+          dut.G3_m0 == 64'h0404040400000000 && dut.G3_m1 == 64'h0101010100000000)
+        tc_ctr = tc_ctr + 1;
+      else
+        begin
+          error_ctr = error_ctr + 1;
+          $display("Failed test: tb_r = %02d, tb_state = %d", tb_r, tb_state);
+          $display("G0_m0 = 0x%016x, G0_m1 = 0x%016x", dut.G0_m0, dut.G0_m1);
+          $display("G1_m0 = 0x%016x, G1_m1 = 0x%016x", dut.G1_m0, dut.G1_m1);
+          $display("G2_m0 = 0x%016x, G2_m1 = 0x%016x", dut.G2_m0, dut.G2_m1);
+          $display("G3_m0 = 0x%016x, G3_m1 = 0x%016x", dut.G3_m0, dut.G3_m1);
+        end
+
+      tb_r = 03; tb_state = 1;
+      #(100 * CLK_PERIOD);
+      if (dut.G0_m0 == 64'h0d0d0d0d00000000 && dut.G0_m1 == 64'h0909090900000000 |
+          dut.G1_m0 == 64'h0a0a0a0a00000000 && dut.G1_m1 == 64'h0505050500000000 |
+          dut.G2_m0 == 64'h0b0b0b0b00000000 && dut.G2_m1 == 64'h0f0f0f0f00000000 |
+          dut.G3_m0 == 64'h0000000000000000 && dut.G3_m1 == 64'h0707070700000000)
+        tc_ctr = tc_ctr + 1;
+      else
+        begin
+          error_ctr = error_ctr + 1;
+          $display("Failed test: tb_r = %02d, tb_state = %d", tb_r, tb_state);
+          $display("G0_m0 = 0x%016x, G0_m1 = 0x%016x", dut.G0_m0, dut.G0_m1);
+          $display("G1_m0 = 0x%016x, G1_m1 = 0x%016x", dut.G1_m0, dut.G1_m1);
+          $display("G2_m0 = 0x%016x, G2_m1 = 0x%016x", dut.G2_m0, dut.G2_m1);
+          $display("G3_m0 = 0x%016x, G3_m1 = 0x%016x", dut.G3_m0, dut.G3_m1);
+        end
+
+      tb_r = 04; tb_state = 0;
+      #(100 * CLK_PERIOD);
+      if (dut.G0_m0 == 64'h0606060600000000 && dut.G0_m1 == 64'h0f0f0f0f00000000 |
+          dut.G1_m0 == 64'h0a0a0a0a00000000 && dut.G1_m1 == 64'h0808080800000000 |
+          dut.G2_m0 == 64'h0d0d0d0d00000000 && dut.G2_m1 == 64'h0b0b0b0b00000000 |
+          dut.G3_m0 == 64'h0505050500000000 && dut.G3_m1 == 64'h0000000000000000)
+        tc_ctr = tc_ctr + 1;
+      else
+        begin
+          error_ctr = error_ctr + 1;
+          $display("Failed test: tb_r = %02d, tb_state = %d", tb_r, tb_state);
+          $display("G0_m0 = 0x%016x, G0_m1 = 0x%016x", dut.G0_m0, dut.G0_m1);
+          $display("G1_m0 = 0x%016x, G1_m1 = 0x%016x", dut.G1_m0, dut.G1_m1);
+          $display("G2_m0 = 0x%016x, G2_m1 = 0x%016x", dut.G2_m0, dut.G2_m1);
+          $display("G3_m0 = 0x%016x, G3_m1 = 0x%016x", dut.G3_m0, dut.G3_m1);
+        end
+
+      tb_r = 04; tb_state = 1;
+      #(100 * CLK_PERIOD);
+      if (dut.G0_m0 == 64'h0101010100000000 && dut.G0_m1 == 64'h0e0e0e0e00000000 |
+          dut.G1_m0 == 64'h0404040400000000 && dut.G1_m1 == 64'h0303030300000000 |
+          dut.G2_m0 == 64'h0909090900000000 && dut.G2_m1 == 64'h0707070700000000 |
+          dut.G3_m0 == 64'h0c0c0c0c00000000 && dut.G3_m1 == 64'h0202020200000000)
+        tc_ctr = tc_ctr + 1;
+      else
+        begin
+          error_ctr = error_ctr + 1;
+          $display("Failed test: tb_r = %02d, tb_state = %d", tb_r, tb_state);
+          $display("G0_m0 = 0x%016x, G0_m1 = 0x%016x", dut.G0_m0, dut.G0_m1);
+          $display("G1_m0 = 0x%016x, G1_m1 = 0x%016x", dut.G1_m0, dut.G1_m1);
+          $display("G2_m0 = 0x%016x, G2_m1 = 0x%016x", dut.G2_m0, dut.G2_m1);
+          $display("G3_m0 = 0x%016x, G3_m1 = 0x%016x", dut.G3_m0, dut.G3_m1);
+        end
+
+      tb_r = 05; tb_state = 0;
+      #(100 * CLK_PERIOD);
+      if (dut.G0_m0 == 64'h0d0d0d0d00000000 && dut.G0_m1 == 64'h0303030300000000 |
+          dut.G1_m0 == 64'h0909090900000000 && dut.G1_m1 == 64'h0505050500000000 |
+          dut.G2_m0 == 64'h0f0f0f0f00000000 && dut.G2_m1 == 64'h0404040400000000 |
+          dut.G3_m0 == 64'h0707070700000000 && dut.G3_m1 == 64'h0c0c0c0c00000000)
+        tc_ctr = tc_ctr + 1;
+      else
+        begin
+          error_ctr = error_ctr + 1;
+          $display("Failed test: tb_r = %02d, tb_state = %d", tb_r, tb_state);
+          $display("G0_m0 = 0x%016x, G0_m1 = 0x%016x", dut.G0_m0, dut.G0_m1);
+          $display("G1_m0 = 0x%016x, G1_m1 = 0x%016x", dut.G1_m0, dut.G1_m1);
+          $display("G2_m0 = 0x%016x, G2_m1 = 0x%016x", dut.G2_m0, dut.G2_m1);
+          $display("G3_m0 = 0x%016x, G3_m1 = 0x%016x", dut.G3_m0, dut.G3_m1);
+        end
+
+      tb_r = 05; tb_state = 1;
+      #(100 * CLK_PERIOD);
+      if (dut.G0_m0 == 64'h0b0b0b0b00000000 && dut.G0_m1 == 64'h0202020200000000 |
+          dut.G1_m0 == 64'h0808080800000000 && dut.G1_m1 == 64'h0a0a0a0a00000000 |
+          dut.G2_m0 == 64'h0000000000000000 && dut.G2_m1 == 64'h0101010100000000 |
+          dut.G3_m0 == 64'h0e0e0e0e00000000 && dut.G3_m1 == 64'h0606060600000000)
+        tc_ctr = tc_ctr + 1;
+      else
+        begin
+          error_ctr = error_ctr + 1;
+          $display("Failed test: tb_r = %02d, tb_state = %d", tb_r, tb_state);
+          $display("G0_m0 = 0x%016x, G0_m1 = 0x%016x", dut.G0_m0, dut.G0_m1);
+          $display("G1_m0 = 0x%016x, G1_m1 = 0x%016x", dut.G1_m0, dut.G1_m1);
+          $display("G2_m0 = 0x%016x, G2_m1 = 0x%016x", dut.G2_m0, dut.G2_m1);
+          $display("G3_m0 = 0x%016x, G3_m1 = 0x%016x", dut.G3_m0, dut.G3_m1);
+        end
+
+      tb_r = 06; tb_state = 0;
+      #(100 * CLK_PERIOD);
+      if (dut.G0_m0 == 64'h0303030300000000 && dut.G0_m1 == 64'h0a0a0a0a00000000 |
+          dut.G1_m0 == 64'h0e0e0e0e00000000 && dut.G1_m1 == 64'h0000000000000000 |
+          dut.G2_m0 == 64'h0101010100000000 && dut.G2_m1 == 64'h0202020200000000 |
+          dut.G3_m0 == 64'h0b0b0b0b00000000 && dut.G3_m1 == 64'h0505050500000000)
+        tc_ctr = tc_ctr + 1;
+      else
+        begin
+          error_ctr = error_ctr + 1;
+          $display("Failed test: tb_r = %02d, tb_state = %d", tb_r, tb_state);
+          $display("G0_m0 = 0x%016x, G0_m1 = 0x%016x", dut.G0_m0, dut.G0_m1);
+          $display("G1_m0 = 0x%016x, G1_m1 = 0x%016x", dut.G1_m0, dut.G1_m1);
+          $display("G2_m0 = 0x%016x, G2_m1 = 0x%016x", dut.G2_m0, dut.G2_m1);
+          $display("G3_m0 = 0x%016x, G3_m1 = 0x%016x", dut.G3_m0, dut.G3_m1);
+        end
+
+      tb_r = 06; tb_state = 1;
+      #(100 * CLK_PERIOD);
+      if (dut.G0_m0 == 64'h0f0f0f0f00000000 && dut.G0_m1 == 64'h0808080800000000 |
+          dut.G1_m0 == 64'h0909090900000000 && dut.G1_m1 == 64'h0c0c0c0c00000000 |
+          dut.G2_m0 == 64'h0606060600000000 && dut.G2_m1 == 64'h0d0d0d0d00000000 |
+          dut.G3_m0 == 64'h0707070700000000 && dut.G3_m1 == 64'h0404040400000000)
+        tc_ctr = tc_ctr + 1;
+      else
+        begin
+          error_ctr = error_ctr + 1;
+          $display("Failed test: tb_r = %02d, tb_state = %d", tb_r, tb_state);
+          $display("G0_m0 = 0x%016x, G0_m1 = 0x%016x", dut.G0_m0, dut.G0_m1);
+          $display("G1_m0 = 0x%016x, G1_m1 = 0x%016x", dut.G1_m0, dut.G1_m1);
+          $display("G2_m0 = 0x%016x, G2_m1 = 0x%016x", dut.G2_m0, dut.G2_m1);
+          $display("G3_m0 = 0x%016x, G3_m1 = 0x%016x", dut.G3_m0, dut.G3_m1);
+        end
+
+      tb_r = 07; tb_state = 0;
+      #(100 * CLK_PERIOD);
+      if (dut.G0_m0 == 64'h0202020200000000 && dut.G0_m1 == 64'h0404040400000000 |
+          dut.G1_m0 == 64'h0808080800000000 && dut.G1_m1 == 64'h0101010100000000 |
+          dut.G2_m0 == 64'h0303030300000000 && dut.G2_m1 == 64'h0e0e0e0e00000000 |
+          dut.G3_m0 == 64'h0c0c0c0c00000000 && dut.G3_m1 == 64'h0606060600000000)
+        tc_ctr = tc_ctr + 1;
+      else
+        begin
+          error_ctr = error_ctr + 1;
+          $display("Failed test: tb_r = %02d, tb_state = %d", tb_r, tb_state);
+          $display("G0_m0 = 0x%016x, G0_m1 = 0x%016x", dut.G0_m0, dut.G0_m1);
+          $display("G1_m0 = 0x%016x, G1_m1 = 0x%016x", dut.G1_m0, dut.G1_m1);
+          $display("G2_m0 = 0x%016x, G2_m1 = 0x%016x", dut.G2_m0, dut.G2_m1);
+          $display("G3_m0 = 0x%016x, G3_m1 = 0x%016x", dut.G3_m0, dut.G3_m1);
+        end
+
+      tb_r = 07; tb_state = 1;
+      #(100 * CLK_PERIOD);
+      if (dut.G0_m0 == 64'h0a0a0a0a00000000 && dut.G0_m1 == 64'h0f0f0f0f00000000 |
+          dut.G1_m0 == 64'h0000000000000000 && dut.G1_m1 == 64'h0b0b0b0b00000000 |
+          dut.G2_m0 == 64'h0707070700000000 && dut.G2_m1 == 64'h0909090900000000 |
+          dut.G3_m0 == 64'h0d0d0d0d00000000 && dut.G3_m1 == 64'h0505050500000000)
+        tc_ctr = tc_ctr + 1;
+      else
+        begin
+          error_ctr = error_ctr + 1;
+          $display("Failed test: tb_r = %02d, tb_state = %d", tb_r, tb_state);
+          $display("G0_m0 = 0x%016x, G0_m1 = 0x%016x", dut.G0_m0, dut.G0_m1);
+          $display("G1_m0 = 0x%016x, G1_m1 = 0x%016x", dut.G1_m0, dut.G1_m1);
+          $display("G2_m0 = 0x%016x, G2_m1 = 0x%016x", dut.G2_m0, dut.G2_m1);
+          $display("G3_m0 = 0x%016x, G3_m1 = 0x%016x", dut.G3_m0, dut.G3_m1);
+        end
+
+      tb_r = 08; tb_state = 0;
+      #(100 * CLK_PERIOD);
+      if (dut.G0_m0 == 64'h0909090900000000 && dut.G0_m1 == 64'h0000000000000000 |
+          dut.G1_m0 == 64'h0101010100000000 && dut.G1_m1 == 64'h0606060600000000 |
+          dut.G2_m0 == 64'h0404040400000000 && dut.G2_m1 == 64'h0c0c0c0c00000000 |
+          dut.G3_m0 == 64'h0f0f0f0f00000000 && dut.G3_m1 == 64'h0707070700000000)
+        tc_ctr = tc_ctr + 1;
+      else
+        begin
+          error_ctr = error_ctr + 1;
+          $display("Failed test: tb_r = %02d, tb_state = %d", tb_r, tb_state);
+          $display("G0_m0 = 0x%016x, G0_m1 = 0x%016x", dut.G0_m0, dut.G0_m1);
+          $display("G1_m0 = 0x%016x, G1_m1 = 0x%016x", dut.G1_m0, dut.G1_m1);
+          $display("G2_m0 = 0x%016x, G2_m1 = 0x%016x", dut.G2_m0, dut.G2_m1);
+          $display("G3_m0 = 0x%016x, G3_m1 = 0x%016x", dut.G3_m0, dut.G3_m1);
+        end
+
+      tb_r = 08; tb_state = 1;
+      #(100 * CLK_PERIOD);
+      if (dut.G0_m0 == 64'h0303030300000000 && dut.G0_m1 == 64'h0d0d0d0d00000000 |
+          dut.G1_m0 == 64'h0202020200000000 && dut.G1_m1 == 64'h0808080800000000 |
+          dut.G2_m0 == 64'h0e0e0e0e00000000 && dut.G2_m1 == 64'h0b0b0b0b00000000 |
+          dut.G3_m0 == 64'h0505050500000000 && dut.G3_m1 == 64'h0a0a0a0a00000000)
+        tc_ctr = tc_ctr + 1;
+      else
+        begin
+          error_ctr = error_ctr + 1;
+          $display("Failed test: tb_r = %02d, tb_state = %d", tb_r, tb_state);
+          $display("G0_m0 = 0x%016x, G0_m1 = 0x%016x", dut.G0_m0, dut.G0_m1);
+          $display("G1_m0 = 0x%016x, G1_m1 = 0x%016x", dut.G1_m0, dut.G1_m1);
+          $display("G2_m0 = 0x%016x, G2_m1 = 0x%016x", dut.G2_m0, dut.G2_m1);
+          $display("G3_m0 = 0x%016x, G3_m1 = 0x%016x", dut.G3_m0, dut.G3_m1);
+        end
+
+      tb_r = 09; tb_state = 0;
+      #(100 * CLK_PERIOD);
+      if (dut.G0_m0 == 64'h0505050500000000 && dut.G0_m1 == 64'h0d0d0d0d00000000 |
+          dut.G1_m0 == 64'h0707070700000000 && dut.G1_m1 == 64'h0b0b0b0b00000000 |
+          dut.G2_m0 == 64'h0808080800000000 && dut.G2_m1 == 64'h0909090900000000 |
+          dut.G3_m0 == 64'h0e0e0e0e00000000 && dut.G3_m1 == 64'h0a0a0a0a00000000)
+        tc_ctr = tc_ctr + 1;
+      else
+        begin
+          error_ctr = error_ctr + 1;
+          $display("Failed test: tb_r = %02d, tb_state = %d", tb_r, tb_state);
+          $display("G0_m0 = 0x%016x, G0_m1 = 0x%016x", dut.G0_m0, dut.G0_m1);
+          $display("G1_m0 = 0x%016x, G1_m1 = 0x%016x", dut.G1_m0, dut.G1_m1);
+          $display("G2_m0 = 0x%016x, G2_m1 = 0x%016x", dut.G2_m0, dut.G2_m1);
+          $display("G3_m0 = 0x%016x, G3_m1 = 0x%016x", dut.G3_m0, dut.G3_m1);
+        end
+
+      tb_r = 09; tb_state = 1;
+      #(100 * CLK_PERIOD);
+      if (dut.G0_m0 == 64'h0000000000000000 && dut.G0_m1 == 64'h0404040400000000 |
+          dut.G1_m0 == 64'h0606060600000000 && dut.G1_m1 == 64'h0101010100000000 |
+          dut.G2_m0 == 64'h0c0c0c0c00000000 && dut.G2_m1 == 64'h0303030300000000 |
+          dut.G3_m0 == 64'h0202020200000000 && dut.G3_m1 == 64'h0f0f0f0f00000000)
+        tc_ctr = tc_ctr + 1;
+      else
+        begin
+          error_ctr = error_ctr + 1;
+          $display("Failed test: tb_r = %02d, tb_state = %d", tb_r, tb_state);
+          $display("G0_m0 = 0x%016x, G0_m1 = 0x%016x", dut.G0_m0, dut.G0_m1);
+          $display("G1_m0 = 0x%016x, G1_m1 = 0x%016x", dut.G1_m0, dut.G1_m1);
+          $display("G2_m0 = 0x%016x, G2_m1 = 0x%016x", dut.G2_m0, dut.G2_m1);
+          $display("G3_m0 = 0x%016x, G3_m1 = 0x%016x", dut.G3_m0, dut.G3_m1);
+        end
+
+      tb_r = 10; tb_state = 0;
+      #(100 * CLK_PERIOD);
+      if (dut.G0_m0 == 64'h0f0f0f0f00000000 && dut.G0_m1 == 64'h0e0e0e0e00000000 |
+          dut.G1_m0 == 64'h0d0d0d0d00000000 && dut.G1_m1 == 64'h0c0c0c0c00000000 |
+          dut.G2_m0 == 64'h0b0b0b0b00000000 && dut.G2_m1 == 64'h0a0a0a0a00000000 |
+          dut.G3_m0 == 64'h0909090900000000 && dut.G3_m1 == 64'h0808080800000000)
+        tc_ctr = tc_ctr + 1;
+      else
+        begin
+          error_ctr = error_ctr + 1;
+          $display("Failed test: tb_r = %02d, tb_state = %d", tb_r, tb_state);
+          $display("G0_m0 = 0x%016x, G0_m1 = 0x%016x", dut.G0_m0, dut.G0_m1);
+          $display("G1_m0 = 0x%016x, G1_m1 = 0x%016x", dut.G1_m0, dut.G1_m1);
+          $display("G2_m0 = 0x%016x, G2_m1 = 0x%016x", dut.G2_m0, dut.G2_m1);
+          $display("G3_m0 = 0x%016x, G3_m1 = 0x%016x", dut.G3_m0, dut.G3_m1);
+        end
+
+      tb_r = 10; tb_state = 1;
+      #(100 * CLK_PERIOD);
+      if (dut.G0_m0 == 64'h0707070700000000 && dut.G0_m1 == 64'h0606060600000000 |
+          dut.G1_m0 == 64'h0505050500000000 && dut.G1_m1 == 64'h0404040400000000 |
+          dut.G2_m0 == 64'h0303030300000000 && dut.G2_m1 == 64'h0202020200000000 |
+          dut.G3_m0 == 64'h0101010100000000 && dut.G3_m1 == 64'h0000000000000000)
+        tc_ctr = tc_ctr + 1;
+      else
+        begin
+          error_ctr = error_ctr + 1;
+          $display("Failed test: tb_r = %02d, tb_state = %d", tb_r, tb_state);
+          $display("G0_m0 = 0x%016x, G0_m1 = 0x%016x", dut.G0_m0, dut.G0_m1);
+          $display("G1_m0 = 0x%016x, G1_m1 = 0x%016x", dut.G1_m0, dut.G1_m1);
+          $display("G2_m0 = 0x%016x, G2_m1 = 0x%016x", dut.G2_m0, dut.G2_m1);
+          $display("G3_m0 = 0x%016x, G3_m1 = 0x%016x", dut.G3_m0, dut.G3_m1);
+        end
+
+      tb_r = 11; tb_state = 0;
+      #(100 * CLK_PERIOD);
+      if (dut.G0_m0 == 64'h0101010100000000 && dut.G0_m1 == 64'h0505050500000000 |
+          dut.G1_m0 == 64'h0b0b0b0b00000000 && dut.G1_m1 == 64'h0707070700000000 |
+          dut.G2_m0 == 64'h0606060600000000 && dut.G2_m1 == 64'h0000000000000000 |
+          dut.G3_m0 == 64'h0202020200000000 && dut.G3_m1 == 64'h0909090900000000)
+        tc_ctr = tc_ctr + 1;
+      else
+        begin
+          error_ctr = error_ctr + 1;
+          $display("Failed test: tb_r = %02d, tb_state = %d", tb_r, tb_state);
+          $display("G0_m0 = 0x%016x, G0_m1 = 0x%016x", dut.G0_m0, dut.G0_m1);
+          $display("G1_m0 = 0x%016x, G1_m1 = 0x%016x", dut.G1_m0, dut.G1_m1);
+          $display("G2_m0 = 0x%016x, G2_m1 = 0x%016x", dut.G2_m0, dut.G2_m1);
+          $display("G3_m0 = 0x%016x, G3_m1 = 0x%016x", dut.G3_m0, dut.G3_m1);
+        end
+
+      tb_r = 11; tb_state = 1;
+      #(100 * CLK_PERIOD);
+      if (dut.G0_m0 == 64'h0e0e0e0e00000000 && dut.G0_m1 == 64'h0303030300000000 |
+          dut.G1_m0 == 64'h0f0f0f0f00000000 && dut.G1_m1 == 64'h0d0d0d0d00000000 |
+          dut.G2_m0 == 64'h0404040400000000 && dut.G2_m1 == 64'h0808080800000000 |
+          dut.G3_m0 == 64'h0a0a0a0a00000000 && dut.G3_m1 == 64'h0c0c0c0c00000000)
+        tc_ctr = tc_ctr + 1;
+      else
+        begin
+          error_ctr = error_ctr + 1;
+          $display("Failed test: tb_r = %02d, tb_state = %d", tb_r, tb_state);
           $display("G0_m0 = 0x%016x, G0_m1 = 0x%016x", dut.G0_m0, dut.G0_m1);
           $display("G1_m0 = 0x%016x, G1_m1 = 0x%016x", dut.G1_m0, dut.G1_m1);
           $display("G2_m0 = 0x%016x, G2_m1 = 0x%016x", dut.G2_m0, dut.G2_m1);
