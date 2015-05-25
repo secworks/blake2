@@ -46,7 +46,7 @@ module tb_blake2_core();
   //----------------------------------------------------------------
   // Internal constant and parameter definitions.
   //----------------------------------------------------------------
-  parameter DISPLAY_STATE = 1;
+  parameter DISPLAY_STATE = 0;
 
   parameter CLK_HALF_PERIOD = 2;
   parameter CLK_PERIOD      = 2 * CLK_HALF_PERIOD;
