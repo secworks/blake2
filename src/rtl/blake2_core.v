@@ -362,8 +362,14 @@ module blake2_core(
   //----------------------------------------------------------------
   // Concurrent connectivity for ports etc.
   //----------------------------------------------------------------
-  assign digest = {h0_reg, h1_reg, h2_reg, h3_reg,
-                   h4_reg, h5_reg, h6_reg, h7_reg};
+  assign digest = {h0_reg[7:0], h0_reg[15:8], h0_reg[23:16], h0_reg[31:24], h0_reg[39:32], h0_reg[47:40], h0_reg[55:48], h0_reg[63:56],
+                   h1_reg[7:0], h1_reg[15:8], h1_reg[23:16], h1_reg[31:24], h1_reg[39:32], h1_reg[47:40], h1_reg[55:48], h1_reg[63:56],
+                   h2_reg[7:0], h2_reg[15:8], h2_reg[23:16], h2_reg[31:24], h2_reg[39:32], h2_reg[47:40], h2_reg[55:48], h2_reg[63:56],
+                   h3_reg[7:0], h3_reg[15:8], h3_reg[23:16], h3_reg[31:24], h3_reg[39:32], h3_reg[47:40], h3_reg[55:48], h3_reg[63:56],
+                   h4_reg[7:0], h4_reg[15:8], h4_reg[23:16], h4_reg[31:24], h4_reg[39:32], h4_reg[47:40], h4_reg[55:48], h4_reg[63:56],
+                   h5_reg[7:0], h5_reg[15:8], h5_reg[23:16], h5_reg[31:24], h5_reg[39:32], h5_reg[47:40], h5_reg[55:48], h5_reg[63:56],
+                   h6_reg[7:0], h6_reg[15:8], h6_reg[23:16], h6_reg[31:24], h6_reg[39:32], h6_reg[47:40], h6_reg[55:48], h6_reg[63:56],
+                   h7_reg[7:0], h7_reg[15:8], h7_reg[23:16], h7_reg[31:24], h7_reg[39:32], h7_reg[47:40], h7_reg[55:48], h7_reg[63:56]};
 
   assign digest_valid = digest_valid_reg;
 
