@@ -671,19 +671,20 @@ module blake2_core(
   //----------------------------------------------------------------
   always @*
     begin : G_ctr
-      G_ctr_new = 0;
-      G_ctr_we  = 0;
-
       if (G_ctr_rst)
         begin
           G_ctr_new = 0;
           G_ctr_we  = 1;
         end
-
-      if (G_ctr_inc)
+      else if (G_ctr_inc)
         begin
           G_ctr_new = G_ctr_reg + 1'b1;
           G_ctr_we  = 1;
+        end
+      else
+        begin
+          G_ctr_new = 0;
+          G_ctr_we  = 0;
         end
     end // G_ctr
 
