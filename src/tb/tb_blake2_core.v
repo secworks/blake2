@@ -46,7 +46,7 @@ module tb_blake2_core();
   //----------------------------------------------------------------
   // Internal constant and parameter definitions.
   //----------------------------------------------------------------
-  parameter DISPLAY_STATE = 0;
+  parameter DISPLAY_STATE = 1;
 
   parameter CLK_HALF_PERIOD = 2;
   parameter CLK_PERIOD      = 2 * CLK_HALF_PERIOD;
@@ -59,6 +59,7 @@ module tb_blake2_core();
   reg [63 : 0]   cycle_ctr;
   reg [31 : 0]   error_ctr;
   reg [31 : 0]   tc_ctr;
+  reg            display_state;
 
   reg            tb_clk;
   reg            tb_reset_n;
@@ -124,7 +125,7 @@ module tb_blake2_core();
           $display("cycle = %016x:", cycle_ctr);
         end
 
-      if (DISPLAY_STATE)
+      if (display_state)
         begin
           dump_dut_state();
         end
@@ -227,12 +228,16 @@ module tb_blake2_core();
       $display("State at init after reset:");
       dump_dut_state();
 
+      display_state = 1;
+
       tb_init = 1;
       tb_final = 1;
       #(2 * CLK_PERIOD);
       tb_init = 0;
 
-      #(100 * CLK_PERIOD);
+      while (!tb_digest_valid)
+        #(CLK_PERIOD);
+      #(CLK_PERIOD);
 
       $display("tb_digest:   %0128x", tb_digest);
       $display("TEST_DIGEST: %0128x", TEST_DIGEST);
