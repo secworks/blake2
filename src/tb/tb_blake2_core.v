@@ -155,7 +155,7 @@ module tb_blake2_core();
       $display("DUT internal state");
       $display("------------------");
       $display("Inputs and outputs:");
-      $display("init  = 0x%01x, next  = 0x%01x", dut.init, dut.next);
+      $display("init  = 0x%01x, next  = 0x%01x, final_block = 0x%01x", dut.init, dut.next, dut.final_block);
       $display("ready = 0x%01x, valid = 0x%01x", dut.ready, dut.digest_valid);
       $display("block[1023 : 0768] = 0x%064x", dut.block[1023 : 0768]);
       $display("block[0767 : 0512] = 0x%064x", dut.block[0767 : 0512]);
@@ -233,6 +233,7 @@ module tb_blake2_core();
       tb_init = 1;
       tb_final = 1;
       #(2 * CLK_PERIOD);
+      tb_final = 0;
       tb_init = 0;
 
       while (!tb_digest_valid)
