@@ -485,16 +485,6 @@ module blake2_core(
   //----------------------------------------------------------------
   always @*
     begin : chain_logic
-      h0_new = 64'h0000000000000000;
-      h1_new = 64'h0000000000000000;
-      h2_new = 64'h0000000000000000;
-      h3_new = 64'h0000000000000000;
-      h4_new = 64'h0000000000000000;
-      h5_new = 64'h0000000000000000;
-      h6_new = 64'h0000000000000000;
-      h7_new = 64'h0000000000000000;
-      h_we   = 0;
-
       if (init_state)
         begin
           h0_new  = IV0 ^ parameter_block[63:0];
@@ -507,8 +497,7 @@ module blake2_core(
           h7_new  = IV7 ^ parameter_block[511:448];
           h_we    = 1;
         end
-
-      if (update_chain_value)
+      else if (update_chain_value)
         begin
           h0_new = h0_reg ^ v0_reg ^ v8_reg;
           h1_new = h1_reg ^ v1_reg ^ v9_reg;
@@ -519,6 +508,18 @@ module blake2_core(
           h6_new = h6_reg ^ v6_reg ^ v14_reg;
           h7_new = h7_reg ^ v7_reg ^ v15_reg;
           h_we   = 1;
+        end
+      else
+        begin
+          h0_new = 64'h0000000000000000;
+          h1_new = 64'h0000000000000000;
+          h2_new = 64'h0000000000000000;
+          h3_new = 64'h0000000000000000;
+          h4_new = 64'h0000000000000000;
+          h5_new = 64'h0000000000000000;
+          h6_new = 64'h0000000000000000;
+          h7_new = 64'h0000000000000000;
+          h_we   = 0;
         end
     end // chain_logic
 
