@@ -37,14 +37,19 @@
 //
 //======================================================================
 
+`include "blake2_G.v"
+`include "blake2_m_select.v"
+
 module blake2_core(
                    input wire            clk,
                    input wire            reset_n,
 
                    input wire            init,
                    input wire            next,
+                   input wire            final_block,
 
                    input wire [1023 : 0] block,
+                   input wire [127 : 0]  data_length,
 
                    output wire           ready,
 
@@ -54,28 +59,72 @@ module blake2_core(
 
 
   //----------------------------------------------------------------
-  // Internal constant and parameter definitions.
+  // Configuration parameters.
   //----------------------------------------------------------------
-  // Datapath quartterround states names.
-  parameter STATE_G0 = 1'b0;
-  parameter STATE_G1 = 1'b1;
-
+  // Default number of rounds
   parameter NUM_ROUNDS = 4'hc;
 
-  parameter IV0 = 64'h6a09e667f3bcc908;
-  parameter IV1 = 64'hbb67ae8584caa73b;
-  parameter IV2 = 64'h3c6ef372fe94f82b;
-  parameter IV3 = 64'ha54ff53a5f1d36f1;
-  parameter IV4 = 64'h510e527fade682d1;
-  parameter IV5 = 64'h9b05688c2b3e6c1f;
-  parameter IV6 = 64'h9b05688c2b3e6c1f;
-  parameter IV7 = 64'h5be0cd19137e2179;
+  //----------------------------------------------------------------
+  // Parameter block.
+  //----------------------------------------------------------------
+  // The digest length in bytes. Minimum: 1, Maximum: 64
+  parameter [7:0] DIGEST_LENGTH = 8'd64;
 
-  parameter CTRL_IDLE     = 3'h0;
-  parameter CTRL_INIT     = 3'h1;
-  parameter CTRL_ROUNDS   = 3'h2;
-  parameter CTRL_FINALIZE = 3'h3;
-  parameter CTRL_DONE     = 3'h4;
+  // The key length in bytes. Minimum: 0 (for no key used), Maximum: 64
+  parameter [7:0] KEY_LENGTH = 8'd0;
+
+  // Fanout
+  parameter [7:0] FANOUT = 8'h01;
+
+  // Depth (maximal)
+  parameter [7:0] DEPTH = 8'h01;
+
+  // 4-byte leaf length
+  parameter [31:0] LEAF_LENGTH = 32'h00000000;
+
+  // 8-byte node offset
+  parameter [64:0] NODE_OFFSET = 64'h0000000000000000;
+
+  // Node Depth
+  parameter [7:0] NODE_DEPTH = 8'h00;
+
+  // Inner hash length
+  parameter [7:0] INNER_LENGTH = 8'h00;
+
+  // Reserved for future use (14 bytes)
+  parameter [111:0] RESERVED = 112'h0000000000000000000000000000;
+
+  // 16-byte salt, little-endian byte order
+  parameter [127:0] SALT = 128'h00000000000000000000000000000000;
+
+  // 16-byte personalization, little-endian byte order
+  parameter [127:0] PERSONALIZATION = 128'h00000000000000000000000000000000;
+
+  wire [511:0] parameter_block = {PERSONALIZATION, SALT, RESERVED, INNER_LENGTH,
+                                  NODE_DEPTH, NODE_OFFSET, LEAF_LENGTH, DEPTH,
+                                  FANOUT, KEY_LENGTH, DIGEST_LENGTH};
+
+  //----------------------------------------------------------------
+  // Internal constant definitions.
+  //----------------------------------------------------------------
+  // Datapath quartterround states names.
+  localparam STATE_G0 = 1'b0;
+  localparam STATE_G1 = 1'b1;
+
+  localparam IV0 = 64'h6a09e667f3bcc908;
+  localparam IV1 = 64'hbb67ae8584caa73b;
+  localparam IV2 = 64'h3c6ef372fe94f82b;
+  localparam IV3 = 64'ha54ff53a5f1d36f1;
+  localparam IV4 = 64'h510e527fade682d1;
+  localparam IV5 = 64'h9b05688c2b3e6c1f;
+  localparam IV6 = 64'h1f83d9abfb41bd6b;
+  localparam IV7 = 64'h5be0cd19137e2179;
+
+  localparam CTRL_IDLE     = 3'h0;
+  localparam CTRL_INIT     = 3'h1;
+  localparam CTRL_ROUNDS   = 3'h2;
+  localparam CTRL_FINALIZE = 3'h3;
+  localparam CTRL_DONE     = 3'h4;
 
 
   //----------------------------------------------------------------
@@ -149,9 +198,6 @@ module blake2_core(
   reg [63 : 0] f1_reg;
   reg [63 : 0] f1_new;
   reg          f1_we;
-
-  reg [3 : 0] rounds_reg;
-  reg [3 : 0] rounds_new;
 
   reg  digest_valid_reg;
   reg  digest_valid_new;
@@ -241,7 +287,7 @@ module blake2_core(
                           .reset_n(reset_n),
                           .load(load_m),
                           .m(block),
-                          .r(rounds_reg),
+                          .r(dr_ctr_reg),
                           .state(G_ctr_reg),
                           .G0_m0(G0_m0),
                           .G0_m1(G0_m1),
@@ -317,8 +363,14 @@ module blake2_core(
   //----------------------------------------------------------------
   // Concurrent connectivity for ports etc.
   //----------------------------------------------------------------
-  assign digest = {h0_reg, h1_reg, h2_reg, h3_reg,
-                   h4_reg, h5_reg, h6_reg, h7_reg};
+  assign digest = {h0_reg[7:0], h0_reg[15:8], h0_reg[23:16], h0_reg[31:24], h0_reg[39:32], h0_reg[47:40], h0_reg[55:48], h0_reg[63:56],
+                   h1_reg[7:0], h1_reg[15:8], h1_reg[23:16], h1_reg[31:24], h1_reg[39:32], h1_reg[47:40], h1_reg[55:48], h1_reg[63:56],
+                   h2_reg[7:0], h2_reg[15:8], h2_reg[23:16], h2_reg[31:24], h2_reg[39:32], h2_reg[47:40], h2_reg[55:48], h2_reg[63:56],
+                   h3_reg[7:0], h3_reg[15:8], h3_reg[23:16], h3_reg[31:24], h3_reg[39:32], h3_reg[47:40], h3_reg[55:48], h3_reg[63:56],
+                   h4_reg[7:0], h4_reg[15:8], h4_reg[23:16], h4_reg[31:24], h4_reg[39:32], h4_reg[47:40], h4_reg[55:48], h4_reg[63:56],
+                   h5_reg[7:0], h5_reg[15:8], h5_reg[23:16], h5_reg[31:24], h5_reg[39:32], h5_reg[47:40], h5_reg[55:48], h5_reg[63:56],
+                   h6_reg[7:0], h6_reg[15:8], h6_reg[23:16], h6_reg[31:24], h6_reg[39:32], h6_reg[47:40], h6_reg[55:48], h6_reg[63:56],
+                   h7_reg[7:0], h7_reg[15:8], h7_reg[23:16], h7_reg[31:24], h7_reg[39:32], h7_reg[47:40], h7_reg[55:48], h7_reg[63:56]};
 
   assign digest_valid = digest_valid_reg;
 
@@ -365,7 +417,6 @@ module blake2_core(
           v13_reg            <= 64'h0000000000000000;
           v14_reg            <= 64'h0000000000000000;
           v15_reg            <= 64'h0000000000000000;
-          rounds_reg         <= NUM_ROUNDS;
           ready_reg          <= 1;
           digest_valid_reg   <= 0;
           G_ctr_reg          <= STATE_G0;
@@ -441,17 +492,19 @@ module blake2_core(
   //----------------------------------------------------------------
   always @*
     begin : chain_logic
-      h0_new = 64'h0000000000000000;
-      h1_new = 64'h0000000000000000;
-      h2_new = 64'h0000000000000000;
-      h3_new = 64'h0000000000000000;
-      h4_new = 64'h0000000000000000;
-      h5_new = 64'h0000000000000000;
-      h6_new = 64'h0000000000000000;
-      h7_new = 64'h0000000000000000;
-      h_we   = 0;
-
-      if (update_chain_value)
+      if (init_state)
+        begin
+          h0_new  = IV0 ^ parameter_block[63:0];
+          h1_new  = IV1 ^ parameter_block[127:64];
+          h2_new  = IV2 ^ parameter_block[191:128];
+          h3_new  = IV3 ^ parameter_block[255:192];
+          h4_new  = IV4 ^ parameter_block[319:256];
+          h5_new  = IV5 ^ parameter_block[383:320];
+          h6_new  = IV6 ^ parameter_block[447:384];
+          h7_new  = IV7 ^ parameter_block[511:448];
+          h_we    = 1;
+        end
+      else if (update_chain_value)
         begin
           h0_new = h0_reg ^ v0_reg ^ v8_reg;
           h1_new = h1_reg ^ v1_reg ^ v9_reg;
@@ -463,6 +516,18 @@ module blake2_core(
           h7_new = h7_reg ^ v7_reg ^ v15_reg;
           h_we   = 1;
         end
+      else
+        begin
+          h0_new = 64'h0000000000000000;
+          h1_new = 64'h0000000000000000;
+          h2_new = 64'h0000000000000000;
+          h3_new = 64'h0000000000000000;
+          h4_new = 64'h0000000000000000;
+          h5_new = 64'h0000000000000000;
+          h6_new = 64'h0000000000000000;
+          h7_new = 64'h0000000000000000;
+          h_we   = 0;
+        end
     end // chain_logic
 
 
@@ -473,46 +538,30 @@ module blake2_core(
   //----------------------------------------------------------------
   always @*
     begin : state_logic
-      v0_new  = 64'h0000000000000000;
-      v1_new  = 64'h0000000000000000;
-      v2_new  = 64'h0000000000000000;
-      v3_new  = 64'h0000000000000000;
-      v4_new  = 64'h0000000000000000;
-      v5_new  = 64'h0000000000000000;
-      v6_new  = 64'h0000000000000000;
-      v7_new  = 64'h0000000000000000;
-      v8_new  = 64'h0000000000000000;
-      v9_new  = 64'h0000000000000000;
-      v10_new = 64'h0000000000000000;
-      v11_new = 64'h0000000000000000;
-      v12_new = 64'h0000000000000000;
-      v13_new = 64'h0000000000000000;
-      v14_new = 64'h0000000000000000;
-      v15_new = 64'h0000000000000000;
-      v_we    = 0;
-
       if (init_state)
         begin
-          v0_new  = h0_reg;
-          v1_new  = h1_reg;
-          v2_new  = h2_reg;
-          v3_new  = h3_reg;
-          v4_new  = h4_reg;
-          v5_new  = h5_reg;
-          v6_new  = h6_reg;
-          v7_new  = h7_reg;
+          v0_new  = IV0 ^ parameter_block[63:0];
+          v1_new  = IV1 ^ parameter_block[127:64];
+          v2_new  = IV2 ^ parameter_block[191:128];
+          v3_new  = IV3 ^ parameter_block[255:192];
+          v4_new  = IV4 ^ parameter_block[319:256];
+          v5_new  = IV5 ^ parameter_block[383:320];
+          v6_new  = IV6 ^ parameter_block[447:384];
+          v7_new  = IV7 ^ parameter_block[511:448];
           v8_new  = IV0;
           v9_new  = IV1;
           v10_new = IV2;
           v11_new = IV3;
-          v12_new = t0_reg ^ IV4;
+          v12_new = data_length[63:0] ^ IV4;
           v13_new = t1_reg ^ IV5;
-          v14_new = f0_reg ^ IV6;
+          if (final_block)
+            v14_new = 64'hffffffffffffffff ^ IV6;
+          else
+            v14_new = IV6;
           v15_new = f1_reg ^ IV7;
           v_we    = 1;
         end
-
-      if (update_state)
+      else if (update_state)
         begin
           case (G_ctr_reg)
             // Column updates.
@@ -598,8 +647,51 @@ module blake2_core(
 
                 v_we    = 1;
               end
+
+            default:
+              begin
+                G0_a = 0;
+                G0_b = 0;
+                G0_c = 0;
+                G0_d = 0;
+
+                G1_a = 0;
+                G1_b = 0;
+                G1_c = 0;
+                G1_d = 0;
+
+                G2_a = 0;
+                G2_b = 0;
+                G2_c = 0;
+                G2_d = 0;
+
+                G3_a = 0;
+                G3_b = 0;
+                G3_c = 0;
+                G3_d = 0;
+              end
           endcase // case (G_ctr_reg)
         end // if (update_state)
+      else
+        begin
+          v0_new  = 64'h0000000000000000;
+          v1_new  = 64'h0000000000000000;
+          v2_new  = 64'h0000000000000000;
+          v3_new  = 64'h0000000000000000;
+          v4_new  = 64'h0000000000000000;
+          v5_new  = 64'h0000000000000000;
+          v6_new  = 64'h0000000000000000;
+          v7_new  = 64'h0000000000000000;
+          v8_new  = 64'h0000000000000000;
+          v9_new  = 64'h0000000000000000;
+          v10_new = 64'h0000000000000000;
+          v11_new = 64'h0000000000000000;
+          v12_new = 64'h0000000000000000;
+          v13_new = 64'h0000000000000000;
+          v14_new = 64'h0000000000000000;
+          v15_new = 64'h0000000000000000;
+          v_we    = 0;
+        end
     end // state_logic
 
 
@@ -611,19 +703,20 @@ module blake2_core(
   //----------------------------------------------------------------
   always @*
     begin : G_ctr
-      G_ctr_new = 0;
-      G_ctr_we  = 0;
-
       if (G_ctr_rst)
         begin
           G_ctr_new = 0;
           G_ctr_we  = 1;
         end
-
-      if (G_ctr_inc)
+      else if (G_ctr_inc)
         begin
           G_ctr_new = G_ctr_reg + 1'b1;
           G_ctr_we  = 1;
+        end
+      else
+        begin
+          G_ctr_new = 0;
+          G_ctr_we  = 0;
         end
     end // G_ctr
 
@@ -635,19 +728,20 @@ module blake2_core(
   //----------------------------------------------------------------
   always @*
     begin : dr_ctr
-      dr_ctr_new = 0;
-      dr_ctr_we  = 0;
-
       if (dr_ctr_rst)
         begin
           dr_ctr_new = 0;
           dr_ctr_we  = 1;
         end
-
-      if (dr_ctr_inc)
+      else if (dr_ctr_inc)
         begin
           dr_ctr_new = dr_ctr_reg + 1'b1;
           dr_ctr_we  = 1;
+        end
+      else
+        begin
+          dr_ctr_new = 0;
+          dr_ctr_we  = 0;
         end
     end // dr_ctr
 
@@ -712,7 +806,7 @@ module blake2_core(
             if (G_ctr_reg == STATE_G1)
               begin
                 dr_ctr_inc = 1;
-                if (dr_ctr_reg == (rounds_reg - 1))
+                if (dr_ctr_reg == (NUM_ROUNDS - 1))
                   begin
                     blake2_ctrl_new = CTRL_FINALIZE;
                     blake2_ctrl_we  = 1;
@@ -760,7 +854,8 @@ module blake2_core(
 
         default:
           begin
-
+            blake2_ctrl_new = CTRL_IDLE;
+            blake2_ctrl_we  = 1;
           end
       endcase // case (blake2_ctrl_reg)
     end // blake2_ctrl_fsm

@@ -112,7 +112,7 @@ module blake2_G(
       c1 = c0 + d3;
 
       b2 = b1 ^ c1;
-      b3 = {b2[0], b2[63 : 1]};
+      b3 = {b2[62 : 0], b2[63]};
 
       internal_a_prim = a1;
       internal_b_prim = b3;
