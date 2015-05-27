@@ -205,7 +205,17 @@ module tb_blake2_core();
       if (tb_digest_512 == expected)
         tc_ctr = tc_ctr + 1;
       else
-        error_ctr = error_ctr + 1;
+        begin
+          error_ctr = error_ctr + 1;
+          $display("Failed test:");
+          $display("block[1023:0768] = 0x%032x", block[1023:0768]);
+          $display("block[0767:0512] = 0x%032x", block[0767:0512]);
+          $display("block[0511:0256] = 0x%032x", block[0511:0256]);
+          $display("block[0255:0000] = 0x%032x", block[0255:0000]);
+          $display("tb_digest_512 = 0x%064x", tb_digest_512);
+          $display("expected      = 0x%064x", expected);
+          $display("");
+        end
     end
   endtask // test_512_core
 
@@ -239,7 +249,17 @@ module tb_blake2_core();
       if (tb_digest_256[511:256] == expected)
         tc_ctr = tc_ctr + 1;
       else
-        error_ctr = error_ctr + 1;
+        begin
+          error_ctr = error_ctr + 1;
+          $display("Failed test:");
+          $display("block[1023:0768] = 0x%032x", block[1023:0768]);
+          $display("block[0767:0512] = 0x%032x", block[0767:0512]);
+          $display("block[0511:0256] = 0x%032x", block[0511:0256]);
+          $display("block[0255:0000] = 0x%032x", block[0255:0000]);
+          $display("tb_digest_256[511:256] = 0x%032x", tb_digest_256[511:256]);
+          $display("expected               = 0x%032x", expected);
+          $display("");
+        end
     end
   endtask // test_256_core
 
