@@ -57,18 +57,26 @@ module blake2(
   //----------------------------------------------------------------
   // Internal constant and parameter definitions.
   //----------------------------------------------------------------
-  parameter ADDR_CTRL        = 8'h00;
-  parameter CTRL_INIT_BIT    = 0;
-  parameter CTRL_NEXT_BIT    = 1;
+  localparam ADDR_NAME0       = 8'h00;
+  localparam ADDR_NAME1       = 8'h01;
+  localparam ADDR_VERSION     = 8'h02;
 
-  parameter ADDR_STATUS      = 8'h01;
-  parameter STATUS_READY_BIT = 0;
+  localparam ADDR_CTRL        = 8'h08;
+  localparam CTRL_INIT_BIT    = 0;
+  localparam CTRL_NEXT_BIT    = 1;
 
-  parameter ADDR_BLOCK_W00   = 8'h10;
-  parameter ADDR_BLOCK_W31   = 8'h2f;
+  localparam ADDR_STATUS      = 8'h09;
+  localparam STATUS_READY_BIT = 0;
 
-  parameter ADDR_DIGEST00    = 8'h80;
-  parameter ADDR_DIGEST15    = 8'h8f;
+  localparam ADDR_BLOCK_W00   = 8'h10;
+  localparam ADDR_BLOCK_W31   = 8'h2f;
+
+  localparam ADDR_DIGEST00    = 8'h80;
+  localparam ADDR_DIGEST15    = 8'h8f;
+
+  localparam CORE_NAME0   = 32'h626c616b; // "blak"
+  localparam CORE_NAME1   = 32'h65322020; // "e2  "
+  localparam CORE_VERSION = 32'h302e3130; // "0.10"
 
 
   //----------------------------------------------------------------
@@ -144,10 +152,6 @@ module blake2(
 
   //----------------------------------------------------------------
   // reg_update
-  //
-  // Update functionality for all registers in the core.
-  // All registers are positive edge triggered with asynchronous
-  // active low reset. All registers have write enable.
   //----------------------------------------------------------------
   always @ (posedge clk)
     begin : reg_update
@@ -162,12 +166,12 @@ module blake2(
 
           for (i = 0 ; i < 32 ; i = i + 1)
             begin
-              block_mem[i] <= 32'h00000000;
+              block_mem[i] <= 32'h0;
             end
 
           for (i = 0 ; i < 16 ; i = i + 1)
             begin
-              digest_mem[i] <= 32'h00000000;
+              digest_mem[i] <= 32'h0;
             end
         end
       else
@@ -176,16 +180,11 @@ module blake2(
           digest_valid_reg <= core_digest_valid;
 
           if (ctrl_we)
-            begin
-              init_reg <= write_data[CTRL_INIT_BIT];
-              next_reg <= write_data[CTRL_NEXT_BIT];
-            end
+            init_reg <= write_data[CTRL_INIT_BIT];
+          next_reg <= write_data[CTRL_NEXT_BIT];
 
           if (block_mem_we)
-            begin
-              block_mem[address[4 : 0]] <= write_data;
-            end
-
+            block_mem[address[4 : 0]] <= write_data;
         end
     end // reg_update
 
@@ -197,8 +196,7 @@ module blake2(
     begin : addr_decoder
       block_mem_we  = 0;
       digest_mem_we = 0;
-
-      tmp_read_data = 32'h00000000;
+      tmp_read_data = 32'h0;
       tmp_error     = 0;
 
       if (cs)
@@ -222,15 +220,10 @@ module blake2(
             begin
               case (address)
                 ADDR_CTRL:
-                  begin
-                    tmp_read_data = {28'h0000000, 2'b00, next_reg, init_reg};
-                  end
+                  tmp_read_data = {28'h0, 2'b00, next_reg, init_reg};
 
                 ADDR_STATUS:
-                  begin
-                    tmp_read_data = {28'h0000000, 2'b00,
-                                    {digest_valid_reg, ready_reg}};
-                  end
+                  tmp_read_data = {28'h0, 2'b00, {digest_valid_reg, ready_reg}};
 
                 default:
                   begin
