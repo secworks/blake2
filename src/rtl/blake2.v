@@ -219,6 +219,15 @@ module blake2(
           else
             begin
               case (address)
+                ADDR_NAME0:
+                  tmp_read_data = CORE_NAME0;
+
+                ADDR_NAME1:
+                  tmp_read_data = CORE_NAME1;
+
+                ADDR_VERSION:
+                  tmp_read_data = CORE_VERSION;
+
                 ADDR_CTRL:
                   tmp_read_data = {28'h0, 2'b00, next_reg, init_reg};
 
