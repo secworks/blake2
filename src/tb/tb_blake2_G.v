@@ -130,7 +130,7 @@ module tb_blake2_G();
   //
   // Dump the internal state of the dut to std out.
   //----------------------------------------------------------------
-  task dump_dut_state();
+  task dump_dut_state;
     begin
       $display("");
       $display("DUT internal state");
@@ -145,7 +145,7 @@ module tb_blake2_G();
   //
   // Display the accumulated test results.
   //----------------------------------------------------------------
-  task display_test_result();
+  task display_test_result;
     begin
       if (error_ctr == 0)
         begin
@@ -164,7 +164,7 @@ module tb_blake2_G();
   //
   // Set the input to the DUT to defined values.
   //----------------------------------------------------------------
-  task init_dut();
+  task init_dut;
     begin
       cycle_ctr = 0;
       error_ctr = 0;
