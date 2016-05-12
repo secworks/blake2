@@ -38,7 +38,7 @@
 //------------------------------------------------------------------
 // Simulator directives.
 //------------------------------------------------------------------
-`timescale 1ns/10ps
+`timescale 1ns/100ps
 
 module tb_blake2();
 
@@ -48,8 +48,6 @@ module tb_blake2();
   parameter DEBUG = 0;
 
   parameter CLK_HALF_PERIOD = 2;
-
-  // API for the dut.
 
 
   //----------------------------------------------------------------
