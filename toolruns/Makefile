@@ -38,7 +38,7 @@
 #===================================================================
 
 CC = iverilog
-
+LINT = verilator +1364-2001ext+ -Wall --lint-only --top-module blake2
 TARGETS = blake2.sim blake2_core.sim blake2_G.sim blake2_m_select.sim
 
 SRC_DIR = ../src/rtl
@@ -48,6 +48,9 @@ all: $(TARGETS)
 
 %.sim: $(TB_SRC_DIR)/tb_%.v $(SRC_DIR)/%.v
 	$(CC) -o $@ -I$(SRC_DIR) $^
+
+lint:
+	$(LINT) -I$(SRC_DIR)/*.v
 
 clean:
 	rm -f $(TARGETS)
