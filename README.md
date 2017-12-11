@@ -1,11 +1,27 @@
-# blake2
+blake2
+======
 
-This is a Verilog implementation of the BLAKE2 hash function. The specific
+## Introduction ##
+
+This is a Verilog implementation of the Blake2 hash function. The specific
 function implemented is BLAKE2b.
 
-## Usage
 
-### Quick start
+## Implementation status ##
+***Unknown***
+Seems to work for single block messages. But seems to not work for multi
+block messages. Still needs to be investigated.
+
+
+## Implementation details ##
+To Be Written.
+
+Supports multiple digest lengths: 20, 32, 48 and 64 bytes.
+
+
+## Usage ##
+
+### Quick start ###
 
 ```verilog
 blake2_core #(
@@ -24,7 +40,22 @@ blake2_core #(
 );
 ```
 
-## Further reading
+## FPGA-results ##
+
+### Altera FPGAs ###
+
+To Be Written.
+
+
+### Xilinx FPGAs ###
+
+To Be Written.
+
+
+## Credits ##
+
+
+## Further reading ##
 
 - https://blake2.net/
 - https://tools.ietf.org/html/draft-saarinen-blake2
