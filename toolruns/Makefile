@@ -45,23 +45,44 @@ G_SRC = $(SRC_DIR)/blake2_G.v
 CORE_SRC = $(SRC_DIR)/blake2_core.v $(SRC_DIR)/blake2_m_select.v $(SRC_DIR)/blake2_G.v
 TOP_SRC = $(SRC_DIR)/blake2.v $(CORE_SRC)
 
+TB_TOP_SRC = $(TB_SRC_DIR)/tb_blake2.v
+TB_CORE_SRC = $(TB_SRC_DIR)/tb_blake2_core.v
+TB_G_SRC = $(TB_SRC_DIR)/tb_blake2_G.v
+TB_M_SELECT_SRC = $(TB_SRC_DIR)/tb_blake2_m_select.v
+
 CC = iverilog
 CC_FLAGS = -Wall
 LINT = verilator
 LINT_FLAGS = +1364-2001ext+ -Wall --lint-only --top-module blake2
-TARGETS = top.sim
+TARGETS = top.sim core.sim g.sim m_select.sim
 
 
 all: $(TARGETS)
 
+
 top.sim: $(TB_TOP_SRC) $(TOP_SRC)
 	$(CC) $(CC_FLAGS) -o top.sim $(TB_TOP_SRC) $(TOP_SRC)
+
+
+core.sim:  $(TB_CORE_SRC) $(CORE_SRC)
+	$(CC) $(CC_FLAGS) -o core.sim $(TB_CORE_SRC) $(CORE_SRC)
+
+
+g.sim:  $(TB_G_SRC) $(G_SRC)
+	$(CC) $(CC_FLAGS) -o g.sim $(TB_G_SRC) $(G_SRC)
+
+
+m_select.sim:  $(TB_M_SELECT_SRC) $(M_SELECT_SRC)
+	$(CC) $(CC_FLAGS) -o m_select.sim $(TB_M_SELECT_SRC) $(M_SELECT_SRC)
+
 
 lint:	$(TB_TOP_SRC) $(TOP_SRC)
 	$(LINT) $(LINT_FLAGS) $(TOP_SRC)
 
+
 clean:
-	rm -f $(TARGETS)
+	rm -f *.sim
+
 
 help:
 	@echo "Supported targets:"
