@@ -4,13 +4,13 @@ blake2
 ## Introduction ##
 
 This is a Verilog implementation of the Blake2 hash function. The specific
-function implemented is BLAKE2b.
+function implemented is BLAKE2b as specified in
+[the Blake2 paper](https://blake2.net/blake2.pdf).
 
 
 ## Implementation status ##
-***Unknown***
-Seems to work for single block messages. But seems to not work for multi
-block messages. Still needs to be investigated.
+**Not done**
+Does not work.
 
 
 ## Implementation details ##
@@ -18,27 +18,6 @@ To Be Written.
 
 Supports multiple digest lengths: 20, 32, 48 and 64 bytes.
 
-
-## Usage ##
-
-### Quick start ###
-
-```verilog
-blake2_core #(
-    .DIGEST_LENGTH(32)          // The length of the digest in bytes (20, 32, 48, 64)
-) hasher (
-    .clk(clk),                  // The module clock
-    .reset_n(reset_n),          // Reset (active LOW)
-    .init(init),                // Initialize the hasher (active HIGH)
-    .next(next),                // Go to the next block (if data_length > 128 bytes)
-    .final_block(final_block),  // This is the final block
-    .block(block),              // The 128-byte block (padded if data_length < 128 bytes)
-    .data_length(data_length),  // The byte length of the input data
-    .ready(ready),              // HIGH when the core is ready to hash
-    .digest(digest),            // The digest output
-    .digest_valid(digest_valid) // HIGH when the digest output is valid
-);
-```
 
 ## FPGA-results ##
 
