@@ -37,20 +37,28 @@
 #
 #===================================================================
 
-CC = iverilog
-LINT = verilator +1364-2001ext+ -Wall --lint-only --top-module blake2
-TARGETS = blake2.sim blake2_core.sim blake2_G.sim blake2_m_select.sim
-
 SRC_DIR = ../src/rtl
 TB_SRC_DIR = ../src/tb
 
+M_SELECT_SRC = $(SRC_DIR)/blake2_m_select.v
+G_SRC = $(SRC_DIR)/blake2_G.v
+CORE_SRC = $(SRC_DIR)/blake2_core.v $(SRC_DIR)/blake2_m_select.v $(SRC_DIR)/blake2_G.v
+TOP_SRC = $(SRC_DIR)/blake2.v $(CORE_SRC)
+
+CC = iverilog
+CC_FLAGS = -Wall
+LINT = verilator
+LINT_FLAGS = +1364-2001ext+ -Wall --lint-only --top-module blake2
+TARGETS = top.sim
+
+
 all: $(TARGETS)
 
-%.sim: $(TB_SRC_DIR)/tb_%.v $(SRC_DIR)/%.v
-	$(CC) -o $@ -I$(SRC_DIR) $^
+top.sim: $(TB_TOP_SRC) $(TOP_SRC)
+	$(CC) $(CC_FLAGS) -o top.sim $(TB_TOP_SRC) $(TOP_SRC)
 
-lint:
-	$(LINT) -I$(SRC_DIR)/*.v
+lint:	$(TB_TOP_SRC) $(TOP_SRC)
+	$(LINT) $(LINT_FLAGS) $(TOP_SRC)
 
 clean:
 	rm -f $(TARGETS)
