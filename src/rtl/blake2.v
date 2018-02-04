@@ -82,6 +82,7 @@ module blake2(
   //----------------------------------------------------------------
   reg init_reg;
   reg next_reg;
+  reg final_reg;
   reg ctrl_we;
 
   reg ready_reg;
@@ -98,10 +99,9 @@ module blake2(
   //----------------------------------------------------------------
   // Wires.
   //----------------------------------------------------------------
-  wire            core_init;
-  wire            core_next;
   wire            core_ready;
   wire [1023 : 0] core_block;
+  wire [127 : 0]  core_length;
   wire [511 : 0]  core_digest;
   wire            core_digest_valid;
 
@@ -112,10 +112,7 @@ module blake2(
   //----------------------------------------------------------------
   // Concurrent connectivity for ports etc.
   //----------------------------------------------------------------
-  assign core_init    = init_reg;
-
-  assign core_next    = next_reg;
-
+  assign core_length = 128'h1;
   assign core_block   = {block_mem[00], block_mem[01], block_mem[02], block_mem[03],
                          block_mem[04], block_mem[05], block_mem[06], block_mem[07],
                          block_mem[08], block_mem[09], block_mem[10], block_mem[11],
@@ -136,11 +133,12 @@ module blake2(
                     .clk(clk),
                     .reset_n(reset_n),
 
-                    .init(core_init),
-                    .next(core_next),
+                    .init(init_reg),
+                    .next(next_reg),
+                    .final_block(final_reg),
 
                     .block(core_block),
-
+                    .data_length(core_length),
                     .ready(core_ready),
 
                     .digest(core_digest),
