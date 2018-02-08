@@ -180,21 +180,13 @@ module blake2_core(
   reg [63 : 0] v15_new;
   reg          v_we;
 
-  reg [63 : 0] t0_reg;
-  reg [63 : 0] t0_new;
-  reg          t0_we;
+  reg [63 : 0] f1_reg;
+  reg [63 : 0] f1_new;
+  reg          f1_we;
 
   reg [63 : 0] t1_reg;
   reg [63 : 0] t1_new;
   reg          t1_we;
-
-  reg [63 : 0] f0_reg;
-  reg [63 : 0] f0_new;
-  reg          f0_we;
-
-  reg [63 : 0] f1_reg;
-  reg [63 : 0] f1_new;
-  reg          f1_we;
 
   reg  digest_valid_reg;
   reg  digest_valid_new;
@@ -394,9 +386,6 @@ module blake2_core(
     begin : reg_update
       if (!reset_n)
         begin
-          t0_reg             <= 64'h0;
-          t1_reg             <= 64'h0;
-          f0_reg             <= 64'h0;
           f1_reg             <= 64'h0;
           h0_reg             <= 64'h0;
           h1_reg             <= 64'h0;
