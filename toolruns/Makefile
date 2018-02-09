@@ -54,7 +54,7 @@ CC = iverilog
 CC_FLAGS = -Wall
 
 LINT= verilator
-LINTFLAGS = +1364-2001ext+ --lint-only  -Wall -Wno-fatal -Wno-DECLFILENAME
+LINT_FLAGS = +1364-2001ext+ --lint-only  -Wall -Wno-fatal -Wno-DECLFILENAME
 
 TARGETS = top.sim core.sim g.sim m_select.sim
 
@@ -79,7 +79,7 @@ m_select.sim:  $(TB_M_SELECT_SRC) $(M_SELECT_SRC)
 
 
 lint: $(TOP_SRC)
-	$(LINT) $(LINTFLAGS) $(TOP_SRC)
+	$(LINT) $(LINT_FLAGS) $(TOP_SRC)
 
 
 clean:
