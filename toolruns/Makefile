@@ -52,8 +52,10 @@ TB_M_SELECT_SRC = $(TB_SRC_DIR)/tb_blake2_m_select.v
 
 CC = iverilog
 CC_FLAGS = -Wall
-LINT = verilator
-LINT_FLAGS = +1364-2001ext+ -Wall --lint-only --top-module blake2
+
+LINT= verilator
+LINT_FLAGS = +1364-2001ext+ --lint-only  -Wall -Wno-fatal -Wno-DECLFILENAME
+
 TARGETS = top.sim core.sim g.sim m_select.sim
 
 
@@ -76,7 +78,7 @@ m_select.sim:  $(TB_M_SELECT_SRC) $(M_SELECT_SRC)
 	$(CC) $(CC_FLAGS) -o m_select.sim $(TB_M_SELECT_SRC) $(M_SELECT_SRC)
 
 
-lint:	$(TB_TOP_SRC) $(TOP_SRC)
+lint: $(TOP_SRC)
 	$(LINT) $(LINT_FLAGS) $(TOP_SRC)
 
 
@@ -88,9 +90,8 @@ help:
 	@echo "Supported targets:"
 	@echo "------------------"
 	@echo "all:          Build all simulation targets."
+	@echo "lint:         Run the linter on the source."
 	@echo "clean:        Remove build results."
-
-.PHONY: all clean
 
 #===================================================================
 # EOF Makefile
