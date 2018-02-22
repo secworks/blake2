@@ -235,6 +235,29 @@ module tb_blake2_G();
     end
   endtask // TC1
 
+  //----------------------------------------------------------------
+  //----------------------------------------------------------------
+  task TC2;
+    begin : test_case2
+      tc_ctr = tc_ctr + 1;
+
+      $display("Starting TC2");
+
+      testrunner(64'h6a09e667f2bd8948,
+                 64'h510e527fade682d1,
+                 64'h6a09e667f3bcc908,
+                 64'h510e527fade68251,
+                 64'h0706050403020100,
+                 64'h0f0e0d0c0b0a0908,
+                 64'hfce69820f2d7e54c,
+                 64'h51324affb424aa90,
+                 64'h032368569e359a63,
+                 64'h8ad8f2a6176861c7);
+
+      $display("Stopping TC2");
+    end
+  endtask // TC2
+
 
   //----------------------------------------------------------------
   // blake2_core
@@ -246,6 +269,7 @@ module tb_blake2_G();
       $display("*** Testbench for Blake2 G function test started");
       init_dut();
       TC1();
+      TC2();
 
       display_test_result();
       $display("*** Blake2 G functions simulation done.");
