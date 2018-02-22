@@ -138,26 +138,16 @@ module blake2_m_select(
   // All registers are positive edge triggered with asynchronous
   // active low reset. All registers have write enable.
   //----------------------------------------------------------------
-  always @ (posedge clk or negedge reset_n)
+  always @ (posedge clk)
     begin : reg_update
+      integer i;
+
       if (!reset_n)
         begin
-          m_mem[00] <= 64'h0000000000000000;
-          m_mem[01] <= 64'h0000000000000000;
-          m_mem[02] <= 64'h0000000000000000;
-          m_mem[03] <= 64'h0000000000000000;
-          m_mem[04] <= 64'h0000000000000000;
-          m_mem[05] <= 64'h0000000000000000;
-          m_mem[06] <= 64'h0000000000000000;
-          m_mem[07] <= 64'h0000000000000000;
-          m_mem[08] <= 64'h0000000000000000;
-          m_mem[09] <= 64'h0000000000000000;
-          m_mem[10] <= 64'h0000000000000000;
-          m_mem[11] <= 64'h0000000000000000;
-          m_mem[12] <= 64'h0000000000000000;
-          m_mem[13] <= 64'h0000000000000000;
-          m_mem[14] <= 64'h0000000000000000;
-          m_mem[15] <= 64'h0000000000000000;
+          for (i = 0 ; i < 16 ; i = i + 1)
+            begin
+              m_mem[00] <= 64'h0;
+            end
         end
       else
         begin

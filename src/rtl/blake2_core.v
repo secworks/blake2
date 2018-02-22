@@ -80,7 +80,7 @@ module blake2_core(
   parameter [31:0] LEAF_LENGTH = 32'h00000000;
 
   // 8-byte node offset
-  parameter [64:0] NODE_OFFSET = 64'h0000000000000000;
+  parameter [63:0] NODE_OFFSET = 64'h0000000000000000;
 
   // Node Depth
   parameter [7:0] NODE_DEPTH = 8'h00;
@@ -352,21 +352,21 @@ module blake2_core(
   //----------------------------------------------------------------
   // Concurrent connectivity for ports etc.
   //----------------------------------------------------------------
-  assign digest = {h0_reg[7:0], h0_reg[15:8], h0_reg[23:16], h0_reg[31:24],
+  assign digest = {h0_reg[7:0],   h0_reg[15:8],  h0_reg[23:16], h0_reg[31:24],
                    h0_reg[39:32], h0_reg[47:40], h0_reg[55:48], h0_reg[63:56],
-                   h1_reg[7:0], h1_reg[15:8], h1_reg[23:16], h1_reg[31:24],
+                   h1_reg[7:0],   h1_reg[15:8],  h1_reg[23:16], h1_reg[31:24],
                    h1_reg[39:32], h1_reg[47:40], h1_reg[55:48], h1_reg[63:56],
-                   h2_reg[7:0], h2_reg[15:8], h2_reg[23:16], h2_reg[31:24],
+                   h2_reg[7:0],   h2_reg[15:8],  h2_reg[23:16], h2_reg[31:24],
                    h2_reg[39:32], h2_reg[47:40], h2_reg[55:48], h2_reg[63:56],
-                   h3_reg[7:0], h3_reg[15:8], h3_reg[23:16], h3_reg[31:24],
+                   h3_reg[7:0],   h3_reg[15:8],  h3_reg[23:16], h3_reg[31:24],
                    h3_reg[39:32], h3_reg[47:40], h3_reg[55:48], h3_reg[63:56],
-                   h4_reg[7:0], h4_reg[15:8], h4_reg[23:16], h4_reg[31:24],
+                   h4_reg[7:0],   h4_reg[15:8],  h4_reg[23:16], h4_reg[31:24],
                    h4_reg[39:32], h4_reg[47:40], h4_reg[55:48], h4_reg[63:56],
-                   h5_reg[7:0], h5_reg[15:8], h5_reg[23:16], h5_reg[31:24],
+                   h5_reg[7:0],   h5_reg[15:8],  h5_reg[23:16], h5_reg[31:24],
                    h5_reg[39:32], h5_reg[47:40], h5_reg[55:48], h5_reg[63:56],
-                   h6_reg[7:0], h6_reg[15:8], h6_reg[23:16], h6_reg[31:24],
+                   h6_reg[7:0],   h6_reg[15:8],  h6_reg[23:16], h6_reg[31:24],
                    h6_reg[39:32], h6_reg[47:40], h6_reg[55:48], h6_reg[63:56],
-                   h7_reg[7:0], h7_reg[15:8], h7_reg[23:16], h7_reg[31:24],
+                   h7_reg[7:0],   h7_reg[15:8],  h7_reg[23:16], h7_reg[31:24],
                    h7_reg[39:32], h7_reg[47:40], h7_reg[55:48], h7_reg[63:56]};
 
   assign digest_valid = digest_valid_reg;
@@ -382,7 +382,7 @@ module blake2_core(
   // All registers are positive edge triggered with asynchronous
   // active low reset. All registers have write enable.
   //----------------------------------------------------------------
-  always @ (posedge clk or negedge reset_n)
+  always @ (posedge clk)
     begin : reg_update
       if (!reset_n)
         begin
@@ -512,14 +512,14 @@ module blake2_core(
         end
       else
         begin
-          h0_new = 64'h0000000000000000;
-          h1_new = 64'h0000000000000000;
-          h2_new = 64'h0000000000000000;
-          h3_new = 64'h0000000000000000;
-          h4_new = 64'h0000000000000000;
-          h5_new = 64'h0000000000000000;
-          h6_new = 64'h0000000000000000;
-          h7_new = 64'h0000000000000000;
+          h0_new = 64'h0;
+          h1_new = 64'h0;
+          h2_new = 64'h0;
+          h3_new = 64'h0;
+          h4_new = 64'h0;
+          h5_new = 64'h0;
+          h6_new = 64'h0;
+          h7_new = 64'h0;
           h_we   = 0;
         end
     end // chain_logic
@@ -548,10 +548,12 @@ module blake2_core(
           v11_new = IV3;
           v12_new = data_length[63:0] ^ IV4;
           v13_new = t1_reg ^ IV5;
+
           if (final_block)
             v14_new = 64'hffffffffffffffff ^ IV6;
           else
             v14_new = IV6;
+
           v15_new = f1_reg ^ IV7;
           v_we    = 1;
         end

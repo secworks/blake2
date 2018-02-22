@@ -48,9 +48,9 @@ module blake2(
               // Data ports.
               input wire  [7 : 0]  address,
               input wire  [31 : 0] write_data,
-              output wire [31 : 0] read_data,
-              output wire          error
+              output wire [31 : 0] read_data
              );
+
 
   //----------------------------------------------------------------
   // Internal constant and parameter definitions.
@@ -62,6 +62,7 @@ module blake2(
   localparam ADDR_CTRL        = 8'h08;
   localparam CTRL_INIT_BIT    = 0;
   localparam CTRL_NEXT_BIT    = 1;
+  localparam CTRL_FINAL_BIT   = 2;
 
   localparam ADDR_STATUS      = 8'h09;
   localparam STATUS_READY_BIT = 0;
@@ -81,9 +82,11 @@ module blake2(
   // Registers including update variables and write enable.
   //----------------------------------------------------------------
   reg init_reg;
+  reg init_new;
   reg next_reg;
+  reg next_new;
   reg final_reg;
-  reg ctrl_we;
+  reg final_new;
 
   reg ready_reg;
 
@@ -91,9 +94,6 @@ module blake2(
 
   reg [31 : 0] block_mem [0 : 31];
   reg          block_mem_we;
-
-  reg [31 : 0] digest_mem [0 : 16];
-  reg          digest_mem_we;
 
 
   //----------------------------------------------------------------
@@ -106,7 +106,6 @@ module blake2(
   wire            core_digest_valid;
 
   reg [31 : 0]    tmp_read_data;
-  reg             tmp_error;
 
 
   //----------------------------------------------------------------
@@ -123,7 +122,6 @@ module blake2(
                          block_mem[28], block_mem[29], block_mem[30], block_mem[31]};
 
   assign read_data = tmp_read_data;
-  assign error     = tmp_error;
 
 
   //----------------------------------------------------------------
@@ -151,7 +149,7 @@ module blake2(
   //----------------------------------------------------------------
   always @ (posedge clk)
     begin : reg_update
-      reg [6 : 0] i;
+      integer i;
 
       if (!reset_n)
         begin
@@ -164,20 +162,14 @@ module blake2(
             begin
               block_mem[i] <= 32'h0;
             end
-
-          for (i = 0 ; i < 16 ; i = i + 1)
-            begin
-              digest_mem[i] <= 32'h0;
-            end
         end
       else
         begin
+          init_reg         <= init_new;
+          next_reg         <= next_new;
+          final_reg        <= final_new;
           ready_reg        <= core_ready;
           digest_valid_reg <= core_digest_valid;
-
-          if (ctrl_we)
-            init_reg <= write_data[CTRL_INIT_BIT];
-          next_reg <= write_data[CTRL_NEXT_BIT];
 
           if (block_mem_we)
             block_mem[address[4 : 0]] <= write_data;
@@ -190,26 +182,27 @@ module blake2(
   //----------------------------------------------------------------
   always @*
     begin : addr_decoder
-      block_mem_we  = 0;
-      digest_mem_we = 0;
+      init_new      = 1'b0;
+      next_new      = 1'b0;
+      final_new     = 1'b0;
+      block_mem_we  = 1'b0;
       tmp_read_data = 32'h0;
-      tmp_error     = 0;
 
       if (cs)
         begin
           if (we)
             begin
+              if (address == ADDR_CTRL)
+                begin
+                  init_new  = write_data[CTRL_INIT_BIT];
+                  next_new  = write_data[CTRL_NEXT_BIT];
+                  final_new = write_data[CTRL_FINAL_BIT];
+                end
+
               if ((address >= ADDR_BLOCK_W00) && (address <= ADDR_BLOCK_W31))
                 begin
                   block_mem_we = 1;
                 end
-
-              case (address)
-                ADDR_CTRL:
-                  begin
-                    ctrl_we  = 1;
-                  end
-              endcase // case (address)
             end // if (we)
 
           else
@@ -225,14 +218,13 @@ module blake2(
                   tmp_read_data = CORE_VERSION;
 
                 ADDR_CTRL:
-                  tmp_read_data = {28'h0, 2'b00, next_reg, init_reg};
+                  tmp_read_data = {29'h0, final_reg, next_reg, init_reg};
 
                 ADDR_STATUS:
-                  tmp_read_data = {28'h0, 2'b00, {digest_valid_reg, ready_reg}};
+                  tmp_read_data = {30'h0, digest_valid_reg, ready_reg};
 
                 default:
                   begin
-                    tmp_error = 1;
                   end
               endcase // case (address)
             end

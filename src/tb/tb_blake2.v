@@ -57,7 +57,6 @@ module tb_blake2();
   reg  [7 : 0]  tb_address;
   reg  [31 : 0] tb_data_in;
   wire [31 : 0] tb_data_out;
-  wire          tb_error;
 
   reg [63 : 0] cycle_ctr;
   reg [31 : 0] error_ctr;
@@ -87,8 +86,7 @@ module tb_blake2();
              // Data ports.
              .address(tb_address),
              .write_data(tb_data_in),
-             .read_data(tb_data_out),
-             .error(tb_error)
+             .read_data(tb_data_out)
             );
 
 
