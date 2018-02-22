@@ -46,11 +46,6 @@ module tb_blake2_G();
   parameter CLK_HALF_PERIOD = 2;
   parameter CLK_PERIOD = 2 * CLK_HALF_PERIOD;
 
-  parameter [63 : 0]
-    TEST_A_PRIME = 64'hf0c9aa0de38b1b89,
-    TEST_B_PRIME = 64'hbbdf863401fde49b,
-    TEST_C_PRIME = 64'he85eb23c42183d3d,
-    TEST_D_PRIME = 64'h7111fd8b6445099d;
 
   //----------------------------------------------------------------
   // Register and Wire declarations.
@@ -148,7 +143,7 @@ module tb_blake2_G();
         end
       else
         begin
-          $display("*** %02d test cases completes,  %02d test cases did not complete successfully.",
+          $display("*** %02d test cases completes, %02d test cases did not complete successfully.",
                    tc_ctr, error_ctr);
         end
     end
@@ -178,48 +173,65 @@ module tb_blake2_G();
 
   //----------------------------------------------------------------
   //----------------------------------------------------------------
+  task testrunner (input [63 : 0] a, input [63 : 0] b,
+                   input [63 : 0] c, input [63 : 0] d,
+                   input [63 : 0] m0, input [63 : 0] m1,
+
+                   input [63 : 0] prim_a, input [63 : 0] prim_b,
+                   input [63 : 0] prim_c, input [63 : 0] prim_d);
+
+    begin : testrun
+      integer tc_error;
+      tc_error = 0;
+
+      tb_a      = a;
+      tb_b      = b;
+      tb_c      = c;
+      tb_d      = d;
+      tb_m0     = m0;
+      tb_m1     = m1;
+
+      #(CLK_PERIOD);
+      if (tb_a_prim != prim_a)
+        tc_error = tc_error + 1;
+
+      if (tb_b_prim != prim_b)
+        tc_error = tc_error + 1;
+
+      if (tb_c_prim != prim_c)
+        tc_error = tc_error + 1;
+
+      if (tb_d_prim != prim_d)
+        tc_error = tc_error + 1;
+
+      if (tc_error > 0)
+        begin
+          error_ctr = error_ctr + 1;
+
+          $display("%d Errors in test case found - dumping state:", tc_error);
+          $display("tb_a_prim: %016x, expected %016x", tb_a_prim, prim_a);
+          $display("tb_b_prim: %016x, expected %016x", tb_b_prim, prim_b);
+          $display("tb_c_prim: %016x, expected %016x", tb_c_prim, prim_c);
+          $display("tb_d_prim: %016x, expected %016x", tb_d_prim, prim_d);
+        end
+    end
+  endtask // testrunner
+
+  //----------------------------------------------------------------
+  //----------------------------------------------------------------
   task TC1;
     begin : test_case1
-      integer tc1_error;
-      tc1_error = 0;
-
       tc_ctr = tc_ctr + 1;
 
       $display("Starting TC1");
 
-      #(CLK_PERIOD);
+      testrunner(64'h6a09e667f2bdc948, 64'h510e527fade682d1,
+                 64'h6a09e667f3bcc908, 64'h510e527fade68251,
+                 64'h0000000000000000, 64'h0000000000000000,
+                 64'hf0c9aa0de38b1b89, 64'hbbdf863401fde49b,
+                 64'he85eb23c42183d3d, 64'h7111fd8b6445099d);
 
-      tb_a      = 64'h6a09e667f2bdc948;
-      tb_b      = 64'h510e527fade682d1;
-      tb_c      = 64'h6a09e667f3bcc908;
-      tb_d      = 64'h510e527fade68251;
-      tb_m0     = 64'h0000000000000000;
-      tb_m1     = 64'h0000000000000000;
-
-      #(CLK_PERIOD);
-
-      if (tb_a_prim != TEST_A_PRIME)
-        tc1_error = tc1_error + 1;
-
-      if (tb_b_prim != TEST_B_PRIME)
-        tc1_error = tc1_error + 1;
-
-      if (tb_c_prim != TEST_C_PRIME)
-        tc1_error = tc1_error + 1;
-
-      if (tb_d_prim != TEST_D_PRIME)
-        tc1_error = tc1_error + 1;
-
-      if (tc1_error > 0)
-        begin
-          error_ctr = error_ctr + 1;
-
-          $display("%d Errors in TC1 found--dumping state:", tc1_error);
-          $display("tb_a_prim: %016x", tb_a_prim);
-          $display("tb_b_prim: %016x", tb_b_prim);
-          $display("tb_c_prim: %016x", tb_c_prim);
-          $display("tb_d_prim: %016x", tb_d_prim);
-        end
+      $display("Stopping TC1");
     end
   endtask // TC1
 
