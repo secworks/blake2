@@ -148,7 +148,8 @@ module tb_blake2_G();
         end
       else
         begin
-          $display("*** %02d test cases did not complete successfully.", error_ctr);
+          $display("*** %02d test cases completes,  %02d test cases did not complete successfully.",
+                   tc_ctr, error_ctr);
         end
     end
   endtask // display_test_result
@@ -165,14 +166,62 @@ module tb_blake2_G();
       error_ctr = 0;
       tc_ctr    = 0;
       tb_clk    = 0;
+      tb_a      = 64'h0;
+      tb_b      = 64'h0;
+      tb_c      = 64'h0;
+      tb_d      = 64'h0;
+      tb_m0     = 64'h0;
+      tb_m1     = 64'h0;
+    end
+  endtask // init_dut
+
+
+  //----------------------------------------------------------------
+  //----------------------------------------------------------------
+  task TC1;
+    begin : test_case1
+      integer tc1_error;
+      tc1_error = 0;
+
+      tc_ctr = tc_ctr + 1;
+
+      $display("Starting TC1");
+
+      #(CLK_PERIOD);
+
       tb_a      = 64'h6a09e667f2bdc948;
       tb_b      = 64'h510e527fade682d1;
       tb_c      = 64'h6a09e667f3bcc908;
       tb_d      = 64'h510e527fade68251;
       tb_m0     = 64'h0000000000000000;
       tb_m1     = 64'h0000000000000000;
+
+      #(CLK_PERIOD);
+
+      if (tb_a_prim != TEST_A_PRIME)
+        tc1_error = tc1_error + 1;
+
+      if (tb_b_prim != TEST_B_PRIME)
+        tc1_error = tc1_error + 1;
+
+      if (tb_c_prim != TEST_C_PRIME)
+        tc1_error = tc1_error + 1;
+
+      if (tb_d_prim != TEST_D_PRIME)
+        tc1_error = tc1_error + 1;
+
+      if (tc1_error > 0)
+        begin
+          error_ctr = error_ctr + 1;
+
+          $display("%d Errors in TC1 found--dumping state:", tc1_error);
+          $display("tb_a_prim: %016x", tb_a_prim);
+          $display("tb_b_prim: %016x", tb_b_prim);
+          $display("tb_c_prim: %016x", tb_c_prim);
+          $display("tb_d_prim: %016x", tb_d_prim);
+        end
     end
-  endtask // init_dut
+  endtask // TC1
 
 
   //----------------------------------------------------------------
@@ -182,43 +231,14 @@ module tb_blake2_G();
   //----------------------------------------------------------------
   initial
     begin : tb_blake2_G_test
-      $display("   -- Testbench for Blake2 G function test started --");
+      $display("*** Testbench for Blake2 G function test started");
       init_dut();
-
-      #(CLK_PERIOD);
-
-      if (tb_a_prim == TEST_A_PRIME)
-        tc_ctr = tc_ctr + 1;
-      else
-        error_ctr = error_ctr + 1;
-
-      if (tb_b_prim == TEST_B_PRIME)
-        tc_ctr = tc_ctr + 1;
-      else
-        error_ctr = error_ctr + 1;
-
-      if (tb_c_prim == TEST_C_PRIME)
-        tc_ctr = tc_ctr + 1;
-      else
-        error_ctr = error_ctr + 1;
-
-      if (tb_d_prim == TEST_D_PRIME)
-        tc_ctr = tc_ctr + 1;
-      else
-        error_ctr = error_ctr + 1;
-
-      if (error_ctr)
-        begin
-          $display("Errors found--dumping state:");
-          $display("tb_a_prim: %016x", tb_a_prim);
-          $display("tb_b_prim: %016x", tb_b_prim);
-          $display("tb_c_prim: %016x", tb_c_prim);
-          $display("tb_d_prim: %016x", tb_d_prim);
-        end
+      TC1();
 
       display_test_result();
       $display("*** Blake2 G functions simulation done.");
-      $finish_and_return(error_ctr);
+      $finish;
+
     end // tb_blake2_G_test
 endmodule // tb_blake2_G
 
