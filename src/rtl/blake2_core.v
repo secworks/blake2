@@ -77,25 +77,25 @@ module blake2_core(
   parameter [7:0] DEPTH = 8'h01;
 
   // 4-byte leaf length
-  parameter [31:0] LEAF_LENGTH = 32'h00000000;
+  parameter [31:0] LEAF_LENGTH = 32'h0;
 
   // 8-byte node offset
-  parameter [63:0] NODE_OFFSET = 64'h0000000000000000;
+  parameter [63:0] NODE_OFFSET = 64'h0;
 
   // Node Depth
   parameter [7:0] NODE_DEPTH = 8'h00;
 
   // Inner hash length
-  parameter [7:0] INNER_LENGTH = 8'h00;
+  parameter [7:0] INNER_LENGTH = 8'h0;
 
   // Reserved for future use (14 bytes)
-  parameter [111:0] RESERVED = 112'h0000000000000000000000000000;
+  parameter [111:0] RESERVED = 112'h0;
 
   // 16-byte salt, little-endian byte order
-  parameter [127:0] SALT = 128'h00000000000000000000000000000000;
+  parameter [127:0] SALT = 128'h0;
 
   // 16-byte personalization, little-endian byte order
-  parameter [127:0] PERSONALIZATION = 128'h00000000000000000000000000000000;
+  parameter [127:0] PERSONALIZATION = 128'h0;
 
   wire [511:0] parameter_block = {PERSONALIZATION, SALT, RESERVED, INNER_LENGTH,
                                   NODE_DEPTH, NODE_OFFSET, LEAF_LENGTH, DEPTH,
