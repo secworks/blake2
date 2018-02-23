@@ -132,8 +132,8 @@ module blake2_core(
   reg          h_we;
   reg          update_chain_value;
 
-  reg [31 : 0] v_reg [0 : 15];
-  reg [31 : 0] v_new [0 : 15];
+  reg [63 : 0] v_reg [0 : 15];
+  reg [63 : 0] v_new [0 : 15];
   reg          v_we;
 
   reg [63 : 0] f1_reg;
@@ -345,10 +345,10 @@ module blake2_core(
       if (!reset_n)
         begin
           for (i = 0; i < 8; i = i + 1)
-            h_reg[i] <= 32'h0;
+            h_reg[i] <= 64'h0;
 
           for (i = 0; i < 16; i = i + 1)
-            v_reg[i] <= 32'h0;
+            v_reg[i] <= 64'h0;
 
           f1_reg             <= 64'h0;
           ready_reg          <= 1;
@@ -422,7 +422,7 @@ module blake2_core(
           h_new[5]  = IV5 ^ parameter_block[383 : 320];
           h_new[6]  = IV6 ^ parameter_block[447 : 384];
           h_new[7]  = IV7 ^ parameter_block[511 : 448];
-          h_we    = 1;
+          h_we = 1;
         end
 
       if (update_chain_value)
@@ -435,7 +435,7 @@ module blake2_core(
           h_new[5] = h_reg[5] ^ v_reg[5] ^ v_reg[13];
           h_new[6] = h_reg[6] ^ v_reg[6] ^ v_reg[14];
           h_new[7] = h_reg[7] ^ v_reg[7] ^ v_reg[15];
-          h_we   = 1;
+          h_we = 1;
         end
     end // chain_logic
 
