@@ -61,45 +61,16 @@ module blake2_core(
   // Default number of rounds
   parameter NUM_ROUNDS = 4'hc;
 
+
   //----------------------------------------------------------------
-  // Parameter block.
+  // blake2_param
+  // The Blake2 parameter block.
+  // We currently don't support a complete parameter block.
+  // See Section 2.5 in RFC 7693 for specification.
+  // https://tools.ietf.org/html/rfc7693#section-2.5
   //----------------------------------------------------------------
-  // The digest length in bytes. Minimum: 1, Maximum: 64
-  parameter [7:0] DIGEST_LENGTH = 8'd64;
+  localparam blake2_param = 64'h0101004000000000;
 
-  // The key length in bytes. Minimum: 0 (for no key used), Maximum: 64
-  parameter [7:0] KEY_LENGTH = 8'd0;
-
-  // Fanout
-  parameter [7:0] FANOUT = 8'h01;
-
-  // Depth (maximal)
-  parameter [7:0] DEPTH = 8'h01;
-
-  // 4-byte leaf length
-  parameter [31:0] LEAF_LENGTH = 32'h0;
-
-  // 8-byte node offset
-  parameter [63:0] NODE_OFFSET = 64'h0;
-
-  // Node Depth
-  parameter [7:0] NODE_DEPTH = 8'h00;
-
-  // Inner hash length
-  parameter [7:0] INNER_LENGTH = 8'h0;
-
-  // Reserved for future use (14 bytes)
-  parameter [111:0] RESERVED = 112'h0;
-
-  // 16-byte salt, little-endian byte order
-  parameter [127:0] SALT = 128'h0;
-
-  // 16-byte personalization, little-endian byte order
-  parameter [127:0] PERSONALIZATION = 128'h0;
-
-  wire [511:0] parameter_block = {PERSONALIZATION, SALT, RESERVED, INNER_LENGTH,
-                                  NODE_DEPTH, NODE_OFFSET, LEAF_LENGTH, DEPTH,
-                                  FANOUT, KEY_LENGTH, DIGEST_LENGTH};
 
   //----------------------------------------------------------------
   // Internal constant definitions.
@@ -130,16 +101,14 @@ module blake2_core(
   reg [63 : 0] h_reg [0 : 7];
   reg [63 : 0] h_new [0 : 7];
   reg          h_we;
-  reg          update_chain_value;
 
   reg [63 : 0] v_reg [0 : 15];
   reg [63 : 0] v_new [0 : 15];
   reg          v_we;
 
-  reg [63 : 0] f1_reg;
-  reg [63 : 0] f1_new;
-  reg          f1_we;
-
+  reg [63 : 0] t0_reg;
+  reg [63 : 0] t0_new;
+  reg          t0_we;
   reg [63 : 0] t1_reg;
   reg [63 : 0] t1_new;
   reg          t1_we;
@@ -175,6 +144,8 @@ module blake2_core(
   reg sample_params;
   reg init_state;
   reg update_state;
+  reg init_f;
+  reg update_f;
   reg update_output;
 
   reg load_m;
@@ -350,7 +321,6 @@ module blake2_core(
           for (i = 0; i < 16; i = i + 1)
             v_reg[i] <= 64'h0;
 
-          f1_reg             <= 64'h0;
           ready_reg          <= 1;
           digest_valid_reg   <= 0;
           G_ctr_reg          <= STATE_G0;
@@ -400,12 +370,11 @@ module blake2_core(
 
 
   //----------------------------------------------------------------
-  // chain_logic
-  //
-  // Logic for updating the chain registers.
+  // state_logic
+  // Logic for initializing and updating state registers h.
   //----------------------------------------------------------------
   always @*
-    begin : chain_logic
+    begin : state_logic
       integer i;
 
       for (i = 0; i < 8; i = i + 1)
@@ -414,18 +383,18 @@ module blake2_core(
 
       if (init_state)
         begin
-          h_new[0]  = IV0 ^ parameter_block[63  :   0];
-          h_new[1]  = IV1 ^ parameter_block[127 :  64];
-          h_new[2]  = IV2 ^ parameter_block[191 : 128];
-          h_new[3]  = IV3 ^ parameter_block[255 : 192];
-          h_new[4]  = IV4 ^ parameter_block[319 : 256];
-          h_new[5]  = IV5 ^ parameter_block[383 : 320];
-          h_new[6]  = IV6 ^ parameter_block[447 : 384];
-          h_new[7]  = IV7 ^ parameter_block[511 : 448];
+          h_new[0]  = IV0 ^ blake2_param;
+          h_new[1]  = IV1;
+          h_new[2]  = IV2;
+          h_new[3]  = IV3;
+          h_new[4]  = IV4;
+          h_new[5]  = IV5;
+          h_new[6]  = IV6;
+          h_new[7]  = IV7;
           h_we = 1;
         end
 
-      if (update_chain_value)
+      if (update_state)
         begin
           h_new[0] = h_reg[0] ^ v_reg[0] ^ v_reg[8];
           h_new[1] = h_reg[1] ^ v_reg[1] ^ v_reg[9];
@@ -441,12 +410,12 @@ module blake2_core(
 
 
   //----------------------------------------------------------------
-  // state_logic
+  // F_compression
   //
-  // Logic to init and update the internal state.
+  // The compression function F.
   //----------------------------------------------------------------
   always @*
-    begin : state_logic
+    begin : F_compression
       integer i;
 
       for (i = 0; i < 16; i = i + 1)
@@ -470,28 +439,28 @@ module blake2_core(
       G3_c = 64'h0;
       G3_d = 64'h0;
 
-      if (init_state)
+      if (init_f)
         begin
-          v_new[0]  = IV0 ^ parameter_block[63:0];
-          v_new[1]  = IV1 ^ parameter_block[127:64];
-          v_new[2]  = IV2 ^ parameter_block[191:128];
-          v_new[3]  = IV3 ^ parameter_block[255:192];
-          v_new[4]  = IV4 ^ parameter_block[319:256];
-          v_new[5]  = IV5 ^ parameter_block[383:320];
-          v_new[6]  = IV6 ^ parameter_block[447:384];
-          v_new[7]  = IV7 ^ parameter_block[511:448];
+          v_new[0]  = h_reg[0];
+          v_new[1]  = h_reg[1];
+          v_new[2]  = h_reg[2];
+          v_new[3]  = h_reg[3];
+          v_new[4]  = h_reg[4];
+          v_new[5]  = h_reg[5];
+          v_new[6]  = h_reg[6];
+          v_new[7]  = h_reg[7];
           v_new[8]  = IV0;
           v_new[9]  = IV1;
           v_new[10] = IV2;
           v_new[11] = IV3;
-          v_new[12] = data_length[63:0] ^ IV4;
-          v_new[13] = t1_reg ^ IV5;
-          v_new[14] = {IV6 ^ {64{final_block}}};
-          v_new[15] = f1_reg ^ IV7;
-          v_we    = 1;
+          v_new[12] = IV4 ^ t0_reg;
+          v_new[13] = IV5 ^ t1_reg;
+          v_new[14] = IV6 ^ {64{final_block}};
+          v_new[15] = IV7;
+          v_we = 1;
         end
 
-      else if (update_state)
+      else if (update_f)
         begin
           v_we    = 1;
 
@@ -645,6 +614,9 @@ module blake2_core(
       init_state         = 0;
       update_state       = 0;
 
+      init_f             = 0;
+      update_f           = 0;
+
       load_m             = 0;
 
       G_ctr_inc          = 0;
@@ -652,8 +624,6 @@ module blake2_core(
 
       dr_ctr_inc         = 0;
       dr_ctr_rst         = 0;
-
-      update_chain_value = 0;
 
       ready_new          = 0;
       ready_we           = 0;
@@ -707,7 +677,6 @@ module blake2_core(
 
         CTRL_FINALIZE:
           begin
-            update_chain_value = 1;
             ready_new          = 1;
             ready_we           = 1;
             digest_valid_new   = 1;
