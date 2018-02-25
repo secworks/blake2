@@ -58,10 +58,11 @@ module tb_blake2_core();
   reg            tb_reset_n;
 
   reg            tb_init;
-  reg            tb_next;
-  reg            tb_final;
+  reg            tb_next_block;
+  reg            tb_final_block;
   reg [1023 : 0] tb_block;
-  reg [127 : 0]  tb_length;
+  reg [7 : 0]    tb_key_len;
+  reg [7 : 0]    tb_digest_len;
   wire           tb_ready;
   wire [511 : 0] tb_digest;
   wire           tb_digest_valid;
@@ -70,21 +71,23 @@ module tb_blake2_core();
   //----------------------------------------------------------------
   // blake2_core devices under test.
   //----------------------------------------------------------------
-
-  // The BLAKE2b-512 core
   blake2_core dut (
                    .clk(tb_clk),
                    .reset_n(tb_reset_n),
 
                    .init(tb_init),
-                   .next(tb_next),
-                   .final_block(tb_final),
+                   .next_block(tb_next_block),
+                   .final_block(tb_final_block),
+
+                   .key_len(tb_key_len),
+                   .digest_len(tb_digest_len),
+
                    .block(tb_block),
-                   .data_length(tb_length),
+
                    .ready(tb_ready),
                    .digest(tb_digest),
                    .digest_valid(tb_digest_valid)
-                   );
+                  );
 
 
   //----------------------------------------------------------------
@@ -136,16 +139,17 @@ module tb_blake2_core();
   //----------------------------------------------------------------
   task init;
     begin
-      cycle_ctr  = 0;
-      error_ctr  = 0;
-      tc_ctr     = 0;
-      tb_clk     = 0;
-      tb_reset_n = 1;
-      tb_init    = 0;
-      tb_next    = 0;
-      tb_final   = 0;
-      tb_block   = 1024'h0;
-      tb_length  = 128'h0;
+      cycle_ctr      = 0;
+      error_ctr      = 0;
+      tc_ctr         = 0;
+      tb_clk         = 0;
+      tb_reset_n     = 1;
+      tb_init        = 0;
+      tb_next_block  = 0;
+      tb_final_block = 0;
+      tb_key_len     = 8'h0;
+      tb_digest_len  = 8'h0;
+      tb_block       = 1024'h0;
     end
   endtask // init
 

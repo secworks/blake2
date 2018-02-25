@@ -83,8 +83,10 @@ module blake2(
   //----------------------------------------------------------------
   reg init_reg;
   reg init_new;
+
   reg next_reg;
   reg next_new;
+
   reg final_reg;
   reg final_new;
 
@@ -95,9 +97,18 @@ module blake2(
   reg [31 : 0] block_mem [0 : 31];
   reg          block_mem_we;
 
+  reg [7 : 0] core_key_len_reg;
+  reg [7 : 0] core_key_len_new;
+  reg         core_key_len_we;
+
+  reg [7 : 0] core_digest_len_reg;
+  reg [7 : 0] core_digest_len_new;
+  reg         core_digest_len_we;
+
 
   //----------------------------------------------------------------
-  // Wires.
+  // Wires.  reg [7 : 0] core_key_len;
+
   //----------------------------------------------------------------
   wire            core_ready;
   wire [1023 : 0] core_block;
@@ -132,13 +143,15 @@ module blake2(
                     .reset_n(reset_n),
 
                     .init(init_reg),
-                    .next(next_reg),
+                    .next_block(next_reg),
                     .final_block(final_reg),
 
-                    .block(core_block),
-                    .data_length(core_length),
-                    .ready(core_ready),
+                    .key_len(core_key_len_reg),
+                    .digest_len(core_digest_len_reg),
 
+                    .block(core_block),
+
+                    .ready(core_ready),
                     .digest(core_digest),
                     .digest_valid(core_digest_valid)
                    );

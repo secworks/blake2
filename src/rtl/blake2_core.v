@@ -3,7 +3,8 @@
 // blake2_core.v
 // --------------
 // Verilog 2001 implementation of the hash function Blake2.
-// This is the internal core with wide interfaces.
+// This is the internal core with wide interfaces. The implementation
+// follows RFC 7693
 //
 //
 // Author: Joachim Strömbergson
@@ -42,14 +43,15 @@ module blake2_core(
                    input wire            reset_n,
 
                    input wire            init,
-                   input wire            next,
+                   input wire            next_block,
                    input wire            final_block,
 
+                   input wire [7 : 0]    key_len,
+                   input wire [7 : 0]    digest_len,
+
                    input wire [1023 : 0] block,
-                   input wire [127 : 0]  data_length,
 
                    output wire           ready,
-
                    output wire [511 : 0] digest,
                    output wire           digest_valid
                   );
@@ -59,17 +61,10 @@ module blake2_core(
   // Configuration parameters.
   //----------------------------------------------------------------
   // Default number of rounds
-  parameter NUM_ROUNDS = 4'hc;
+  localparam NUM_ROUNDS = 4'hc;
 
-
-  //----------------------------------------------------------------
-  // blake2_param
-  // The Blake2 parameter block.
-  // We currently don't support a complete parameter block.
-  // See Section 2.5 in RFC 7693 for specification.
-  // https://tools.ietf.org/html/rfc7693#section-2.5
-  //----------------------------------------------------------------
-  localparam blake2_param = 64'h0101004000000000;
+  // Block size in bytes.
+  localparam BLOCK_SIZE = 128;
 
 
   //----------------------------------------------------------------
@@ -90,9 +85,10 @@ module blake2_core(
 
   localparam CTRL_IDLE     = 3'h0;
   localparam CTRL_INIT     = 3'h1;
-  localparam CTRL_ROUNDS   = 3'h2;
-  localparam CTRL_FINALIZE = 3'h3;
-  localparam CTRL_DONE     = 3'h4;
+  localparam CTRL_NEXT     = 3'h2;
+  localparam CTRL_ROUNDS   = 3'h3;
+  localparam CTRL_FINALIZE = 3'h4;
+  localparam CTRL_DONE     = 3'h5;
 
 
   //----------------------------------------------------------------
@@ -112,6 +108,8 @@ module blake2_core(
   reg [63 : 0] t1_reg;
   reg [63 : 0] t1_new;
   reg          t1_we;
+  reg          t_ctr_rst;
+  reg          t_ctr_inc;
 
   reg  digest_valid_reg;
   reg  digest_valid_new;
@@ -321,11 +319,13 @@ module blake2_core(
           for (i = 0; i < 16; i = i + 1)
             v_reg[i] <= 64'h0;
 
-          ready_reg          <= 1;
-          digest_valid_reg   <= 0;
-          G_ctr_reg          <= STATE_G0;
-          dr_ctr_reg         <= 0;
-          blake2_ctrl_reg    <= CTRL_IDLE;
+          t0_reg           <= 64'h0;
+          t1_reg           <= 64'h0;
+          ready_reg        <= 1;
+          digest_valid_reg <= 0;
+          G_ctr_reg        <= STATE_G0;
+          dr_ctr_reg       <= 0;
+          blake2_ctrl_reg  <= CTRL_IDLE;
         end
       else
         begin
@@ -342,24 +342,22 @@ module blake2_core(
             end
 
           if (ready_we)
-            begin
-              ready_reg <= ready_new;
-            end
+            ready_reg <= ready_new;
 
           if (digest_valid_we)
-            begin
-              digest_valid_reg <= digest_valid_new;
-            end
+            digest_valid_reg <= digest_valid_new;
 
           if (G_ctr_we)
-            begin
-              G_ctr_reg <= G_ctr_new;
-            end
+            G_ctr_reg <= G_ctr_new;
 
           if (dr_ctr_we)
-            begin
-              dr_ctr_reg <= dr_ctr_new;
-            end
+            dr_ctr_reg <= dr_ctr_new;
+
+          if (t0_we)
+            t0_reg <= t0_new;
+
+          if (t1_we)
+            t1_reg <= t1_new;
 
           if (blake2_ctrl_we)
             begin
@@ -375,11 +373,15 @@ module blake2_core(
   //----------------------------------------------------------------
   always @*
     begin : state_logic
+      reg [63 : 0] blake2_param;
       integer i;
 
       for (i = 0; i < 8; i = i + 1)
         h_new[i] = 64'h0;
       h_we   = 0;
+
+      // Assemble the blake2 parameter block.
+      blake2_param = {8'h01, 8'h01, key_len, digest_len, 32'h0};
 
       if (init_state)
         begin
@@ -606,6 +608,39 @@ module blake2_core(
 
 
   //----------------------------------------------------------------
+  // c_ctr
+  // Update logic for the byte offset counter t spanning two
+  // words t0_reg and t1_reg.
+  //----------------------------------------------------------------
+  always @*
+    begin : t_ctr
+      t0_new = 64'h0;
+      t0_we  = 0;
+
+      t1_new = 64'h0;
+      t1_we  = 0;
+
+      if (t_ctr_rst)
+        begin
+          t0_we = 1;
+          t1_we = 1;
+        end
+
+      if (t_ctr_inc)
+        begin
+          t0_new = t0_reg + BLOCK_SIZE;
+          t0_we  = 1;
+
+          if (t0_new < t0_reg)
+            begin
+              t1_new = t1_reg + 1'b1;
+              t1_we  = 1;
+            end
+        end
+    end // t_ctr
+
+
+  //----------------------------------------------------------------
   // blake2_ctrl_fsm
   // Logic for the state machine controlling the core behaviour.
   //----------------------------------------------------------------
@@ -624,6 +659,9 @@ module blake2_core(
 
       dr_ctr_inc         = 0;
       dr_ctr_rst         = 0;
+
+      t_ctr_rst          = 0;
+      t_ctr_inc          = 0;
 
       ready_new          = 0;
       ready_we           = 0;
@@ -698,7 +736,7 @@ module blake2_core(
                 blake2_ctrl_new  = CTRL_INIT;
                 blake2_ctrl_we   = 1;
               end
-            else if (next)
+            else if (next_block)
               begin
                 ready_new        = 0;
                 ready_we         = 1;
