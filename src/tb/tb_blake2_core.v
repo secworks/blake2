@@ -57,21 +57,14 @@ module tb_blake2_core();
   reg            tb_clk;
   reg            tb_reset_n;
 
-  reg            tb_init_512, tb_init_256;
-  reg            tb_next_512, tb_next_256;
-  reg            tb_final_512, tb_final_256;
-  reg [1023 : 0] tb_block_512, tb_block_256;
-  reg [127 : 0]  tb_length_512, tb_length_256;
-  wire           tb_ready_512, tb_ready_256;
-  wire [511 : 0] tb_digest_512, tb_digest_256;
-  wire           tb_digest_valid_512, tb_digest_valid_256;
-
-  reg            error_found;
-  reg [31 : 0]   read_data;
-
-  reg [511 : 0]  extracted_data;
-
-  reg            display_cycle_ctr;
+  reg            tb_init;
+  reg            tb_next;
+  reg            tb_final;
+  reg [1023 : 0] tb_block;
+  reg [127 : 0]  tb_length;
+  wire           tb_ready;
+  wire [511 : 0] tb_digest;
+  wire           tb_digest_valid;
 
 
   //----------------------------------------------------------------
@@ -79,38 +72,19 @@ module tb_blake2_core();
   //----------------------------------------------------------------
 
   // The BLAKE2b-512 core
-  blake2_core #(
-    .DIGEST_LENGTH(64)
-  )
-  dut_512 (
-    .clk(tb_clk),
-    .reset_n(tb_reset_n),
-    .init(tb_init_512),
-    .next(tb_next_512),
-    .final_block(tb_final_512),
-    .block(tb_block_512),
-    .data_length(tb_length_512),
-    .ready(tb_ready_512),
-    .digest(tb_digest_512),
-    .digest_valid(tb_digest_valid_512)
-  );
+  blake2_core dut (
+                   .clk(tb_clk),
+                   .reset_n(tb_reset_n),
 
-  // The BLAKE2b-256 core
-  blake2_core #(
-    .DIGEST_LENGTH(32)
-  )
-  dut_256 (
-    .clk(tb_clk),
-    .reset_n(tb_reset_n),
-    .init(tb_init_256),
-    .next(tb_next_256),
-    .final_block(tb_final_256),
-    .block(tb_block_256),
-    .data_length(tb_length_256),
-    .ready(tb_ready_256),
-    .digest(tb_digest_256),
-    .digest_valid(tb_digest_valid_256)
-  );
+                   .init(tb_init),
+                   .next(tb_next),
+                   .final_block(tb_final),
+                   .block(tb_block),
+                   .data_length(tb_length),
+                   .ready(tb_ready),
+                   .digest(tb_digest),
+                   .digest_valid(tb_digest_valid)
+                   );
 
 
   //----------------------------------------------------------------
@@ -167,143 +141,22 @@ module tb_blake2_core();
       tc_ctr     = 0;
       tb_clk     = 0;
       tb_reset_n = 1;
+      tb_init    = 0;
+      tb_next    = 0;
+      tb_final   = 0;
+      tb_block   = 1024'h0;
+      tb_length  = 128'h0;
     end
   endtask // init
 
 
   //----------------------------------------------------------------
-  // test_512_core
-  //
-  // Test the 512-bit hashing core
-  //----------------------------------------------------------------
-  task test_512_core(
-      input [1023 : 0] block,
-      input [127 : 0]  data_length,
-      input [511 : 0]  expected
-    );
-    begin
-      tb_block_512 = block;
-      tb_length_512 = data_length;
-
-      reset_dut();
-
-      tb_init_512 = 1;
-      tb_final_512 = 1;
-      #(2 * CLK_PERIOD);
-      tb_final_512 = 0;
-      tb_init_512 = 0;
-
-      while (!tb_digest_valid_512)
-        #(CLK_PERIOD);
-      #(CLK_PERIOD);
-
-      if (tb_digest_512 == expected)
-        tc_ctr = tc_ctr + 1;
-      else
-        begin
-          error_ctr = error_ctr + 1;
-          $display("Failed test:");
-          $display("block[1023:0768] = 0x%032x", block[1023:0768]);
-          $display("block[0767:0512] = 0x%032x", block[0767:0512]);
-          $display("block[0511:0256] = 0x%032x", block[0511:0256]);
-          $display("block[0255:0000] = 0x%032x", block[0255:0000]);
-          $display("tb_digest_512 = 0x%064x", tb_digest_512);
-          $display("expected      = 0x%064x", expected);
-          $display("");
-        end
-    end
-  endtask // test_512_core
-
-
-  //----------------------------------------------------------------
-  // test_256_core
-  //
-  // Test the 256-bit hashing core
-  //----------------------------------------------------------------
-  task test_256_core(
-      input [1023 : 0] block,
-      input [127 : 0]  data_length,
-      input [255 : 0]  expected
-    );
-    begin
-      tb_block_256 = block;
-      tb_length_256 = data_length;
-
-      reset_dut();
-
-      tb_init_256 = 1;
-      tb_final_256 = 1;
-      #(2 * CLK_PERIOD);
-      tb_final_256 = 0;
-      tb_init_256 = 0;
-
-      while (!tb_digest_valid_256)
-        #(CLK_PERIOD);
-      #(CLK_PERIOD);
-
-      if (tb_digest_256[511:256] == expected)
-        tc_ctr = tc_ctr + 1;
-      else
-        begin
-          error_ctr = error_ctr + 1;
-          $display("Failed test:");
-          $display("block[1023:0768] = 0x%032x", block[1023:0768]);
-          $display("block[0767:0512] = 0x%032x", block[0767:0512]);
-          $display("block[0511:0256] = 0x%032x", block[0511:0256]);
-          $display("block[0255:0000] = 0x%032x", block[0255:0000]);
-          $display("tb_digest_256[511:256] = 0x%032x", tb_digest_256[511:256]);
-          $display("expected               = 0x%032x", expected);
-          $display("");
-        end
-    end
-  endtask // test_256_core
-
-
-  //----------------------------------------------------------------
-  // blake2_core
-  //
-  // The main test functionality.
+  // blake2_core_test
   //----------------------------------------------------------------
   initial
     begin : blake2_core_test
       $display("   -- Testbench for blake2_core started --");
       init();
-
-      test_512_core(
-        {16{64'h0000000000000000}},
-        128,
-        512'h865939e120e6805438478841afb739ae4250cf372653078a065cdcfffca4caf798e6d462b65d658fc165782640eded70963449ae1500fb0f24981d7727e22c41
-      );
-
-      test_512_core(
-        {8'h01, {30{8'h00}}, 8'h02, {8{8'h00}}, 8'h02, {30{8'h00}}, 8'h01, {56{8'h00}}},
-        72,
-        512'hcbeffcb224f964ea408d2742963e87171e18f267960774136e56091915a82917bf6780b39061dd1ad31e4e90ef371358d1917646b39ea46153e1cfc54ea50416
-      );
-
-      test_512_core(
-        1024'h610a4485ad561f80716d7b0ccb7d876c3eaacdf75e934266d061eb7b9f68d093fc756d945b0bbf822d71f4e5e9b733e7acf870a4b6c0e610145781beca04e63f1b22e0a1b048797e53d94d732567e8fc77cb4f5fe7cce5be3f915d9520879e17e6f4016be0228692da17256a9ea7c12c502954e1fa50d8f32bd30d7abe487872,
-        128,
-        512'hae531a602a32d012e9fd2872b8bc5c854c0de37c64e4abe951d573ab097afe664f3c8f95c332346a8ebbd859281030e99fa05c59de5e08fc64a1dfbccd416cdf
-      );
-
-      test_256_core(
-        {16{64'h0000000000000000}},
-        128,
-        256'h378d0caaaa3855f1b38693c1d6ef004fd118691c95c959d4efa950d6d6fcf7c1
-      );
-
-      test_256_core(
-        {8'h01, {30{8'h00}}, 8'h02, {8{8'h00}}, 8'h02, {30{8'h00}}, 8'h01, {56{8'h00}}},
-        72,
-        256'h0b3f693476c351014a7f90472055f584b45d5652284b01c90be5d29765db0b2b
-      );
-
-      test_256_core(
-        1024'h610a4485ad561f80716d7b0ccb7d876c3eaacdf75e934266d061eb7b9f68d093fc756d945b0bbf822d71f4e5e9b733e7acf870a4b6c0e610145781beca04e63f1b22e0a1b048797e53d94d732567e8fc77cb4f5fe7cce5be3f915d9520879e17e6f4016be0228692da17256a9ea7c12c502954e1fa50d8f32bd30d7abe487872,
-        128,
-        256'h9cd77f477b8c2a97860c4b5e64519a1be27dcefbbec5a42b73644895fb22d23d
-      );
 
       display_test_result();
       $display("*** blake2_core simulation done.");
