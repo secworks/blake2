@@ -608,9 +608,9 @@ module blake2_core(
 
 
   //----------------------------------------------------------------
-  // c_ctr
+  // t_ctr
   // Update logic for the byte offset counter t spanning two
-  // words t0_reg and t1_reg.
+  // words - t0_reg and t1_reg.
   //----------------------------------------------------------------
   always @*
     begin : t_ctr
