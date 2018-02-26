@@ -1,5 +1,48 @@
+//======================================================================
+//
 // blake2b.c
-// A simple BLAKE2b Reference Implementation.
+// ---------
+// A simple BLAKE2b Reference Implementation. Source is from RFC 7693:
+// https://tools.ietf.org/html/rfc7693
+//
+//
+// Reference code by M-J. Saarinen, J-P. Aumasson.
+// Copyright (c) 2015 IETF Trust and the persons identified as the
+// document authors.  All rights reserved.
+//
+//
+// State dumping routines and code for additional test cases by
+// Joachim Strömbergson. For these contributions the license is:
+//
+// Copyright (c) 2018, Assured AB
+// All rights reserved.
+//
+// Redistribution and use in source and binary forms, with or
+// without modification, are permitted provided that the following
+// conditions are met:
+//
+// 1. Redistributions of source code must retain the above copyright
+//    notice, this list of conditions and the following disclaimer.
+//
+// 2. Redistributions in binary form must reproduce the above copyright
+//    notice, this list of conditions and the following disclaimer in
+//    the documentation and/or other materials provided with the
+//    distribution.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+// FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+// COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+// INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+// BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+// LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+// CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+// STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+// ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//
+//======================================================================
 
 #include "blake2b.h"
 #include<stdio.h>
@@ -44,8 +87,10 @@ static const uint64_t blake2b_iv[8] = {
 };
 
 
+//------------------------------------------------------------------
 // Helper function to dump the blake2b context at interesting
 // points during processing.
+//------------------------------------------------------------------
 static void dump_context(blake2b_ctx *ctx)
 {
   uint8_t i;
@@ -74,7 +119,25 @@ static void dump_context(blake2b_ctx *ctx)
 }
 
 
+//------------------------------------------------------------------
+//------------------------------------------------------------------
+static void dump_v(uint64_t *v)
+{
+  printf("v[00] = 0x%016llx  v[01] = 0x%016llx  v[02] = 0x%016llx  v[03] = 0x%016llx\n",
+         v[0], v[1], v[2], v[3]);
+  printf("v[04] = 0x%016llx  v[05] = 0x%016llx  v[06] = 0x%016llx  v[07] = 0x%016llx\n",
+         v[4], v[5], v[6], v[7]);
+  printf("v[08] = 0x%016llx  v[09] = 0x%016llx  v[10] = 0x%016llx  v[11] = 0x%016llx\n",
+         v[8], v[9], v[10], v[11]);
+  printf("v[12] = 0x%016llx  v[13] = 0x%016llx  v[14] = 0x%016llx  v[15] = 0x%016llx\n",
+         v[12], v[13], v[14], v[15]);
+  printf("\n");
+}
+
+
+//------------------------------------------------------------------
 // Compression function. "last" flag indicates last block.
+//------------------------------------------------------------------
 static void blake2b_compress(blake2b_ctx *ctx, int last)
 {
   const uint8_t sigma[12][16] = {
@@ -107,6 +170,9 @@ static void blake2b_compress(blake2b_ctx *ctx, int last)
   for (i = 0; i < 16; i++)            // get little-endian words
     m[i] = B2B_GET64(&ctx->b[8 * i]);
 
+  printf("State of v before G functions:\n");
+  dump_v(&v[0]);
+
   for (i = 0; i < 12; i++) {          // twelve rounds
     B2B_G( 0, 4,  8, 12, m[sigma[i][ 0]], m[sigma[i][ 1]]);
     B2B_G( 1, 5,  9, 13, m[sigma[i][ 2]], m[sigma[i][ 3]]);
@@ -118,15 +184,19 @@ static void blake2b_compress(blake2b_ctx *ctx, int last)
     B2B_G( 3, 4,  9, 14, m[sigma[i][14]], m[sigma[i][15]]);
   }
 
+  printf("State of v after G functions:\n");
+  dump_v(&v[0]);
+
   for( i = 0; i < 8; ++i )
     ctx->h[i] ^= v[i] ^ v[i + 8];
 }
 
 
+//------------------------------------------------------------------
 // Initialize the hashing context "ctx" with optional key "key".
 //      1 <= outlen <= 64 gives the digest size in bytes.
 //      Secret key (also <= 64 bytes) is optional (keylen = 0).
-
+//------------------------------------------------------------------
 int blake2b_init(blake2b_ctx *ctx, size_t outlen,
                  const void *key, size_t keylen)        // (keylen=0: no key)
 {
@@ -157,8 +227,9 @@ int blake2b_init(blake2b_ctx *ctx, size_t outlen,
 }
 
 
+//------------------------------------------------------------------
 // Add "inlen" bytes from "in" into the hash.
-
+//------------------------------------------------------------------
 void blake2b_update(blake2b_ctx *ctx,
                     const void *in, size_t inlen)       // data bytes
 {
@@ -177,9 +248,10 @@ void blake2b_update(blake2b_ctx *ctx,
 }
 
 
+//------------------------------------------------------------------
 // Generate the message digest (size given in init).
-//      Result placed in "out".
-
+// Result placed in "out".
+//------------------------------------------------------------------
 void blake2b_final(blake2b_ctx *ctx, void *out)
 {
   size_t i;
@@ -199,8 +271,11 @@ void blake2b_final(blake2b_ctx *ctx, void *out)
   }
 }
 
-// Convenience function for all-in-one computation.
 
+//------------------------------------------------------------------
+// blake2b
+// Convenience function for all-in-one computation.
+//------------------------------------------------------------------
 int blake2b(void *out, size_t outlen,
             const void *key, size_t keylen,
             const void *in, size_t inlen)
@@ -214,3 +289,7 @@ int blake2b(void *out, size_t outlen,
 
   return 0;
 }
+
+//======================================================================
+// EOF blake2b.c
+//======================================================================
