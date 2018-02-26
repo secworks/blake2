@@ -680,8 +680,16 @@ module blake2_core(
               begin
                 ready_new       = 0;
                 ready_we        = 1;
-                load_m          = 1;
                 blake2_ctrl_new = CTRL_INIT;
+                blake2_ctrl_we  = 1;
+              end
+
+            if (next_block)
+              begin
+                ready_new       = 0;
+                ready_we        = 1;
+                load_m          = 1;
+                blake2_ctrl_new = CTRL_ROUNDS;
                 blake2_ctrl_we  = 1;
               end
           end
@@ -692,7 +700,8 @@ module blake2_core(
             init_state      = 1;
             G_ctr_rst       = 1;
             dr_ctr_rst      = 1;
-            blake2_ctrl_new = CTRL_ROUNDS;
+            t_ctr_rst       = 1;
+            blake2_ctrl_new = CTRL_IDLE;
             blake2_ctrl_we  = 1;
           end
 

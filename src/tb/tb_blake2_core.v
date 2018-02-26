@@ -133,6 +133,19 @@ module tb_blake2_core();
 
 
   //----------------------------------------------------------------
+  //----------------------------------------------------------------
+  task dump_state;
+    begin
+      $display("Chaining value:");
+      $display("h[0] = 0x%016x  h[1] = 0x%016x  h[2] = 0x%016x  h[3] = 0x%016x",
+               dut.h_reg[0], dut.h_reg[1], dut.h_reg[2], dut.h_reg[3]);
+      $display("h[4] = 0x%016x  h[5] = 0x%016x  h[6] = 0x%016x  h[7] = 0x%016x",
+               dut.h_reg[4], dut.h_reg[5], dut.h_reg[6], dut.h_reg[7]);
+      $display("");
+    end
+  endtask // dump_state
+
+  //----------------------------------------------------------------
   // init()
   //
   // Set the input to the DUT to defined values.
@@ -155,12 +168,33 @@ module tb_blake2_core();
 
 
   //----------------------------------------------------------------
+  // test_core_init
+  //
+  // Verify that the chaining vector is correctly initialized
+  // based on given key and digest sizes.
+  //----------------------------------------------------------------
+  task test_core_init;
+    begin
+      tb_key_len    = 8'h0;
+      tb_digest_len = 8'h40;
+      tb_init       = 1;
+      #(4 * CLK_PERIOD);
+      tb_init       = 0;
+      dump_state();
+    end
+  endtask // test_core_init
+
+
+  //----------------------------------------------------------------
   // blake2_core_test
   //----------------------------------------------------------------
   initial
     begin : blake2_core_test
       $display("   -- Testbench for blake2_core started --");
       init();
+
+      reset_dut();
+      test_core_init();
 
       display_test_result();
       $display("*** blake2_core simulation done.");
