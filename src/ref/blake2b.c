@@ -44,8 +44,8 @@
 //
 //======================================================================
 
+#include <stdio.h>
 #include "blake2b.h"
-#include<stdio.h>
 
 // Cyclic right rotation.
 
