@@ -28,7 +28,7 @@ first data block if using the keyed hash.
 
 
 ### Reference implementation
-There is [a reference implementation from RFC 6793](src/ref/README.md) as part of the
+There is [a reference implementation from RFC 6793](src/ref/) as part of the
 source.
 
 ## FPGA-results ##
