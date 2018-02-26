@@ -44,6 +44,36 @@ static const uint64_t blake2b_iv[8] = {
 };
 
 
+// Helper function to dump the blake2b context at interesting
+// points during processing.
+static void dump_context(blake2b_ctx *ctx)
+{
+  uint8_t i;
+
+  printf("Block:\n");
+  for (i = 0 ; i < 128 ; i++) {
+    if ((i > 0) && (i % 8 == 0))
+      printf("\n");
+    printf("0x%02x ", ctx->b[i]);
+  }
+  printf("\n\n");
+
+  printf("Chained state:\n");
+  printf("h[0] = 0x%016llx  h[1] = 0x%016llx  h[2] = 0x%016llx  h[3] = 0x%016llx\n",
+         ctx->h[0], ctx->h[1], ctx->h[2], ctx->h[3]);
+  printf("h[4] = 0x%016llx  h[5] = 0x%016llx  h[6] = 0x%016llx  h[7] = 0x%016llx\n",
+         ctx->h[4], ctx->h[5], ctx->h[6], ctx->h[7]);
+  printf("\n");
+
+  printf("Byte counter:\n");
+  printf("t[0] = 0x%016llx  t[1] = 0x%016llx\n",
+         ctx->t[0], ctx->t[1]);
+  printf("\n");
+
+  printf("\n");
+}
+
+
 // Compression function. "last" flag indicates last block.
 static void blake2b_compress(blake2b_ctx *ctx, int last)
 {
@@ -119,6 +149,9 @@ int blake2b_init(blake2b_ctx *ctx, size_t outlen,
     blake2b_update(ctx, key, keylen);
     ctx->c = 128;                   // at the end
   }
+
+  printf("State after blake2b_init:\n");
+  dump_context(ctx);
 
   return 0;
 }
