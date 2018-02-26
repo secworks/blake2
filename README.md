@@ -27,6 +27,10 @@ RFC. But it is up to the user to push a correctly padded key block as
 first data block if using the keyed hash.
 
 
+### Reference implementation
+There is [a reference implementation from RFC 6793](src/ref/README.md) as part of the
+source.
+
 ## FPGA-results ##
 
 ### Altera FPGAs ###
