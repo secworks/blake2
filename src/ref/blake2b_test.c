@@ -166,6 +166,8 @@ static void check_digest(uint8_t *digest, uint8_t *expected)
 
 
 //------------------------------------------------------------------
+// rfc_test
+// Test case from Appendix A in RFC7693.
 //------------------------------------------------------------------
 static void rfc_test()
 {
