@@ -143,7 +143,6 @@ module blake2_core(
   reg update_state;
   reg init_f;
   reg update_f;
-
   reg load_m;
 
   reg [63 : 0]  G0_a;

@@ -57,6 +57,8 @@ module tb_blake2_core();
   reg            tb_clk;
   reg            tb_reset_n;
 
+  reg            tb_display_state;
+
   reg            tb_init;
   reg            tb_next_block;
   reg            tb_final_block;
@@ -114,6 +116,23 @@ module tb_blake2_core();
 
 
   //----------------------------------------------------------------
+  // sys_monitor()
+  //
+  // An always running process that creates a cycle counter and
+  // conditionally displays information about the DUT.
+  //----------------------------------------------------------------
+  always
+    begin : sys_monitor
+      cycle_ctr = cycle_ctr + 1;
+      #(CLK_PERIOD);
+      if (tb_display_state)
+        begin
+          dump_dut_state();
+        end
+    end
+
+
+  //----------------------------------------------------------------
   // display_test_result()
   //
   // Display the accumulated test results.
@@ -133,9 +152,15 @@ module tb_blake2_core();
 
 
   //----------------------------------------------------------------
+  // dump_dut_state()
   //----------------------------------------------------------------
-  task dump_state;
+  task dump_dut_state;
     begin
+      $display("Counters and control state::");
+      $display("blake2_ctrl_reg = 0x02x  round_ctr_reg = 0x%02x",
+               dut.blake2_ctrl_reg, dut.round_ctr_reg);
+      $display("");
+
       $display("Chaining value:");
       $display("h[0] = 0x%016x  h[1] = 0x%016x  h[2] = 0x%016x  h[3] = 0x%016x",
                dut.h_reg[0], dut.h_reg[1], dut.h_reg[2], dut.h_reg[3]);
@@ -153,9 +178,9 @@ module tb_blake2_core();
       $display("v[12] = 0x%016x  v[13] = 0x%016x  v[14] = 0x%016x  v[15] = 0x%016x",
                dut.v_reg[12], dut.v_reg[13], dut.v_reg[14], dut.v_reg[15]);
       $display("");
-
     end
   endtask // dump_state
+
 
   //----------------------------------------------------------------
   // init()
@@ -164,17 +189,18 @@ module tb_blake2_core();
   //----------------------------------------------------------------
   task init;
     begin
-      cycle_ctr      = 0;
-      error_ctr      = 0;
-      tc_ctr         = 0;
-      tb_clk         = 0;
-      tb_reset_n     = 1;
-      tb_init        = 0;
-      tb_next_block  = 0;
-      tb_final_block = 0;
-      tb_key_len     = 8'h0;
-      tb_digest_len  = 8'h0;
-      tb_block       = 1024'h0;
+      cycle_ctr        = 0;
+      error_ctr        = 0;
+      tc_ctr           = 0;
+      tb_clk           = 0;
+      tb_reset_n       = 1;
+      tb_display_state = 0;
+      tb_init          = 0;
+      tb_next_block    = 0;
+      tb_final_block   = 0;
+      tb_key_len       = 8'h0;
+      tb_digest_len    = 8'h0;
+      tb_block         = 1024'h0;
     end
   endtask // init
 
@@ -189,10 +215,14 @@ module tb_blake2_core();
     begin
       tb_key_len    = 8'h0;
       tb_digest_len = 8'h40;
+      tb_display_state = 1;
       tb_init       = 1;
+
       #(2 * CLK_PERIOD);
       tb_init       = 0;
-      dump_state();
+
+      #(2 * CLK_PERIOD);
+      tb_display_state = 0;
     end
   endtask // test_core_init
 
