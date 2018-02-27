@@ -220,7 +220,7 @@ int main(void)
 {
   //  self_test();
   rfc_test();
-  wiki_test();
+  //  wiki_test();
 
   return 0;
 }
