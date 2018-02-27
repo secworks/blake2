@@ -70,9 +70,9 @@ module blake2_core(
   //----------------------------------------------------------------
   // Internal constant definitions.
   //----------------------------------------------------------------
-  // Datapath quartterround states names.
-  localparam STATE_G0 = 1'b0;
-  localparam STATE_G1 = 1'b1;
+  // G function data select states.
+  localparam G_COLUMN   = 0;
+  localparam G_DIAGONAL = 1;
 
   localparam IV0 = 64'h6a09e667f3bcc908;
   localparam IV1 = 64'hbb67ae8584caa73b;
@@ -125,11 +125,11 @@ module blake2_core(
   reg         G_ctr_inc;
   reg         G_ctr_rst;
 
-  reg [3 : 0] dr_ctr_reg;
-  reg [3 : 0] dr_ctr_new;
-  reg         dr_ctr_we;
-  reg         dr_ctr_inc;
-  reg         dr_ctr_rst;
+  reg [3 : 0] round_ctr_reg;
+  reg [3 : 0] round_ctr_new;
+  reg         round_ctr_we;
+  reg         round_ctr_inc;
+  reg         round_ctr_rst;
 
   reg [2 : 0] blake2_ctrl_reg;
   reg [2 : 0] blake2_ctrl_new;
@@ -139,12 +139,10 @@ module blake2_core(
   //----------------------------------------------------------------
   // Wires.
   //----------------------------------------------------------------
-  reg sample_params;
   reg init_state;
   reg update_state;
   reg init_f;
   reg update_f;
-  reg update_output;
 
   reg load_m;
 
@@ -201,7 +199,7 @@ module blake2_core(
                           .reset_n(reset_n),
                           .load(load_m),
                           .m(block),
-                          .r(dr_ctr_reg),
+                          .r(round_ctr_reg),
                           .state(G_ctr_reg),
                           .G0_m0(G0_m0),
                           .G0_m1(G0_m1),
@@ -299,7 +297,6 @@ module blake2_core(
   assign ready = ready_reg;
 
 
-
   //----------------------------------------------------------------
   // reg_update
   //
@@ -323,8 +320,8 @@ module blake2_core(
           t1_reg           <= 64'h0;
           ready_reg        <= 1;
           digest_valid_reg <= 0;
-          G_ctr_reg        <= STATE_G0;
-          dr_ctr_reg       <= 0;
+          G_ctr_reg        <= G_COLUMN;
+          round_ctr_reg    <= 0;
           blake2_ctrl_reg  <= CTRL_IDLE;
         end
       else
@@ -350,8 +347,8 @@ module blake2_core(
           if (G_ctr_we)
             G_ctr_reg <= G_ctr_new;
 
-          if (dr_ctr_we)
-            dr_ctr_reg <= dr_ctr_new;
+          if (round_ctr_we)
+            round_ctr_reg <= round_ctr_new;
 
           if (t0_we)
             t0_reg <= t0_new;
@@ -467,8 +464,7 @@ module blake2_core(
           v_we    = 1;
 
           case (G_ctr_reg)
-            // Column updates.
-            STATE_G0:
+            G_COLUMN:
               begin
                 G0_a      = v_reg[0];
                 G0_b      = v_reg[4];
@@ -508,8 +504,7 @@ module blake2_core(
                 v_we = 1;
               end
 
-            // Diagonal updates.
-            STATE_G1:
+            G_DIAGONAL:
               begin
                 G0_a      = v_reg[0];
                 G0_b      = v_reg[5];
@@ -564,47 +559,44 @@ module blake2_core(
   //----------------------------------------------------------------
   always @*
     begin : G_ctr
+      G_ctr_new = G_COLUMN;
+      G_ctr_we  = 0;
+
       if (G_ctr_rst)
         begin
-          G_ctr_new = 0;
+          G_ctr_new = G_COLUMN;
           G_ctr_we  = 1;
         end
-      else if (G_ctr_inc)
+
+      if (G_ctr_inc)
         begin
-          G_ctr_new = G_ctr_reg + 1'b1;
+          G_ctr_new = ~G_ctr_reg;
           G_ctr_we  = 1;
-        end
-      else
-        begin
-          G_ctr_new = 0;
-          G_ctr_we  = 0;
         end
     end // G_ctr
 
 
   //----------------------------------------------------------------
-  // dr_ctr
+  // round_ctr
   // Update logic for the round counter, a monotonically
   // increasing counter with reset.
   //----------------------------------------------------------------
   always @*
-    begin : dr_ctr
-      if (dr_ctr_rst)
+    begin : round_ctr
+      round_ctr_new = 0;
+      round_ctr_we  = 0;
+
+      if (round_ctr_rst)
         begin
-          dr_ctr_new = 0;
-          dr_ctr_we  = 1;
+          round_ctr_we  = 1;
         end
-      else if (dr_ctr_inc)
+
+      if (round_ctr_inc)
         begin
-          dr_ctr_new = dr_ctr_reg + 1'b1;
-          dr_ctr_we  = 1;
+          round_ctr_new = round_ctr_reg + 1'b1;
+          round_ctr_we  = 1;
         end
-      else
-        begin
-          dr_ctr_new = 0;
-          dr_ctr_we  = 0;
-        end
-    end // dr_ctr
+    end // round_ctr
 
 
   //----------------------------------------------------------------
@@ -657,8 +649,8 @@ module blake2_core(
       G_ctr_inc          = 0;
       G_ctr_rst          = 0;
 
-      dr_ctr_inc         = 0;
-      dr_ctr_rst         = 0;
+      round_ctr_inc      = 0;
+      round_ctr_rst      = 0;
 
       t_ctr_rst          = 0;
       t_ctr_inc          = 0;
@@ -699,7 +691,7 @@ module blake2_core(
           begin
             init_state      = 1;
             G_ctr_rst       = 1;
-            dr_ctr_rst      = 1;
+            round_ctr_rst      = 1;
             t_ctr_rst       = 1;
             blake2_ctrl_new = CTRL_IDLE;
             blake2_ctrl_we  = 1;
@@ -710,10 +702,10 @@ module blake2_core(
           begin
             update_state = 1;
             G_ctr_inc   = 1;
-            if (G_ctr_reg == STATE_G1)
+            if (G_ctr_reg == G_DIAGONAL)
               begin
-                dr_ctr_inc = 1;
-                if (dr_ctr_reg == (NUM_ROUNDS - 1))
+                round_ctr_inc = 1;
+                if (round_ctr_reg < NUM_ROUNDS)
                   begin
                     blake2_ctrl_new = CTRL_FINALIZE;
                     blake2_ctrl_we  = 1;
