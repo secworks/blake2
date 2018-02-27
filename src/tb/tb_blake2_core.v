@@ -142,6 +142,18 @@ module tb_blake2_core();
       $display("h[4] = 0x%016x  h[5] = 0x%016x  h[6] = 0x%016x  h[7] = 0x%016x",
                dut.h_reg[4], dut.h_reg[5], dut.h_reg[6], dut.h_reg[7]);
       $display("");
+
+      $display("Internal state:");
+      $display("v[00] = 0x%016x  v[01] = 0x%016x  v[02] = 0x%016x  v[03] = 0x%016x",
+               dut.v_reg[0], dut.v_reg[1], dut.v_reg[2], dut.v_reg[3]);
+      $display("v[04] = 0x%016x  v[05] = 0x%016x  v[06] = 0x%016x  v[07] = 0x%016x",
+               dut.v_reg[4], dut.v_reg[5], dut.v_reg[6], dut.v_reg[7]);
+      $display("v[08] = 0x%016x  v[09] = 0x%016x  v[10] = 0x%016x  v[11] = 0x%016x",
+               dut.v_reg[8], dut.v_reg[9], dut.v_reg[10], dut.v_reg[11]);
+      $display("v[12] = 0x%016x  v[13] = 0x%016x  v[14] = 0x%016x  v[15] = 0x%016x",
+               dut.v_reg[12], dut.v_reg[13], dut.v_reg[14], dut.v_reg[15]);
+      $display("");
+
     end
   endtask // dump_state
 
@@ -178,7 +190,7 @@ module tb_blake2_core();
       tb_key_len    = 8'h0;
       tb_digest_len = 8'h40;
       tb_init       = 1;
-      #(4 * CLK_PERIOD);
+      #(2 * CLK_PERIOD);
       tb_init       = 0;
       dump_state();
     end

@@ -640,120 +640,71 @@ module blake2_core(
     begin : blake2_ctrl_fsm
       init_state         = 0;
       update_state       = 0;
-
       init_f             = 0;
       update_f           = 0;
-
       load_m             = 0;
-
       G_ctr_inc          = 0;
       G_ctr_rst          = 0;
-
       round_ctr_inc      = 0;
       round_ctr_rst      = 0;
-
       t_ctr_rst          = 0;
       t_ctr_inc          = 0;
-
       ready_new          = 0;
       ready_we           = 0;
-
       digest_valid_new   = 0;
       digest_valid_we    = 0;
-
       blake2_ctrl_new    = CTRL_IDLE;
       blake2_ctrl_we     = 0;
-
 
       case (blake2_ctrl_reg)
         CTRL_IDLE:
           begin
+            ready_new = 1;
+            ready_we  = 1;
+
             if (init)
               begin
                 ready_new       = 0;
                 ready_we        = 1;
-                blake2_ctrl_new = CTRL_INIT;
-                blake2_ctrl_we  = 1;
+                init_state      = 1;
+                G_ctr_rst       = 1;
+                round_ctr_rst   = 1;
+                t_ctr_rst       = 1;
               end
 
             if (next_block)
               begin
-                ready_new       = 0;
-                ready_we        = 1;
-                load_m          = 1;
-                blake2_ctrl_new = CTRL_ROUNDS;
-                blake2_ctrl_we  = 1;
+                ready_new        = 0;
+                ready_we         = 1;
+                digest_valid_new = 1;
+                digest_valid_we  = 1;
+                load_m           = 1;
+                init_f           = 1;
+                blake2_ctrl_new  = CTRL_ROUNDS;
+                blake2_ctrl_we   = 1;
               end
-          end
-
-
-        CTRL_INIT:
-          begin
-            init_state      = 1;
-            G_ctr_rst       = 1;
-            round_ctr_rst      = 1;
-            t_ctr_rst       = 1;
-            blake2_ctrl_new = CTRL_IDLE;
-            blake2_ctrl_we  = 1;
           end
 
 
         CTRL_ROUNDS:
           begin
-            update_state = 1;
-            G_ctr_inc   = 1;
+            update_f  = 1;
+            G_ctr_inc = 1;
             if (G_ctr_reg == G_DIAGONAL)
               begin
                 round_ctr_inc = 1;
                 if (round_ctr_reg < NUM_ROUNDS)
                   begin
-                    blake2_ctrl_new = CTRL_FINALIZE;
+                    update_state    = 1;
+                    blake2_ctrl_new = CTRL_IDLE;
                     blake2_ctrl_we  = 1;
                   end
               end
           end
 
 
-        CTRL_FINALIZE:
-          begin
-            ready_new          = 1;
-            ready_we           = 1;
-            digest_valid_new   = 1;
-            digest_valid_we    = 1;
-            blake2_ctrl_new    = CTRL_DONE;
-            blake2_ctrl_we     = 1;
-          end
-
-
-        CTRL_DONE:
-          begin
-            if (init)
-              begin
-                ready_new        = 0;
-                ready_we         = 1;
-                digest_valid_new = 0;
-                digest_valid_we  = 1;
-                load_m           = 1;
-                blake2_ctrl_new  = CTRL_INIT;
-                blake2_ctrl_we   = 1;
-              end
-            else if (next_block)
-              begin
-                ready_new        = 0;
-                ready_we         = 1;
-                digest_valid_new = 0;
-                digest_valid_we  = 1;
-                load_m           = 1;
-                blake2_ctrl_new  = CTRL_INIT;
-                blake2_ctrl_we   = 1;
-              end
-          end
-
-
         default:
           begin
-            blake2_ctrl_new = CTRL_IDLE;
-            blake2_ctrl_we  = 1;
           end
       endcase // case (blake2_ctrl_reg)
     end // blake2_ctrl_fsm
