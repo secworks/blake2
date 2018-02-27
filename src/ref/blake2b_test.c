@@ -218,7 +218,7 @@ static void wiki_test()
 //------------------------------------------------------------------
 int main(void)
 {
-  self_test();
+  //  self_test();
   rfc_test();
   wiki_test();
 

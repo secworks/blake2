@@ -213,6 +213,7 @@ int blake2b_init(blake2b_ctx *ctx, size_t outlen,
   ctx->t[1] = 0;                      // input count high word
   ctx->c = 0;                         // pointer within buffer
   ctx->outlen = outlen;
+
   for (i = keylen; i < 128; i++)      // zero input block
     ctx->b[i] = 0;
   if (keylen > 0) {
