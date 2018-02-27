@@ -378,7 +378,7 @@ module blake2_core(
       h_we   = 0;
 
       // Assemble the blake2 parameter block.
-      blake2_param = {8'h01, 8'h01, key_len, digest_len, 32'h0};
+      blake2_param = {32'h0, 8'h01, 8'h01, key_len, digest_len};
 
       if (init_state)
         begin
