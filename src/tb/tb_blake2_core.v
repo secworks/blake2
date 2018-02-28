@@ -300,27 +300,27 @@ module tb_blake2_core();
 
       #(2 * CLK_PERIOD);
 
-      if (dut.h_reg[0] != 64'h0000000000000000)
+      if (dut.h_reg[0] != 64'h6a09e667f2bdc948)
         errors = errors + 1;
-      if (dut.h_reg[1] != 64'h0000000000000000)
+      if (dut.h_reg[1] != 64'hbb67ae8584caa73b)
         errors = errors + 1;
-      if (dut.h_reg[1] != 64'h0000000000000000)
+      if (dut.h_reg[2] != 64'h3c6ef372fe94f82b)
         errors = errors + 1;
-      if (dut.h_reg[1] != 64'h0000000000000000)
+      if (dut.h_reg[3] != 64'ha54ff53a5f1d36f1)
         errors = errors + 1;
-      if (dut.h_reg[1] != 64'h0000000000000000)
+      if (dut.h_reg[4] != 64'h510e527fade682d1)
         errors = errors + 1;
-      if (dut.h_reg[1] != 64'h0000000000000000)
+      if (dut.h_reg[5] != 64'h9b05688c2b3e6c1f)
         errors = errors + 1;
-      if (dut.h_reg[1] != 64'h0000000000000000)
+      if (dut.h_reg[6] != 64'h1f83d9abfb41bd6b)
         errors = errors + 1;
-      if (dut.h_reg[1] != 64'h0000000000000000)
+      if (dut.h_reg[7] != 64'h5be0cd19137e2179)
         errors = errors + 1;
 
       if (errors > 0)
         begin
           inc_error_ctr();
-          $display("*** TEST_CORE_INIT: ERROR. %d values are wrong.", errors);
+          $display("*** TEST_CORE_INIT: ERROR. %01d values are wrong.", errors);
         end
 
       disable_display_state();
