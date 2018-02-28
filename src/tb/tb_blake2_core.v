@@ -218,6 +218,21 @@ module tb_blake2_core();
       $display("v[12] = 0x%016x  v[13] = 0x%016x  v[14] = 0x%016x  v[15] = 0x%016x",
                dut.v_reg[12], dut.v_reg[13], dut.v_reg[14], dut.v_reg[15]);
       $display("");
+
+      $display("Message block:");
+      $display("m[00] = 0x%016x  m[01] = 0x%016x  m[02] = 0x%016x  m[03] = 0x%016x",
+               dut.mselect.m_reg[0], dut.mselect.m_reg[1],
+               dut.mselect.m_reg[2], dut.mselect.m_reg[3]);
+      $display("m[04] = 0x%016x  m[05] = 0x%016x  m[06] = 0x%016x  m[07] = 0x%016x",
+               dut.mselect.m_reg[4], dut.mselect.m_reg[5],
+               dut.mselect.m_reg[6], dut.mselect.m_reg[7]);
+      $display("m[08] = 0x%016x  m[09] = 0x%016x  m[10] = 0x%016x  m[11] = 0x%016x",
+               dut.mselect.m_reg[8], dut.mselect.m_reg[9],
+               dut.mselect.m_reg[10], dut.mselect.m_reg[11]);
+      $display("m[12] = 0x%016x  m[13] = 0x%016x  m[14] = 0x%016x  m[15] = 0x%016x",
+               dut.mselect.m_reg[12], dut.mselect.m_reg[13],
+               dut.mselect.m_reg[14], dut.mselect.m_reg[15]);
+      $display("");
     end
   endtask // dump_state
 
