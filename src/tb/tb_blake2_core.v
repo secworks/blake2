@@ -116,6 +116,46 @@ module tb_blake2_core();
 
 
   //----------------------------------------------------------------
+  // inc_tc_ctr()
+  //----------------------------------------------------------------
+  task inc_tc_ctr;
+    begin
+      tc_ctr = tc_ctr + 1;
+    end
+  endtask // inc_tc_ctr
+
+
+  //----------------------------------------------------------------
+  // inc_error_ctr()
+  //----------------------------------------------------------------
+  task inc_error_ctr;
+    begin
+      error_ctr = error_ctr + 1;
+    end
+  endtask // inc_error_ctr
+
+
+  //----------------------------------------------------------------
+  // enable_display_state()
+  //----------------------------------------------------------------
+  task enable_display_state;
+    begin
+      tb_display_state = 1;
+    end
+  endtask // enable_display_state
+
+
+  //----------------------------------------------------------------
+  // disable_display_state()
+  //----------------------------------------------------------------
+  task disable_display_state;
+    begin
+      tb_display_state = 0;
+    end
+  endtask // disable_display_state
+
+
+  //----------------------------------------------------------------
   // sys_monitor()
   //
   // An always running process that creates a cycle counter and
@@ -157,8 +197,8 @@ module tb_blake2_core();
   task dump_dut_state;
     begin
       $display("Counters and control state::");
-      $display("blake2_ctrl_reg = 0x02x  round_ctr_reg = 0x%02x",
-               dut.blake2_ctrl_reg, dut.round_ctr_reg);
+      $display("blake2_ctrl_reg = 0x%02x  round_ctr_reg = 0x%02x  ready = 0x%01x  valid = 0x%01x",
+               dut.blake2_ctrl_reg, dut.round_ctr_reg, tb_ready, tb_digest_valid);
       $display("");
 
       $display("Chaining value:");
@@ -206,13 +246,50 @@ module tb_blake2_core();
 
 
   //----------------------------------------------------------------
+  // test_rfc
+  // Single block test with the message "abc" as described in
+  // RFC 6793, Appendix A.
+  //----------------------------------------------------------------
+  task test_rfc;
+    begin
+      $display("*** TEST_RFC started.");
+      inc_tc_ctr();
+      enable_display_state();
+
+      tb_init       = 1;
+      #(2 * CLK_PERIOD);
+      tb_init       = 0;
+
+      tb_block         = {24'h616263, 1000'h0};
+      tb_next_block    = 1;
+      tb_final_block   = 1;
+      #(2 * CLK_PERIOD);
+      tb_next_block    = 0;
+      tb_final_block   = 0;
+
+      #(100 * CLK_PERIOD);
+
+      disable_display_state();
+      $display("*** TEST_RFC done.");
+    end
+  endtask // test_wiki
+
+
+  //----------------------------------------------------------------
   // test_core_init
   //
   // Verify that the chaining vector is correctly initialized
   // based on given key and digest sizes.
   //----------------------------------------------------------------
   task test_core_init;
-    begin
+    begin : test_init
+      integer errors;
+      errors = 0;
+
+      $display("*** TEST_CORE_INIT started. This should initialize the h_regs.");
+      inc_tc_ctr();
+      enable_display_state();
+
       tb_key_len    = 8'h0;
       tb_digest_len = 8'h40;
       tb_display_state = 1;
@@ -222,7 +299,32 @@ module tb_blake2_core();
       tb_init       = 0;
 
       #(2 * CLK_PERIOD);
-      tb_display_state = 0;
+
+      if (dut.h_reg[0] != 64'h0000000000000000)
+        errors = errors + 1;
+      if (dut.h_reg[1] != 64'h0000000000000000)
+        errors = errors + 1;
+      if (dut.h_reg[1] != 64'h0000000000000000)
+        errors = errors + 1;
+      if (dut.h_reg[1] != 64'h0000000000000000)
+        errors = errors + 1;
+      if (dut.h_reg[1] != 64'h0000000000000000)
+        errors = errors + 1;
+      if (dut.h_reg[1] != 64'h0000000000000000)
+        errors = errors + 1;
+      if (dut.h_reg[1] != 64'h0000000000000000)
+        errors = errors + 1;
+      if (dut.h_reg[1] != 64'h0000000000000000)
+        errors = errors + 1;
+
+      if (errors > 0)
+        begin
+          inc_error_ctr();
+          $display("*** TEST_CORE_INIT: ERROR. %d values are wrong.", errors);
+        end
+
+      disable_display_state();
+      $display("*** TEST_CORE_INIT done.");
     end
   endtask // test_core_init
 
@@ -232,11 +334,12 @@ module tb_blake2_core();
   //----------------------------------------------------------------
   initial
     begin : blake2_core_test
-      $display("   -- Testbench for blake2_core started --");
+      $display("*** Testbench for blake2_core started.");
       init();
 
       reset_dut();
       test_core_init();
+//      test_rfc();
 
       display_test_result();
       $display("*** blake2_core simulation done.");
