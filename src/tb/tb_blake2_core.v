@@ -353,8 +353,8 @@ module tb_blake2_core();
       init();
 
       reset_dut();
-      test_core_init();
-//      test_rfc();
+//      test_core_init();
+      test_rfc();
 
       display_test_result();
       $display("*** blake2_core simulation done.");
