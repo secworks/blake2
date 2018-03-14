@@ -57,9 +57,9 @@ UINT32 = 2**32
 
 
 #-------------------------------------------------------------------
-# Blake2s()
+# Blake2b()
 #-------------------------------------------------------------------
-class Blake2s():
+class Blake2b():
     NUM_ROUNDS = 10
 
     SIGMA = (( 0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15),
@@ -215,26 +215,27 @@ class Blake2s():
                   (self.m[8], self.m[9], self.m[10], self.m[11], self.m[12], self.m[13], self.m[14], self.m[15]))
 
 
+
+#-------------------------------------------------------------------
+#-------------------------------------------------------------------
+def test_G_function():
+    gtest1_in  = [0x6a09e667f2bdc948, 0x510e527fade682d1, 0x6a09e667f3bcc908,
+                  0x510e527fade68251, 0x0000000000000000, 0x0000000000000000]
+    gtest1_ref = [0xf0c9aa0de38b1b89, 0xbbdf863401fde49b,
+                  0xe85eb23c42183d3d, 0x7111fd8b6445099d]
+
+    my_blake2b = Blake2b()
+    res1 = [my_blake2b._G(gtest1_in[0], gtest1_in[1], gtest1_in[2], gtest1_in[3], gtest1_in[4], gtest1_in[5])]
+    print(res1)
+
+
 #-------------------------------------------------------------------
 # test_code()
 #
 # Small test routines used during development.
 #-------------------------------------------------------------------
 def test_code():
-    my_hash = Blake2s()
-
-    print("rotr(0x80000000, 31) = 0x%08x" % (my_hash._rotr(0x80000000, 31)))
-
-    print("Testing the G function.")
-    my_hash._G(0x6b08c647, 0x510e527f, 0x6a09e667, 0x510e523f, 0x03020100, 0x07060504)
-
-
-    # Test the complete compression function. We need to load m and v to known states.
-    print("Testing the compression function.")
-    my_hash.h = [0] * 16
-    my_hash.v = [0xe065e50d, 0x01a7d670, 0xc933bba4, 0x866aa41e, 0x18ab3e05, 0x26edc492, 0x04c59a4f, 0x95dd5a91,
-                 0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a, 0x510e523e, 0x9b05688c, 0xe07c2654, 0x5be0cd19]
-    my_hash._compress(10)
+    test_G_function()
 
 
 #-------------------------------------------------------------------
