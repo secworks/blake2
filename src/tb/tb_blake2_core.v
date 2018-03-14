@@ -271,9 +271,11 @@ module tb_blake2_core();
       inc_tc_ctr();
       enable_display_state();
 
-      tb_init       = 1;
+      tb_key_len       = 8'h0;
+      tb_digest_len    = 8'h40;
+      tb_init          = 1;
       #(2 * CLK_PERIOD);
-      tb_init       = 0;
+      tb_init          = 0;
 
       tb_block         = {24'h616263, 1000'h0};
       tb_next_block    = 1;
