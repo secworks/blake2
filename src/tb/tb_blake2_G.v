@@ -228,8 +228,9 @@ module tb_blake2_G();
       testrunner(64'h6a09e667f2bdc948, 64'h510e527fade682d1,
                  64'h6a09e667f3bcc908, 64'h510e527fade68251,
                  64'h0000000000000000, 64'h0000000000000000,
+
                  64'hf0c9aa0de38b1b89, 64'hbbdf863401fde49b,
-                 64'he85eb23c42183d3d, 64'h7111fd8b6445099d);
+                 64'he85eb23c42183d3d,  64'h7111fd8b6445099d);
 
       $display("Stopping TC1");
     end
@@ -243,16 +244,12 @@ module tb_blake2_G();
 
       $display("Starting TC2");
 
-      testrunner(64'h6a09e667f2bd8948,
-                 64'h510e527fade682d1,
-                 64'h6a09e667f3bcc908,
-                 64'h510e527fade68251,
-                 64'h0706050403020100,
-                 64'h0f0e0d0c0b0a0908,
-                 64'hfce69820f2d7e54c,
-                 64'h51324affb424aa90,
-                 64'h032368569e359a63,
-                 64'h8ad8f2a6176861c7);
+      testrunner(64'h6a09e667f2bd8948, 64'h510e527fade682d1,
+                 64'h6a09e667f3bcc908, 64'h510e527fade68251,
+                 64'h0706050403020100, 64'h0f0e0d0c0b0a0908,
+
+                 64'hfce69820f2d7e54c, 64'h51324affb424aa90,
+                 64'h032368569e359a63, 64'h8ad8f2a6176861c7);
 
       $display("Stopping TC2");
     end
@@ -266,16 +263,12 @@ module tb_blake2_G();
 
       $display("Starting TC3");
 
-      testrunner(64'h107e94c998ced482,
-                 64'h28e4a60d02068f18,
-                 64'h7650e70ef0a7f8cd,
-                 64'h86570b736731f92d,
-                 64'h2f2e2d2c2b2a2928,
-                 64'h1f1e1d1c1b1a1918,
-                 64'hf082ab50dd1499b7,
-                 64'hf66d12f48baec79a,
-                 64'h13e5af4bbe2d9010,
-                 64'hfac6524cdebf33d2);
+      testrunner(64'h107e94c998ced482, 64'h28e4a60d02068f18,
+                 64'h7650e70ef0a7f8cd, 64'h86570b736731f92d,
+                 64'h2f2e2d2c2b2a2928, 64'h1f1e1d1c1b1a1918,
+
+                 64'hf082ab50dd1499b7, 64'hf66d12f48baec79a,
+                 64'h13e5af4bbe2d9010, 64'hfac6524cdebf33d2);
 
       $display("Stopping TC3");
     end
