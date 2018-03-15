@@ -4,7 +4,7 @@
 #
 # blake2.py
 # ---------
-# Simple, pure Python model of the Blake2b (Blake2) hash function.
+# Simple, pure Python model of the Blake2 (Blake2b) hash function.
 # The model is used as a functional reference for the HW implementation.
 #
 # See Blake2 paper and RFC 7693 for blake2b definition.
@@ -53,7 +53,7 @@ import sys
 # Constants.
 #-------------------------------------------------------------------
 VERBOSE = False
-UINT32 = 2**32
+UINT64 = 2**64
 
 
 #-------------------------------------------------------------------
@@ -167,18 +167,18 @@ class Blake2b():
             print("G Inputs:")
             print("a = 0x%08x, b = 0x%08x, c = 0x%08x, d = 0x%08x, m0 = 0x%08x, m1 = 0x%08x" %\
                       (a, b, c, d, m0, m1))
-        self.a1 = (a + b + m0) % UINT32
+        self.a1 = (a + b + m0) % UINT64
 
         self.d1 = d ^ self.a1
         self.d2 = self._rotr(self.d1, 16)
 
-        self.c1 = (c + self.d2) % UINT32
+        self.c1 = (c + self.d2) % UINT64
         self.b1 = b ^ self.c1
         self.b2 = self._rotr(self.b1, 12)
-        self.a2 = (self.a1 + self.b2 + m1) % UINT32
+        self.a2 = (self.a1 + self.b2 + m1) % UINT64
         self.d3 = self.d2 ^ self.a2
         self.d4 = self._rotr(self.d3, 8)
-        self.c2 = (self.c1 + self.d4) % UINT32
+        self.c2 = (self.c1 + self.d4) % UINT64
         self.b3 = self.b2 ^ self.c2
         self.b4 = self._rotr(self.b3, 7)
 
@@ -194,7 +194,7 @@ class Blake2b():
 
 
     def _rotr(self, x, n):
-        return  (((x) >> (n)) ^ ((x) << (32 - (n)))) % UINT32
+        return  (((x) >> (n)) ^ ((x) << (32 - (n)))) % UINT64
 
 
     def _print_state(self):
@@ -215,18 +215,48 @@ class Blake2b():
                   (self.m[8], self.m[9], self.m[10], self.m[11], self.m[12], self.m[13], self.m[14], self.m[15]))
 
 
+#-------------------------------------------------------------------
+#-------------------------------------------------------------------
+def test_G(indata, expected):
+    errors = 0
+
+    my_blake2b = Blake2b()
+    (a, b, c, d) = my_blake2b._G(indata[0], indata[1], indata[2],
+                                 indata[3], indata[4], indata[5])
+    if VERBOSE:
+        print("Result from G: 0x%016x  0x%016x  0x%016x  0x%016x" % (a, b, c, d))
+
+    if a != expected[0]:
+        print("Error: Expected 0x%016x, got 0x%016x for a_prim" % (expected[0], a))
+        errors += 1
+
+    if a != expected[0]:
+        print("Error: Expected 0x%016x, got 0x%016x for b_prim" % (expected[1], b))
+        errors += 1
+
+    if a != expected[0]:
+        print("Error: Expected 0x%016x, got 0x%016x for c_prim" % (expected[2], c))
+        errors += 1
+
+    if a != expected[0]:
+        print("Error: Expected 0x%016x, got 0x%016x for d_prim" % (expected[3], d))
+        errors += 1
+
+    if not errors:
+        print("G test ok.")
+    else:
+        print("G test NOT ok. %d errors." % (errors))
+    print("")
+
 
 #-------------------------------------------------------------------
 #-------------------------------------------------------------------
-def test_G_function():
+def G_tests():
     gtest1_in  = [0x6a09e667f2bdc948, 0x510e527fade682d1, 0x6a09e667f3bcc908,
                   0x510e527fade68251, 0x0000000000000000, 0x0000000000000000]
     gtest1_ref = [0xf0c9aa0de38b1b89, 0xbbdf863401fde49b,
                   0xe85eb23c42183d3d, 0x7111fd8b6445099d]
-
-    my_blake2b = Blake2b()
-    res1 = [my_blake2b._G(gtest1_in[0], gtest1_in[1], gtest1_in[2], gtest1_in[3], gtest1_in[4], gtest1_in[5])]
-    print(res1)
+    test_G(gtest1_in, gtest1_ref)
 
 
 #-------------------------------------------------------------------
@@ -235,7 +265,7 @@ def test_G_function():
 # Small test routines used during development.
 #-------------------------------------------------------------------
 def test_code():
-    test_G_function()
+    G_tests()
 
 
 #-------------------------------------------------------------------
