@@ -259,6 +259,13 @@ def G_tests():
     test_G(gtest1_in, gtest1_ref)
 
 
+    gtest2_in  = [0x6a09e667f2bd8948, 0x510e527fade682d1, 0x6a09e667f3bcc908,
+                  0x510e527fade68251, 0x0706050403020100, 0x0f0e0d0c0b0a0908]
+    gtest2_ref = [0xfce69820f2d7e54c, 0x51324affb424aa90,
+                  0x032368569e359a63, 0x8ad8f2a6176861c7]
+    test_G(gtest2_in, gtest2_ref)
+
+
 #-------------------------------------------------------------------
 # test_code()
 #
