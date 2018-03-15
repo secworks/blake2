@@ -170,17 +170,17 @@ class Blake2b():
         self.a1 = (a + b + m0) % UINT64
 
         self.d1 = d ^ self.a1
-        self.d2 = self._rotr(self.d1, 16)
+        self.d2 = self._rotr(self.d1, 32)
 
         self.c1 = (c + self.d2) % UINT64
         self.b1 = b ^ self.c1
-        self.b2 = self._rotr(self.b1, 12)
+        self.b2 = self._rotr(self.b1, 24)
         self.a2 = (self.a1 + self.b2 + m1) % UINT64
         self.d3 = self.d2 ^ self.a2
-        self.d4 = self._rotr(self.d3, 8)
+        self.d4 = self._rotr(self.d3, 16)
         self.c2 = (self.c1 + self.d4) % UINT64
         self.b3 = self.b2 ^ self.c2
-        self.b4 = self._rotr(self.b3, 7)
+        self.b4 = self._rotr(self.b3, 63)
 
         if VERBOSE:
             print("a1 = 0x%08x, a2 = 0x%08x" % (self.a1, self.a2))
@@ -194,7 +194,7 @@ class Blake2b():
 
 
     def _rotr(self, x, n):
-        return  (((x) >> (n)) ^ ((x) << (32 - (n)))) % UINT64
+        return  (((x) >> (n)) ^ ((x) << (64 - (n)))) % UINT64
 
 
     def _print_state(self):
@@ -250,6 +250,9 @@ def test_G(indata, expected):
 
 
 #-------------------------------------------------------------------
+# G_tests()
+# Testing of the G function with test vectors captured from the
+# C reference model.
 #-------------------------------------------------------------------
 def G_tests():
     gtest1_in  = [0x6a09e667f2bdc948, 0x510e527fade682d1, 0x6a09e667f3bcc908,
@@ -264,6 +267,7 @@ def G_tests():
     gtest2_ref = [0xfce69820f2d7e54c, 0x51324affb424aa90,
                   0x032368569e359a63, 0x8ad8f2a6176861c7]
     test_G(gtest2_in, gtest2_ref)
+
 
     gtest3_in  = [0x107e94c998ced482, 0x28e4a60d02068f18, 0x7650e70ef0a7f8cd,
                   0x86570b736731f92d, 0x2f2e2d2c2b2a2928, 0x1f1e1d1c1b1a1918]
