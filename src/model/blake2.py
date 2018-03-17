@@ -88,24 +88,24 @@ class Blake2b():
 
 
     def hash_message(m):
-        self._init()
-        return self._get_digest(n)
+        self.init()
+        return self.get_digest(n)
 
 
-    def _init(self, param_block):
+    def init(self, param_block):
         self.h = self.IV[:]
         self.h[0] = self.h0
 
 
-    def _next(self, block):
+    def next(self, block):
         pass
 
 
-    def _finalize(self, block, blocklen):
+    def finalize(self, block, blocklen):
         pass
 
 
-    def _get_digest(self, n):
+    def get_digest(self, n):
         return self.H
 
 
@@ -135,29 +135,37 @@ class Blake2b():
         self._dump_v()
         for i in range(r):
            (self.v[0], self.v[4], self.v[8], self.v[12]) =\
-            self._G(self.v[0], self.v[4], self.v[8], self.v[12], self.m[self.SIGMA[i][0]], self.m[self.SIGMA[i][1]])
+            self._G(self.v[0], self.v[4], self.v[8], self.v[12],
+            self.m[self.SIGMA[i][0]], self.m[self.SIGMA[i][1]])
 
            (self.v[1], self.v[5], self.v[9], self.v[13]) =\
-            self._G(self.v[1], self.v[5], self.v[9], self.v[13], self.m[self.SIGMA[i][2]], self.m[self.SIGMA[i][3]])
+            self._G(self.v[1], self.v[5], self.v[9], self.v[13],
+            self.m[self.SIGMA[i][2]], self.m[self.SIGMA[i][3]])
 
            (self.v[2], self.v[6], self.v[10], self.v[14]) =\
-            self._G(self.v[2], self.v[6], self.v[10], self.v[14], self.m[self.SIGMA[i][4]], self.m[self.SIGMA[i][5]])
+            self._G(self.v[2], self.v[6], self.v[10], self.v[14],
+            self.m[self.SIGMA[i][4]], self.m[self.SIGMA[i][5]])
 
            (self.v[3], self.v[7], self.v[11], self.v[15]) =\
-            self._G(self.v[3], self.v[7], self.v[11], self.v[15], self.m[self.SIGMA[i][6]], self.m[self.SIGMA[i][7]])
+            self._G(self.v[3], self.v[7], self.v[11], self.v[15],
+            self.m[self.SIGMA[i][6]], self.m[self.SIGMA[i][7]])
 
 
            (self.v[0], self.v[5], self.v[10], self.v[15]) =\
-            self._G(self.v[0], self.v[5], self.v[10], self.v[15], self.m[self.SIGMA[i][8]], self.m[self.SIGMA[i][9]])
+            self._G(self.v[0], self.v[5], self.v[10], self.v[15],
+            self.m[self.SIGMA[i][8]], self.m[self.SIGMA[i][9]])
 
            (self.v[1], self.v[6], self.v[11], self.v[12]) =\
-            self._G(self.v[1], self.v[6], self.v[11], self.v[12], self.m[self.SIGMA[i][10]], self.m[self.SIGMA[i][11]])
+            self._G(self.v[1], self.v[6], self.v[11], self.v[12],
+            self.m[self.SIGMA[i][10]], self.m[self.SIGMA[i][11]])
 
            (self.v[2], self.v[7], self.v[8], self.v[13]) =\
-            self._G(self.v[2], self.v[7], self.v[8], self.v[13], self.m[self.SIGMA[i][12]], self.m[self.SIGMA[i][13]])
+            self._G(self.v[2], self.v[7], self.v[8], self.v[13],
+            self.m[self.SIGMA[i][12]], self.m[self.SIGMA[i][13]])
 
            (self.v[3], self.v[4], self.v[9], self.v[14]) =\
-            self._G(self.v[3], self.v[4], self.v[9], self.v[14], self.m[self.SIGMA[i][14]], self.m[self.SIGMA[i][15]])
+            self._G(self.v[3], self.v[4], self.v[9], self.v[14],
+            self.m[self.SIGMA[i][14]], self.m[self.SIGMA[i][15]])
 
         print("State of v after compression")
         self._dump_v()
@@ -169,11 +177,10 @@ class Blake2b():
             print("G Inputs:")
             print("a = 0x%08x, b = 0x%08x, c = 0x%08x, d = 0x%08x, m0 = 0x%08x, m1 = 0x%08x" %\
                       (a, b, c, d, m0, m1))
-        self.a1 = (a + b + m0) % UINT64
 
+        self.a1 = (a + b + m0) % UINT64
         self.d1 = d ^ self.a1
         self.d2 = self._rotr(self.d1, 32)
-
         self.c1 = (c + self.d2) % UINT64
         self.b1 = b ^ self.c1
         self.b2 = self._rotr(self.b1, 24)
