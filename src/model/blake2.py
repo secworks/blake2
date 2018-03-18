@@ -87,15 +87,14 @@ class Blake2b():
         self.t = [0] * 2
 
 
-    def hash_message(m):
-        self.init()
+    def hash_message(m,  param_block = None):
+        self.init(param_block)
         return self.get_digest(n)
 
 
-    def init(self, param_block):
-        self.h = self.IV[:]
-        self.h[0] = self.h0
-
+    def init(self, param_block = None):
+        for i in range(8):
+            self.h[i] = self.IV[i]
 
     def next(self, block):
         pass
@@ -110,6 +109,8 @@ class Blake2b():
 
 
     def _F(self, m, final_block):
+        self.m = m
+
         # Initialize the work vector v based on the current hash state.
         for i in range(8):
             self.v[i] = self.h[i]
@@ -119,6 +120,7 @@ class Blake2b():
         self.v[13] = self.v[13] ^ self.t[1]
 
         if final_block:
+            print("Is final block")
             self.v[14] = self.v[14] ^ (UINT64 - 1)
 
         # Process the m in NUM_ROUNDS, updating the work vector v.
@@ -233,6 +235,7 @@ class Blake2b():
 def F_test():
     my_m = [0x0000000000636261, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0]
     my_blake2b = Blake2b()
+    my_blake2b.init()
     my_blake2b._F(my_m, True)
 
 
