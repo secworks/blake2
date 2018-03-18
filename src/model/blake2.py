@@ -119,7 +119,7 @@ class Blake2b():
         self.v[13] = self.v[13] ^ self.t[1]
 
         if final_block:
-            self.v[14] = self.v[14] ^ (UINT32 - 1)
+            self.v[14] = self.v[14] ^ (UINT64 - 1)
 
         # Process the m in NUM_ROUNDS, updating the work vector v.
         self._compress(self.NUM_ROUNDS)
@@ -224,6 +224,18 @@ class Blake2b():
                   (self.m[8], self.m[9], self.m[10], self.m[11], self.m[12], self.m[13], self.m[14], self.m[15]))
 
 
+
+#-------------------------------------------------------------------
+# F_test
+# Perform single block F function processing as specified in
+# Appendix A of RFC 7539.
+#-------------------------------------------------------------------
+def F_test():
+    my_m = [0x0000000000636261, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0]
+    my_blake2b = Blake2b()
+    my_blake2b._F(my_m, True)
+
+
 #-------------------------------------------------------------------
 #-------------------------------------------------------------------
 def test_G(indata, expected):
@@ -292,6 +304,7 @@ def G_tests():
 #-------------------------------------------------------------------
 def test_code():
     G_tests()
+    F_test()
 
 
 #-------------------------------------------------------------------
