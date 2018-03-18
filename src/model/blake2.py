@@ -175,7 +175,7 @@ class Blake2b():
     def _G(self, a, b, c, d, m0, m1):
         if VERBOSE:
             print("G Inputs:")
-            print("a = 0x%08x, b = 0x%08x, c = 0x%08x, d = 0x%08x, m0 = 0x%08x, m1 = 0x%08x" %\
+            print("a = 0x%016x, b = 0x%016x, c = 0x%016x, d = 0x%016x, m0 = 0x%016x, m1 = 0x%016x" %\
                       (a, b, c, d, m0, m1))
 
         self.a1 = (a + b + m0) % UINT64
@@ -192,11 +192,11 @@ class Blake2b():
         self.b4 = self._rotr(self.b3, 63)
 
         if VERBOSE:
-            print("a1 = 0x%08x, a2 = 0x%08x" % (self.a1, self.a2))
-            print("b1 = 0x%08x, b2 = 0x%08x, b3 = 0x%08x, b4 = 0x%08x" %\
+            print("a1 = 0x%016x, a2 = 0x%016x" % (self.a1, self.a2))
+            print("b1 = 0x%016x, b2 = 0x%016x, b3 = 0x%016x, b4 = 0x%016x" %\
                       (self.b1, self.b2, self.b3, self.b4))
-            print("c1 = 0x%08x, c2 = 0x%08x" % (self.c1, self.c2))
-            print("d1 = 0x%08x, d2 = 0x%08x, d3 = 0x%08x, d4 = 0x%08x" %\
+            print("c1 = 0x%016x, c2 = 0x%016x" % (self.c1, self.c2))
+            print("d1 = 0x%016x, d2 = 0x%016x, d3 = 0x%016x, d4 = 0x%016x" %\
                       (self.d1, self.d2, self.d3, self.d4))
 
         return (self.a2, self.b4, self.c2, self.d4)
@@ -211,16 +211,16 @@ class Blake2b():
 
 
     def _dump_v(self):
-        print("v00 - 07: 0x%08x 0x%08x 0x%08x 0x%08x 0x%08x 0x%08x 0x%08x 0x%08x" %\
+        print("v00 - 07: 0x%016x 0x%016x 0x%016x 0x%016x 0x%016x 0x%016x 0x%016x 0x%016x" %\
                   (self.v[0], self.v[1], self.v[2], self.v[3], self.v[4], self.v[5], self.v[6], self.v[7]))
-        print("v08 - 15: 0x%08x 0x%08x 0x%08x 0x%08x 0x%08x 0x%08x 0x%08x 0x%08x" %\
+        print("v08 - 15: 0x%016x 0x%016x 0x%016x 0x%016x 0x%016x 0x%016x 0x%016x 0x%016x" %\
                   (self.v[8], self.v[9], self.v[10], self.v[11], self.v[12], self.v[13], self.v[14], self.v[15]))
 
 
     def _dump_m(self):
-        print("m00 - 07: 0x%08x 0x%08x 0x%08x 0x%08x 0x%08x 0x%08x 0x%08x 0x%08x" %\
+        print("m00 - 07: 0x%016x 0x%016x 0x%016x 0x%016x 0x%016x 0x%016x 0x%016x 0x%016x" %\
                   (self.m[0], self.m[1], self.m[2], self.m[3], self.m[4], self.m[5], self.m[6], self.m[7]))
-        print("m08 - 15: 0x%08x 0x%08x 0x%08x 0x%08x 0x%08x 0x%08x 0x%08x 0x%08x" %\
+        print("m08 - 15: 0x%016x 0x%016x 0x%016x 0x%016x 0x%016x 0x%016x 0x%016x 0x%016x" %\
                   (self.m[8], self.m[9], self.m[10], self.m[11], self.m[12], self.m[13], self.m[14], self.m[15]))
 
 
