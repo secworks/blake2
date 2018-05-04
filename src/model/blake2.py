@@ -124,17 +124,18 @@ class Blake2b():
             self.v[14] = self.v[14] ^ (UINT64 - 1)
 
         # Process the m in NUM_ROUNDS, updating the work vector v.
-        self._compress(self.NUM_ROUNDS)
+        self._mix(self.NUM_ROUNDS)
 
         # Update the hash state with the result from the v processing.
         for i in range(8):
             self.h[i] = self.h[i] ^ self.v[i] ^ self.v[(i + 8)]
 
 
-    def _compress(self, r):
+    def _mix(self, r):
         self._dump_m()
-        print("State of v before compression:")
+        print("State of v before cryptographic mixing:")
         self._dump_v()
+
         for i in range(r):
            (self.v[0], self.v[4], self.v[8], self.v[12]) =\
             self._G(self.v[0], self.v[4], self.v[8], self.v[12],
@@ -169,7 +170,7 @@ class Blake2b():
             self._G(self.v[3], self.v[4], self.v[9], self.v[14],
             self.m[self.SIGMA[i][14]], self.m[self.SIGMA[i][15]])
 
-        print("State of v after compression")
+        print("State of v after cryptographic mixing:")
         self._dump_v()
         print()
 
