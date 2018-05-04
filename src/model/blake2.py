@@ -234,6 +234,8 @@ class Blake2b():
 # Appendix A of RFC 7539.
 #-------------------------------------------------------------------
 def F_test():
+    print("Testing the F function with captured vectors.")
+
     my_m = [0x0000000000636261, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0]
     my_blake2b = Blake2b()
     my_blake2b.init()
@@ -280,6 +282,8 @@ def test_G(indata, expected):
 # C reference model.
 #-------------------------------------------------------------------
 def G_tests():
+    print("Testing the G function with captured vectors.")
+
     gtest1_in  = [0x6a09e667f2bdc948, 0x510e527fade682d1, 0x6a09e667f3bcc908,
                   0x510e527fade68251, 0x0000000000000000, 0x0000000000000000]
     gtest1_ref = [0xf0c9aa0de38b1b89, 0xbbdf863401fde49b,
