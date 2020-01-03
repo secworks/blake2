@@ -70,7 +70,7 @@ module blake2(
   localparam ADDR_BLOCK_W00   = 8'h10;
   localparam ADDR_BLOCK_W31   = 8'h2f;
 
-  localparam ADDR_DIGEST00    = 8'h80;
+  localparam ADDR_DIGEST0     = 8'h80;
   localparam ADDR_DIGEST15    = 8'h8f;
 
   localparam CORE_NAME0   = 32'h626c616b; // "blak"
@@ -97,22 +97,15 @@ module blake2(
   reg [31 : 0] block_mem [0 : 31];
   reg          block_mem_we;
 
-  reg [7 : 0] core_key_len_reg;
-  reg [7 : 0] core_key_len_new;
-  reg         core_key_len_we;
-
-  reg [7 : 0] core_digest_len_reg;
-  reg [7 : 0] core_digest_len_new;
-  reg         core_digest_len_we;
-
 
   //----------------------------------------------------------------
-  // Wires.  reg [7 : 0] core_key_len;
-
+  // Wires.
   //----------------------------------------------------------------
+  wire [7 : 0]   core_key_len;
+  wire [7 : 0]   core_digest_len;
+
   wire            core_ready;
   wire [1023 : 0] core_block;
-  wire [127 : 0]  core_length;
   wire [511 : 0]  core_digest;
   wire            core_digest_valid;
 
@@ -122,7 +115,9 @@ module blake2(
   //----------------------------------------------------------------
   // Concurrent connectivity for ports etc.
   //----------------------------------------------------------------
-  assign core_length = 128'h1;
+  assign core_key_len    = 8'h0;
+  assign core_digest_len = 8'h0;
+
   assign core_block   = {block_mem[00], block_mem[01], block_mem[02], block_mem[03],
                          block_mem[04], block_mem[05], block_mem[06], block_mem[07],
                          block_mem[08], block_mem[09], block_mem[10], block_mem[11],
@@ -146,8 +141,8 @@ module blake2(
                     .next_block(next_reg),
                     .final_block(final_reg),
 
-                    .key_len(core_key_len_reg),
-                    .digest_len(core_digest_len_reg),
+                    .key_len(core_key_len),
+                    .digest_len(core_digest_len),
 
                     .block(core_block),
 
@@ -166,15 +161,13 @@ module blake2(
 
       if (!reset_n)
         begin
+          for (i = 0 ; i < 32 ; i = i + 1)
+            block_mem[i] <= 32'h0;
+
           init_reg         <= 0;
           next_reg         <= 0;
           ready_reg        <= 0;
           digest_valid_reg <= 0;
-
-          for (i = 0 ; i < 32 ; i = i + 1)
-            begin
-              block_mem[i] <= 32'h0;
-            end
         end
       else
         begin
@@ -195,10 +188,10 @@ module blake2(
   //----------------------------------------------------------------
   always @*
     begin : addr_decoder
-      init_new      = 1'b0;
-      next_new      = 1'b0;
-      final_new     = 1'b0;
-      block_mem_we  = 1'b0;
+      init_new      = 1'h0;
+      next_new      = 1'h0;
+      final_new     = 1'h0;
+      block_mem_we  = 1'h0;
       tmp_read_data = 32'h0;
 
       if (cs)
@@ -220,6 +213,9 @@ module blake2(
 
           else
             begin
+              if ((address >= ADDR_DIGEST0) && (address <= ADDR_DIGEST15))
+                tmp_read_data = core_digest[(15 - (address - ADDR_DIGEST0)) * 32 +: 32];
+
               case (address)
                 ADDR_NAME0:
                   tmp_read_data = CORE_NAME0;

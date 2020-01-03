@@ -124,17 +124,18 @@ class Blake2b():
             self.v[14] = self.v[14] ^ (UINT64 - 1)
 
         # Process the m in NUM_ROUNDS, updating the work vector v.
-        self._compress(self.NUM_ROUNDS)
+        self._mix(self.NUM_ROUNDS)
 
         # Update the hash state with the result from the v processing.
         for i in range(8):
             self.h[i] = self.h[i] ^ self.v[i] ^ self.v[(i + 8)]
 
 
-    def _compress(self, r):
+    def _mix(self, r):
         self._dump_m()
-        print("State of v before compression:")
+        print("State of v before cryptographic mixing:")
         self._dump_v()
+
         for i in range(r):
            (self.v[0], self.v[4], self.v[8], self.v[12]) =\
             self._G(self.v[0], self.v[4], self.v[8], self.v[12],
@@ -169,7 +170,7 @@ class Blake2b():
             self._G(self.v[3], self.v[4], self.v[9], self.v[14],
             self.m[self.SIGMA[i][14]], self.m[self.SIGMA[i][15]])
 
-        print("State of v after compression")
+        print("State of v after cryptographic mixing:")
         self._dump_v()
         print()
 
@@ -233,6 +234,8 @@ class Blake2b():
 # Appendix A of RFC 7539.
 #-------------------------------------------------------------------
 def F_test():
+    print("Testing the F function with captured vectors.")
+
     my_m = [0x0000000000636261, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0]
     my_blake2b = Blake2b()
     my_blake2b.init()
@@ -279,6 +282,8 @@ def test_G(indata, expected):
 # C reference model.
 #-------------------------------------------------------------------
 def G_tests():
+    print("Testing the G function with captured vectors.")
+
     gtest1_in  = [0x6a09e667f2bdc948, 0x510e527fade682d1, 0x6a09e667f3bcc908,
                   0x510e527fade68251, 0x0000000000000000, 0x0000000000000000]
     gtest1_ref = [0xf0c9aa0de38b1b89, 0xbbdf863401fde49b,
