@@ -15,8 +15,7 @@ home page.](https://blake2.net).
 
 
 ## Implementation status ##
-**Not done**
-Does not work.
+**Not done. Does Not Work. Do. Not. Use**
 
 
 ## Implementation details ##
