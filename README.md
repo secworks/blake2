@@ -1,6 +1,11 @@
 blake2
 ======
 
+## Implementation status ##
+**Not done**
+Does not work.
+
+
 ## Introduction ##
 
 This is a Verilog implementation of the Blake2 hash function. The specific
@@ -12,11 +17,6 @@ function implemented is BLAKE2b as specified in
 
 For more info about the different versions of Blake2, see the [Blake2
 home page.](https://blake2.net).
-
-
-## Implementation status ##
-**Not done**
-Does not work.
 
 
 ## Implementation details ##
