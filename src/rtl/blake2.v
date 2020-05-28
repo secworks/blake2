@@ -101,8 +101,8 @@ module blake2(
   //----------------------------------------------------------------
   // Wires.
   //----------------------------------------------------------------
-  wire [7 : 0]   core_key_len;
-  wire [7 : 0]   core_digest_len;
+  wire [7 : 0]    core_key_len;
+  wire [7 : 0]    core_digest_len;
 
   wire            core_ready;
   wire [1023 : 0] core_block;
@@ -164,10 +164,10 @@ module blake2(
           for (i = 0 ; i < 32 ; i = i + 1)
             block_mem[i] <= 32'h0;
 
-          init_reg         <= 0;
-          next_reg         <= 0;
-          ready_reg        <= 0;
-          digest_valid_reg <= 0;
+          init_reg         <= 1'h0;
+          next_reg         <= 1'h0;
+          ready_reg        <= 1'h0;
+          digest_valid_reg <= 1'h0;
         end
       else
         begin

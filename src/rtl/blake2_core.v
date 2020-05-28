@@ -317,10 +317,10 @@ module blake2_core(
 
           t0_reg           <= 64'h0;
           t1_reg           <= 64'h0;
-          ready_reg        <= 1;
-          digest_valid_reg <= 0;
+          ready_reg        <= 1'h1;
+          digest_valid_reg <= 1'h0;
           G_ctr_reg        <= G_COLUMN;
-          round_ctr_reg    <= 0;
+          round_ctr_reg    <= 4'h0;
           blake2_ctrl_reg  <= CTRL_IDLE;
         end
       else
@@ -374,7 +374,7 @@ module blake2_core(
 
       for (i = 0; i < 8; i = i + 1)
         h_new[i] = 64'h0;
-      h_we   = 0;
+      h_we   = 1'h0;
 
       // Assemble the blake2 parameter block.
       blake2_param = {32'h0, 8'h01, 8'h01, key_len, digest_len};
@@ -389,7 +389,7 @@ module blake2_core(
           h_new[5]  = IV5;
           h_new[6]  = IV6;
           h_new[7]  = IV7;
-          h_we = 1;
+          h_we = 1'h1;
         end
 
       if (update_state)
@@ -402,7 +402,7 @@ module blake2_core(
           h_new[5] = h_reg[5] ^ v_reg[5] ^ v_reg[13];
           h_new[6] = h_reg[6] ^ v_reg[6] ^ v_reg[14];
           h_new[7] = h_reg[7] ^ v_reg[7] ^ v_reg[15];
-          h_we = 1;
+          h_we = 1'h1;
         end
     end // chain_logic
 
@@ -418,7 +418,7 @@ module blake2_core(
 
       for (i = 0; i < 16; i = i + 1)
         v_new[i] = 64'h0;
-      v_we = 0;
+      v_we = 1'h0;
 
       G0_a = 64'h0;
       G0_b = 64'h0;
@@ -455,12 +455,12 @@ module blake2_core(
           v_new[13] = IV5 ^ t1_reg;
           v_new[14] = IV6 ^ {64{final_block}};
           v_new[15] = IV7;
-          v_we = 1;
+          v_we = 1'h1;
         end
 
       else if (update_f)
         begin
-          v_we    = 1;
+          v_we = 1'h1;
 
           case (G_ctr_reg)
             G_COLUMN:
@@ -500,7 +500,7 @@ module blake2_core(
                 v_new[7]  = G3_b_prim;
                 v_new[11] = G3_c_prim;
                 v_new[15] = G3_d_prim;
-                v_we = 1;
+                v_we = 1'h1;
               end
 
             G_DIAGONAL:
@@ -559,18 +559,18 @@ module blake2_core(
   always @*
     begin : G_ctr
       G_ctr_new = G_COLUMN;
-      G_ctr_we  = 0;
+      G_ctr_we  = 1'h0;
 
       if (G_ctr_rst)
         begin
           G_ctr_new = G_COLUMN;
-          G_ctr_we  = 1;
+          G_ctr_we  = 1'h1;
         end
 
       if (G_ctr_inc)
         begin
           G_ctr_new = ~G_ctr_reg;
-          G_ctr_we  = 1;
+          G_ctr_we  = 1'h1;
         end
     end // G_ctr
 
@@ -582,18 +582,18 @@ module blake2_core(
   //----------------------------------------------------------------
   always @*
     begin : round_ctr
-      round_ctr_new = 0;
-      round_ctr_we  = 0;
+      round_ctr_new = 4'h0;
+      round_ctr_we  = 1'h0;
 
       if (round_ctr_rst)
         begin
-          round_ctr_we  = 1;
+          round_ctr_we = 1'h1;
         end
 
       if (round_ctr_inc)
         begin
-          round_ctr_new = round_ctr_reg + 1'b1;
-          round_ctr_we  = 1;
+          round_ctr_new = round_ctr_reg + 1'h1;
+          round_ctr_we  = 1'h1;
         end
     end // round_ctr
 
@@ -606,26 +606,26 @@ module blake2_core(
   always @*
     begin : t_ctr
       t0_new = 64'h0;
-      t0_we  = 0;
+      t0_we  = 1'h0;
 
       t1_new = 64'h0;
-      t1_we  = 0;
+      t1_we  = 1'h0;
 
       if (t_ctr_rst)
         begin
-          t0_we = 1;
-          t1_we = 1;
+          t0_we = 1'h1;
+          t1_we = 1'h1;
         end
 
       if (t_ctr_inc)
         begin
           t0_new = t0_reg + BLOCK_SIZE;
-          t0_we  = 1;
+          t0_we  = 1'h1;
 
           if (t0_new < t0_reg)
             begin
               t1_new = t1_reg + 1'b1;
-              t1_we  = 1;
+              t1_we  = 1'h1;
             end
         end
     end // t_ctr
@@ -637,23 +637,23 @@ module blake2_core(
   //----------------------------------------------------------------
   always @*
     begin : blake2_ctrl_fsm
-      init_state         = 0;
-      update_state       = 0;
-      init_f             = 0;
-      update_f           = 0;
-      load_m             = 0;
-      G_ctr_inc          = 0;
-      G_ctr_rst          = 0;
-      round_ctr_inc      = 0;
-      round_ctr_rst      = 0;
-      t_ctr_rst          = 0;
-      t_ctr_inc          = 0;
-      ready_new          = 0;
-      ready_we           = 0;
-      digest_valid_new   = 0;
-      digest_valid_we    = 0;
+      init_state         = 1'h0;
+      update_state       = 1'h0;
+      init_f             = 1'h0;
+      update_f           = 1'h0;
+      load_m             = 1'h0;
+      G_ctr_inc          = 1'h0;
+      G_ctr_rst          = 1'h0;
+      round_ctr_inc      = 1'h0;
+      round_ctr_rst      = 1'h0;
+      t_ctr_rst          = 1'h0;
+      t_ctr_inc          = 1'h0;
+      ready_new          = 1'h0;
+      ready_we           = 1'h0;
+      digest_valid_new   = 1'h0;
+      digest_valid_we    = 1'h0;
       blake2_ctrl_new    = CTRL_IDLE;
-      blake2_ctrl_we     = 0;
+      blake2_ctrl_we     = 1'h0;
 
       case (blake2_ctrl_reg)
         CTRL_IDLE:
@@ -663,40 +663,40 @@ module blake2_core(
 
             if (init)
               begin
-                ready_new       = 0;
-                ready_we        = 1;
-                init_state      = 1;
-                G_ctr_rst       = 1;
-                round_ctr_rst   = 1;
-                t_ctr_rst       = 1;
+                ready_new     = 1'h0;
+                ready_we      = 1'h1;
+                init_state    = 1'h1;
+                G_ctr_rst     = 1'h1;
+                round_ctr_rst = 1'h1;
+                t_ctr_rst     = 1'h1;
               end
 
             if (next_block)
               begin
-                ready_new        = 0;
-                ready_we         = 1;
-                digest_valid_new = 1;
-                digest_valid_we  = 1;
-                load_m           = 1;
-                init_f           = 1;
+                ready_new        = 1'h0;
+                ready_we         = 1'h1;
+                digest_valid_new = 1'h1;
+                digest_valid_we  = 1'h1;
+                load_m           = 1'h1;
+                init_f           = 1'h1;
                 blake2_ctrl_new  = CTRL_ROUNDS;
-                blake2_ctrl_we   = 1;
+                blake2_ctrl_we   = 1'h1;
               end
           end
 
 
         CTRL_ROUNDS:
           begin
-            update_f  = 1;
-            G_ctr_inc = 1;
+            update_f  = 1'h1;
+            G_ctr_inc = 1'h1;
             if (G_ctr_reg == G_DIAGONAL)
               begin
-                round_ctr_inc = 1;
+                round_ctr_inc = 1'h1;
                 if (round_ctr_reg < NUM_ROUNDS)
                   begin
-                    update_state    = 1;
+                    update_state    = 1'h1;
                     blake2_ctrl_new = CTRL_IDLE;
-                    blake2_ctrl_we  = 1;
+                    blake2_ctrl_we  = 1'h1;
                   end
               end
           end
